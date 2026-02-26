@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "/replicate-api/*"
+  to = "https://api.replicate.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
