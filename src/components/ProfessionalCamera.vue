@@ -7,7 +7,6 @@
       playsinline
       muted
       class="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
-      :class="{ 'opacity-0': !active, 'opacity-100': active }"
     ></video>
 
     <!-- HUD / Mesh Canvas Overlay -->
@@ -56,46 +55,46 @@
 
     <!-- Real-time HUD UI -->
     <div v-if="active" class="absolute inset-0 pointer-events-none z-20 flex flex-col items-center justify-center p-10">
-        <!-- Frame Accents -->
+        <!-- Frame Accents (Thicker and brighter) -->
         <div class="absolute inset-x-6 inset-y-12 border border-white/5 rounded-[60px]">
-            <div :class="['absolute top-0 left-0 w-16 h-16 border-t-[6px] border-l-[6px] rounded-tl-[50px] m-1 transition-colors duration-500', isQualityGood ? 'border-primary' : 'border-red-500/50']"></div>
-            <div :class="['absolute top-0 right-0 w-16 h-16 border-t-[6px] border-r-[6px] rounded-tr-[50px] m-1 transition-colors duration-500', isQualityGood ? 'border-primary' : 'border-red-500/50']"></div>
-            <div :class="['absolute bottom-0 left-0 w-16 h-16 border-b-[6px] border-l-[6px] rounded-bl-[50px] m-1 transition-colors duration-500', isQualityGood ? 'border-primary' : 'border-red-500/50']"></div>
-            <div :class="['absolute bottom-0 right-0 w-16 h-16 border-b-[6px] border-r-[6px] rounded-br-[50px] m-1 transition-colors duration-500', isQualityGood ? 'border-primary' : 'border-red-500/50']"></div>
+            <div :class="['absolute top-0 left-0 w-20 h-20 border-t-[8px] border-l-[8px] rounded-tl-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
+            <div :class="['absolute top-0 right-0 w-20 h-20 border-t-[8px] border-r-[8px] rounded-tr-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
+            <div :class="['absolute bottom-0 left-0 w-20 h-20 border-b-[8px] border-l-[8px] rounded-bl-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
+            <div :class="['absolute bottom-0 right-0 w-20 h-20 border-b-[8px] border-r-[8px] rounded-br-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
         </div>
 
-        <!-- HUD Left -->
-        <div class="absolute top-20 left-12 text-primary/60 font-mono text-[9px] space-y-2 uppercase tracking-widest hidden md:block">
+        <!-- HUD Left (Enhanced Contrast) -->
+        <div class="absolute top-24 left-14 text-white/50 font-mono text-[9px] space-y-3 uppercase tracking-[0.2em] hidden md:block">
             <div class="flex items-center">
-                <div class="w-1 h-1 bg-primary mr-2"></div>
-                <span>SENS_VAL: {{ metrics.heightWidthRatio ? metrics.heightWidthRatio.toFixed(2) : 'CALIBRATING' }}</span>
+                <div :class="['w-1.5 h-1.5 mr-3 transition-colors duration-500', isQualityGood ? 'bg-primary' : 'bg-red-500']"></div>
+                <span class="gold-glow">SENS_VAL: {{ metrics.heightWidthRatio ? metrics.heightWidthRatio.toFixed(2) : 'CALIBRATING' }}</span>
             </div>
             <div class="flex items-center">
-                <div class="w-1 h-1 bg-primary mr-2"></div>
-                <span>BIOM_LOCK: {{ isQualityGood ? 'HIGH' : 'LOW' }}</span>
+                <div :class="['w-1.5 h-1.5 mr-3 transition-colors duration-500', isQualityGood ? 'bg-primary' : 'bg-red-500']"></div>
+                <span class="gold-glow">BIOM_LOCK: {{ isQualityGood ? 'HIGH' : 'LOW' }}</span>
             </div>
             <div class="flex items-center">
-                <div class="w-1 h-1 bg-primary mr-2"></div>
-                <span>QUALITY: {{ qualityScore }}%</span>
+                <div :class="['w-1.5 h-1.5 mr-3 transition-colors duration-500', isQualityGood ? 'bg-primary' : 'bg-red-500']"></div>
+                <span class="gold-glow">QUALITY: {{ qualityScore }}%</span>
             </div>
         </div>
 
-        <!-- HUD Right -->
-        <div class="absolute top-20 right-12 text-right text-primary/60 font-mono text-[9px] space-y-2 uppercase tracking-widest hidden md:block">
-            <p>X: {{ Math.round(facePos.x * 100) }} Y: {{ Math.round(facePos.y * 100) }}</p>
+        <!-- HID Right -->
+        <div class="absolute top-24 right-14 text-right text-white/30 font-mono text-[9px] space-y-3 uppercase tracking-[0.2em] hidden md:block">
+            <p class="gold-glow">X: {{ Math.round(facePos.x * 100) }} Y: {{ Math.round(facePos.y * 100) }}</p>
             <p>RESOLUTION: 720P</p>
-            <p>NEURAL_ENGINE: AKTIV</p>
+            <p class="text-primary/40">NEURAL_ENGINE: AKTIV</p>
         </div>
 
         <!-- Status Warnings -->
-        <div class="absolute bottom-32 text-center pointer-events-none">
+        <div class="absolute bottom-36 text-center pointer-events-none">
             <transition enter-active-class="animate-bounce" leave-active-class="opacity-0">
-                <p v-if="warning" class="bg-red-500 text-black font-black text-[10px] px-6 py-2 rounded-full uppercase tracking-[0.2em] shadow-lg">
+                <div v-if="warning" class="bg-red-600 text-white font-black text-[10px] px-8 py-3 rounded-full uppercase tracking-[0.3em] shadow-2xl border border-white/10">
                     {{ warning }}
-                </p>
-                <p v-else-if="isQualityGood" class="bg-primary text-black font-black text-[10px] px-6 py-2 rounded-full uppercase tracking-[0.2em] shadow-lg animate-pulse">
+                </div>
+                <div v-else-if="isQualityGood" class="bg-primary text-black font-black text-[10px] px-8 py-3 rounded-full uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(218,165,32,0.4)] animate-pulse">
                     Centro Óptico Identificado
-                </p>
+                </div>
             </transition>
         </div>
     </div>
@@ -168,15 +167,16 @@ const initCamera = async () => {
         stream.value = mediaStream
         
         if (videoRef.value) {
-            videoRef.value.srcObject = mediaStream
+            const video = videoRef.value
+            video.srcObject = mediaStream
             
             // Wait for both
             await Promise.all([
                 new Promise((resolve, reject) => {
                     const timeout = setTimeout(() => reject(new Error("Video timeout")), 8000)
-                    videoRef.value.onloadedmetadata = () => {
+                    video.onloadedmetadata = () => {
                         clearTimeout(timeout)
-                        resolve()
+                        video.play().then(resolve).catch(reject)
                     }
                 }),
                 landmarkerPromise
