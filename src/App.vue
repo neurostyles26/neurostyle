@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-secondary text-white font-sans selection:bg-primary/30">
+  <div class="min-h-screen bg-black text-white font-inter selection:bg-primary/30 overflow-x-hidden">
     <!-- Professional Preloader -->
     <AppPreloader />
     
     <router-view v-slot="{ Component }">
       <transition 
-        name="page" 
+        name="page-fade" 
         mode="out-in"
       >
         <component :is="Component" />
@@ -22,15 +22,25 @@ import AppPreloader from './components/AppPreloader.vue'
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-.font-outfit {
-  font-family: 'Outfit', sans-serif;
+/* Global Page Transitions */
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Glassmorphism utility */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(15px) scale(0.98);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-15px) scale(1.02);
+}
+
+/* Custom Selection Color */
+::selection {
+  background: rgba(218, 165, 32, 0.2);
+  color: #fff;
 }
 </style>

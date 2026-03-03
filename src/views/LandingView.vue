@@ -1,110 +1,116 @@
 <template>
   <div class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#020202] py-12 px-6 font-inter">
-    <!-- Sophisticated Background -->
+    <!-- Sophisticated Background Layering -->
     <div class="absolute inset-0 z-0 pointer-events-none">
-      <div class="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full animate-pulse-slow"></div>
-      <div class="absolute bottom-[-5%] right-[-5%] w-[40%] h-[40%] bg-primary/5 blur-[130px] rounded-full animate-pulse-slow" style="animation-delay: 4s"></div>
+      <!-- Deep Animated Glows -->
+      <div class="absolute top-[-10%] left-[-5%] w-[60%] h-[60%] bg-primary/10 blur-[160px] rounded-full animate-pulse-slow"></div>
+      <div class="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-primary/5 blur-[140px] rounded-full animate-pulse-slow" style="animation-delay: 5s"></div>
       
-      <!-- Micro-grid pattern -->
-      <div class="absolute inset-0 opacity-[0.03]" :style="{ backgroundImage: 'radial-gradient(circle, #DAA520 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }"></div>
+      <!-- Fine Scanning Grid -->
+      <div class="absolute inset-0 opacity-[0.04]" :style="{ backgroundImage: 'linear-gradient(rgba(218,165,32,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(218,165,32,0.1) 1px, transparent 1px)', backgroundSize: '60px 60px' }"></div>
       
-      <!-- Decorative Lines -->
-      <div class="absolute top-0 left-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-white/5 to-transparent"></div>
-      <div class="absolute top-0 right-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-white/5 to-transparent"></div>
+      <!-- Scanning Beam Effect -->
+      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-scanning-beam"></div>
+
+      <!-- Noise Texture for Organic Feel -->
+      <div class="absolute inset-0 opacity-[0.02] mix-blend-overlay" :style="{ backgroundImage: 'url(https://grainy-gradients.vercel.app/noise.svg)' }"></div>
     </div>
 
-    <!-- Content -->
+    <!-- Content Wrapper -->
     <div class="z-10 w-full max-w-5xl text-center flex flex-col items-center">
       <!-- Premium Logo Section -->
-      <div class="mb-12 group cursor-default">
-        <div class="relative w-32 h-32 mx-auto transition-all duration-700 group-hover:scale-105">
-          <div class="absolute inset-0 bg-primary/30 blur-3xl rounded-full opacity-40 group-hover:opacity-70 transition-opacity duration-700"></div>
-          <div class="relative w-full h-full glass-panel rounded-full flex items-center justify-center shadow-2xl border-white/10 overflow-hidden p-8">
-             <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(218,165,32,0.4)] transition-transform duration-700 group-hover:scale-110" alt="NeuroStyle Logo" />
-             <!-- Shimmer effect on logo -->
-             <div class="absolute inset-x-0 top-0 h-full w-full bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer-logo"></div>
+      <div class="mb-14 group cursor-default animate-reveal-logo">
+        <div class="relative w-36 h-36 mx-auto transition-all duration-1000">
+          <!-- Multi-layered Glows -->
+          <div class="absolute inset-0 bg-primary/25 blur-3xl rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse-glow"></div>
+          <div class="absolute -inset-4 border border-primary/5 rounded-full animate-spin-extremely-slow"></div>
+          
+          <div class="relative w-full h-full glass-panel rounded-full flex items-center justify-center shadow-2xl border-white/5 overflow-hidden p-8">
+             <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.5)] transition-transform duration-1000 group-hover:scale-110" alt="NeuroStyle Logo" />
+             
+             <!-- Shimmer effect -->
+             <div class="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer-fast"></div>
+             </div>
           </div>
         </div>
       </div>
 
-      <div class="overflow-hidden mb-4">
-          <h1 class="text-white text-5xl md:text-8xl font-outfit font-black tracking-[-0.05em] leading-none animate-reveal-text">
-            NEURO<span class="gold-text-gradient gold-glow italic">STYLE</span>
+      <!-- Main Title -->
+      <div class="overflow-hidden mb-6">
+          <h1 class="text-white text-6xl md:text-9xl font-outfit font-black tracking-[-0.07em] leading-none animate-reveal-title">
+            NEURO<span class="gold-text-gradient italic relative inline-block">STYLE
+              <!-- Subtle Underline Glow -->
+              <span class="absolute bottom-2 left-0 w-full h-[2px] bg-primary/20 blur-[4px]"></span>
+            </span>
           </h1>
       </div>
       
-      <p class="text-gray-400 text-base md:text-lg max-w-xl mx-auto mb-16 font-light leading-relaxed tracking-wide animate-fade-in-up">
-        Redefine tu imagen con <span class="text-white font-medium italic">Precision Intelligence</span>. 
-        Biomecánica facial y mapeo estético para el visionario moderno.
+      <!-- Description -->
+      <p class="text-gray-400 text-base md:text-xl max-w-2xl mx-auto mb-20 font-light leading-relaxed tracking-[0.1em] animate-reveal-desc uppercase text-[10px] md:text-[12px] opacity-80">
+        Master Barbering &bull; Precision Intelligence &bull; Biometría Neural
       </p>
 
-      <!-- Action Buttons -->
-      <div class="flex flex-col gap-5 justify-center items-center w-full max-w-sm mb-20 animate-fade-in-up" style="animation-delay: 0.3s">
+      <!-- Staggered Action Buttons (Icon-free) -->
+      <div class="flex flex-col gap-6 justify-center items-center w-full max-w-md animate-reveal-actions">
+        <!-- AI Scan Button (The Star) -->
         <router-link 
           to="/scan" 
-          class="group relative w-full px-8 py-5 bg-primary text-black font-black text-lg rounded-2xl transition-all duration-500 hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_rgba(218,165,32,0.25)] flex items-center justify-center overflow-hidden"
+          class="group relative w-full px-10 py-7 bg-primary text-black font-black text-xl rounded-2xl transition-all duration-700 hover:scale-[1.03] active:scale-95 shadow-[0_25px_50px_-12px_rgba(218,165,32,0.4)] flex items-center justify-center overflow-hidden"
         >
-          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          <LucideScanFace class="mr-3 group-hover:scale-110 transition-transform duration-500" :size="22" />
-          <span class="font-outfit uppercase tracking-wider">INICIAR ESCANEO AI</span>
-          <LucideArrowRight class="ml-auto opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500" :size="20" />
+          <!-- Shimmer logic -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+          <span class="font-outfit uppercase tracking-[0.2em] relative z-10 transition-all duration-500 group-hover:tracking-[0.25em]">INICIAR ESCANEO AI</span>
         </router-link>
 
-        <router-link 
-          to="/book" 
-          class="group relative w-full px-8 py-5 glass-card text-white font-bold text-lg rounded-2xl transition-all duration-500 flex items-center justify-center overflow-hidden"
-        >
-          <LucideCalendarCheck class="mr-3 text-primary group-hover:scale-110 transition-transform duration-500" :size="22" />
-          <span class="font-outfit uppercase tracking-wider">AGENDAR CITA</span>
-          <LucideArrowRight class="ml-auto opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500" :size="20" />
-        </router-link>
+        <!-- Secondary Actions in Row -->
+        <div class="grid grid-cols-2 gap-4 w-full">
+          <router-link 
+            to="/book" 
+            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-2xl transition-all duration-500 flex items-center justify-center overflow-hidden border-white/5 hover:border-primary/40"
+          >
+            <span class="font-outfit uppercase tracking-[0.2em] text-xs md:text-sm group-hover:text-primary transition-colors">CITAS</span>
+          </router-link>
 
-        <router-link 
-          to="/store" 
-          class="group relative w-full px-8 py-5 glass-card text-white font-bold text-lg rounded-2xl transition-all duration-500 border-white/5 flex items-center justify-center overflow-hidden opacity-80 hover:opacity-100"
-        >
-          <LucideSparkles class="mr-3 text-primary/70 group-hover:rotate-12 transition-transform duration-500" :size="22" />
-          <span class="font-outfit uppercase tracking-wider text-gray-300 group-hover:text-white transition-colors">GROOMING STORE</span>
-          <LucideShoppingBag class="ml-auto opacity-30 group-hover:opacity-100 transition-opacity" :size="18" />
-        </router-link>
+          <router-link 
+            to="/store" 
+            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-2xl transition-all duration-500 border-white/5 hover:border-primary/40 flex items-center justify-center overflow-hidden"
+          >
+            <span class="font-outfit uppercase tracking-[0.2em] text-xs md:text-sm group-hover:text-primary transition-colors">STORE</span>
+          </router-link>
+        </div>
 
+        <!-- Professional Access -->
         <router-link 
           to="/login" 
-          class="flex items-center space-x-2 text-gray-500 hover:text-primary transition-all duration-300 text-[10px] font-black uppercase tracking-[0.3em] mt-8 group"
+          class="flex items-center space-x-4 text-gray-500 hover:text-primary transition-all duration-700 text-[9px] font-black uppercase tracking-[0.5em] mt-12 group opacity-40 hover:opacity-100"
         >
-           <LucideUserCircle2 :size="14" class="opacity-50 group-hover:opacity-100" />
+           <div class="w-12 h-[1px] bg-white/10 group-hover:w-16 group-hover:bg-primary/40 transition-all duration-700"></div>
            <span>ACCESO BARBERO</span>
+           <div class="w-12 h-[1px] bg-white/10 group-hover:w-16 group-hover:bg-primary/40 transition-all duration-700"></div>
         </router-link>
       </div>
 
-      <!-- Innovative Feature Badges -->
-      <div class="flex flex-wrap justify-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-700 animate-fade-in" style="animation-delay: 0.6s">
-          <div class="flex flex-col items-center gap-2">
-              <span class="text-[9px] font-bold tracking-[0.2em] uppercase">Mapeo 3D</span>
+      <!-- Feature Badges Section (Minimalist) -->
+      <div class="mt-28 flex flex-wrap justify-center gap-14 opacity-20 hover:opacity-100 transition-all duration-1000 animate-reveal-badges">
+          <div class="flex flex-col items-center">
+              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">NEURAL MAPPING</span>
           </div>
-          <div class="flex flex-col items-center gap-2">
-              <span class="text-[9px] font-bold tracking-[0.2em] uppercase">IA Generativa</span>
+          <div class="flex flex-col items-center">
+              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">GENERATIVE AI</span>
           </div>
-          <div class="flex flex-col items-center gap-2">
-              <span class="text-[9px] font-bold tracking-[0.2em] uppercase">Estilo Maestro</span>
+          <div class="flex flex-col items-center">
+              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">MASTER STYLE</span>
           </div>
       </div>
     </div>
 
-    <!-- Bottom Footer Gradient -->
-    <div class="absolute bottom-0 left-0 right-0 h-[30vh] bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-0"></div>
+    <!-- Bottom Footer Fade -->
+    <div class="absolute bottom-0 left-0 right-0 h-[35vh] bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-0"></div>
   </div>
 </template>
 
 <script setup>
-import { 
-  LucideScanFace, 
-  LucideCalendarCheck, 
-  LucideSparkles, 
-  LucideShoppingBag, 
-  LucideArrowRight,
-  LucideUserCircle2 
-} from 'lucide-vue-next'
 import logoImg from '../assets/logo.png'
 </script>
 
@@ -115,45 +121,94 @@ import logoImg from '../assets/logo.png'
 }
 
 .animate-pulse-slow {
-  animation: pulse-slow 10s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse-slow 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes shimmer-logo {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(200%) rotate(45deg); }
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 
-.group:hover .animate-shimmer-logo {
-    animation: shimmer-logo 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
 }
 
-@keyframes reveal-text {
-    0% { transform: translateY(30px); opacity: 0; filter: blur(10px); }
+@keyframes scanning-beam {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scanning-beam {
+  animation: scanning-beam 10s linear infinite;
+}
+
+@keyframes reveal-logo {
+    0% { transform: scale(0.8) translateY(-20px); opacity: 0; filter: blur(20px); }
+    100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
+}
+
+.animate-reveal-logo {
+    animation: reveal-logo 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes reveal-title {
+    0% { transform: translateY(50px); opacity: 0; filter: blur(15px); }
     100% { transform: translateY(0); opacity: 1; filter: blur(0); }
 }
 
-.animate-reveal-text {
-    animation: reveal-text 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-reveal-title {
+    animation: reveal-title 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+    opacity: 0;
 }
 
-@keyframes fade-in-up {
-    0% { transform: translateY(20px); opacity: 0; }
+@keyframes reveal-desc {
+    0% { opacity: 0; letter-spacing: 0.3em; }
+    100% { opacity: 0.8; letter-spacing: 0.1em; }
+}
+
+.animate-reveal-desc {
+    animation: reveal-desc 2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+    opacity: 0;
+}
+
+@keyframes reveal-actions {
+    0% { transform: translateY(30px); opacity: 0; }
     100% { transform: translateY(0); opacity: 1; }
 }
 
-.animate-fade-in-up {
+.animate-reveal-actions {
+    animation: reveal-actions 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
     opacity: 0;
-    animation: fade-in-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 0.4; }
+@keyframes reveal-badges {
+    0% { opacity: 0; }
+    100% { opacity: 0.2; }
 }
 
-.animate-fade-in {
+.animate-reveal-badges {
+    animation: reveal-badges 2.5s ease 2s forwards;
     opacity: 0;
-    animation: fade-in 2s ease forwards;
+}
+
+@keyframes shimmer-fast {
+    0% { transform: translateX(-150%) skewX(-20deg); }
+    100% { transform: translateX(150%) skewX(-20deg); }
+}
+
+.group:hover .animate-shimmer-fast {
+    animation: shimmer-fast 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin-extremely-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-extremely-slow {
+  animation: spin-extremely-slow 80s linear infinite;
 }
 
 .gold-text-gradient {
@@ -163,4 +218,3 @@ import logoImg from '../assets/logo.png'
     -webkit-text-fill-color: transparent;
 }
 </style>
-
