@@ -7,7 +7,7 @@
     <aside class="w-full md:w-80 glass-panel border-b md:border-r border-white/5 p-8 flex flex-col z-20 relative">
       <div class="flex items-center space-x-4 mb-16 px-2">
         <div class="w-14 h-14 glass-panel rounded-full flex items-center justify-center border-white/20 shadow-lg p-3">
-            <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(218,165,32,0.5)]" alt="NS" />
+            <img :src="shopStore.logoUrl || logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(218,165,32,0.5)]" alt="NS" />
         </div>
         <div>
             <span class="text-white font-outfit font-black text-2xl tracking-tighter block uppercase">NeuroStyle</span>
@@ -35,6 +35,11 @@
           <LucideTicket :size="22" class="group-hover:text-primary transition-colors" />
           <span class="font-outfit uppercase tracking-widest text-sm">Promos</span>
         </button>
+
+        <router-link to="/admin/settings" class="group w-full flex items-center space-x-4 px-6 py-5 rounded-3xl text-gray-500 hover:bg-white/5 hover:text-white transition-all border border-transparent hover:border-white/10">
+          <LucideSettings :size="22" class="group-hover:text-primary transition-colors" />
+          <span class="font-outfit uppercase tracking-widest text-sm">Configuración</span>
+        </router-link>
       </nav>
 
       <div class="mt-auto pt-8 border-t border-white/5">
@@ -103,13 +108,20 @@
 import { 
   LucideLayoutGrid, LucideCalendar, LucideShoppingBag, 
   LucideTicket, LucideLogOut, LucideUsers,
-  LucideTrendingUp
+  LucideTrendingUp, LucideSettings
 } from 'lucide-vue-next'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { supabase } from '../services/supabase'
 import logoImg from '../assets/logo.png'
 
+import { useShopStore } from '../stores/shopStore'
+
 const router = useRouter()
+const shopStore = useShopStore()
+
+onMounted(() => {
+  shopStore.fetchSettings()
+})
 
 const stats = [
   { label: 'Citas Hoy', value: '12', icon: LucideCalendar },

@@ -1,7 +1,7 @@
 <template>
-  <div class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#020202] py-12 px-6 font-inter">
+  <div class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#020202] py-12 px-6 font-inter transition-all duration-1000" :style="shopStore.bgUrl ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url(${shopStore.bgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}">
     <!-- Sophisticated Background Layering -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
+    <div v-if="!shopStore.bgUrl" class="absolute inset-0 z-0 pointer-events-none">
       <!-- Deep Animated Glows -->
       <div class="absolute top-[-10%] left-[-5%] w-[60%] h-[60%] bg-primary/10 blur-[160px] rounded-full animate-pulse-slow"></div>
       <div class="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-primary/5 blur-[140px] rounded-full animate-pulse-slow" style="animation-delay: 5s"></div>
@@ -18,7 +18,12 @@
 
     <!-- Content Wrapper -->
     <div class="z-10 w-full max-w-5xl text-center flex flex-col items-center">
-      <!-- Premium Logo Section -->
+      <!-- Secondary Shop Logo (New) -->
+      <div v-if="shopStore.logoUrl" class="mb-4 animate-reveal-logo opacity-60 hover:opacity-100 transition-opacity">
+         <img :src="shopStore.logoUrl" class="h-12 object-contain filter drop-shadow-lg" :alt="shopStore.shopName" />
+      </div>
+
+      <!-- Premium Logo Section (NeuroStyle) -->
       <div class="mb-14 group cursor-default animate-reveal-logo">
         <div class="relative w-36 h-36 mx-auto transition-all duration-1000">
           <!-- Multi-layered Glows -->
@@ -37,7 +42,8 @@
       </div>
 
       <!-- Main Title -->
-      <div class="overflow-hidden mb-6">
+      <div class="overflow-hidden mb-4">
+          <p class="text-primary text-[10px] font-black uppercase tracking-[0.6em] mb-4 animate-reveal-title opacity-80">Powered by</p>
           <h1 class="text-white text-6xl md:text-9xl font-outfit font-black tracking-[-0.07em] leading-none animate-reveal-title">
             NEURO<span class="gold-text-gradient italic relative inline-block">STYLE
               <!-- Subtle Underline Glow -->
@@ -46,10 +52,15 @@
           </h1>
       </div>
       
-      <!-- Description -->
-      <p class="text-gray-400 text-base md:text-xl max-w-2xl mx-auto mb-20 font-light leading-relaxed tracking-[0.1em] animate-reveal-desc uppercase text-[10px] md:text-[12px] opacity-80">
-        Master Barbering &bull; Precision Intelligence &bull; Biometría Neural
-      </p>
+      <!-- Description / Shop Name -->
+      <div class="animate-reveal-desc">
+        <h2 class="text-white text-xl md:text-2xl font-outfit font-bold tracking-[0.2em] mb-4 uppercase italic">
+          {{ shopStore.shopName || 'Estudio de Innovación Capilar' }}
+        </h2>
+        <p class="text-gray-400 text-xs md:text-sm max-w-2xl mx-auto mb-20 font-light leading-relaxed tracking-[0.2em] uppercase opacity-60">
+          Master Barbering &bull; Precision Intelligence &bull; Biometría Neural
+        </p>
+      </div>
 
       <!-- Staggered Action Buttons (Icon-free) -->
       <div class="flex flex-col gap-6 justify-center items-center w-full max-w-md animate-reveal-actions">
@@ -76,7 +87,7 @@
             to="/store" 
             class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-2xl transition-all duration-500 border-white/5 hover:border-primary/40 flex items-center justify-center overflow-hidden"
           >
-            <span class="font-outfit uppercase tracking-[0.2em] text-xs md:text-sm group-hover:text-primary transition-colors">STORE</span>
+            <span class="font-outfit uppercase tracking-[0.2em] text-xs md:text-sm group-hover:text-primary transition-colors">CATÁLOGO</span>
           </router-link>
         </div>
 
@@ -111,7 +122,15 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import logoImg from '../assets/logo.png'
+import { useShopStore } from '../stores/shopStore'
+
+const shopStore = useShopStore()
+
+onMounted(() => {
+    shopStore.fetchSettings()
+})
 </script>
 
 <style scoped>

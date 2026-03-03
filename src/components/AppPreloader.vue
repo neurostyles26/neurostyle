@@ -44,6 +44,9 @@
               <div class="text-[14px] font-light text-white/40 tracking-widest tabular-nums animate-fade-in-delayed">
                 {{ progress }}%
               </div>
+              <div v-if="progress > 50 && shopStore.shopName" class="text-[10px] font-black text-white/60 uppercase tracking-[0.3em] mt-4 animate-reveal-logo">
+                  {{ shopStore.shopName }}
+              </div>
             </div>
         </div>
       </div>
@@ -60,10 +63,15 @@
 import { ref, onMounted } from 'vue'
 import logoImg from '../assets/logo.png'
 
+import { useShopStore } from '../stores/shopStore'
+
 const show = ref(true)
 const progress = ref(0)
+const shopStore = useShopStore()
 
-onMounted(() => {
+onMounted(async () => {
+  shopStore.fetchSettings()
+  
   // Smoothly increment progress
   const duration = 4000
   const interval = 40
