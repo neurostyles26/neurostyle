@@ -1,76 +1,65 @@
 // Netlify Serverless Function: Replicate API Proxy
-// This function securely proxies requests to Replicate's API,
-// keeping the API token server-side and hidden from the client.
-
-export default async (req) => {
+export const handler = async (event) => {
     const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN
 
     if (!REPLICATE_API_TOKEN) {
-        return new Response(JSON.stringify({ error: "REPLICATE_API_TOKEN not configured in Netlify environment variables." }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" }
-        })
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "REPLICATE_API_TOKEN not configured in Netlify." })
+        }
     }
 
     // Handle CORS preflight
-    if (req.method === "OPTIONS") {
-        return new Response(null, {
-            status: 204,
+    if (event.httpMethod === "OPTIONS") {
+        return {
+            statusCode: 204,
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
                 "Access-Control-Allow-Headers": "Content-Type, Authorization",
             }
-        })
+        }
     }
 
     try {
-        const url = new URL(req.url)
-        const action = url.searchParams.get("action") // "create" or "poll"
-        const predictionId = url.searchParams.get("id")
+        const action = event.queryStringParameters?.action
+        const predictionId = event.queryStringParameters?.id
 
-        let replicateUrl, method, body
+        let url, method, body
 
         if (action === "poll" && predictionId) {
-            // Poll for prediction status
-            replicateUrl = `https://api.replicate.com/v1/predictions/${predictionId}`
+            url = `https://api.replicate.com/v1/predictions/${predictionId}`
             method = "GET"
             body = null
         } else {
-            // Create new prediction
-            replicateUrl = "https://api.replicate.com/v1/predictions"
+            url = "https://api.replicate.com/v1/predictions"
             method = "POST"
-            body = await req.text()
+            body = event.body
         }
 
-        const replicateResponse = await fetch(replicateUrl, {
+        const response = await fetch(url, {
             method,
             headers: {
-                "Authorization": `Bearer ${REPLICATE_API_TOKEN}`,
+                "Authorization": `Token ${REPLICATE_API_TOKEN}`,
                 "Content-Type": "application/json",
-                "Prefer": "wait"
             },
             ...(body ? { body } : {})
         })
 
-        const data = await replicateResponse.text()
+        const responseBody = await response.text()
 
-        return new Response(data, {
-            status: replicateResponse.status,
+        return {
+            statusCode: response.status,
             headers: {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*"
-            }
-        })
+            },
+            body: responseBody
+        }
     } catch (error) {
-        console.error("Replicate Proxy Error:", error)
-        return new Response(JSON.stringify({ error: error.message }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" }
-        })
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: error.message })
+        }
     }
-}
-
-export const config = {
-    path: "/api/replicate"
 }

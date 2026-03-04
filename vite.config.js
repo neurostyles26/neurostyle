@@ -44,8 +44,22 @@ export default defineConfig({
     })
   ],
   server: {
-    // In dev, proxy /api/replicate to Netlify Dev or handle locally
-    // For production, Netlify Functions handle this route
+    proxy: {
+      '/api/replicate': {
+        target: 'https://api.replicate.com/v1/predictions',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/replicate/, ''),
+        secure: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            const token = process.env.VITE_REPLICATE_API_TOKEN
+            if (token) {
+              proxyReq.setHeader('Authorization', `Token ${token}`)
+            }
+          })
+        }
+      }
+    }
   },
   resolve: {
     alias: {

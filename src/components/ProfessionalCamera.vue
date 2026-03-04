@@ -6,13 +6,15 @@
       autoplay
       playsinline
       muted
-      class="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
+      class="absolute inset-0 w-full h-full object-cover"
+      style="transform: scaleX(-1);"
     ></video>
 
     <!-- HUD / Mesh Canvas Overlay -->
     <canvas
       ref="canvasRef"
-      class="absolute inset-0 w-full h-full z-10 pointer-events-none scale-x-[-1]"
+      class="absolute inset-0 w-full h-full z-10 pointer-events-none"
+      style="transform: scaleX(-1);"
       :class="{ 'opacity-0': !active, 'opacity-100': active }"
     ></canvas>
 
