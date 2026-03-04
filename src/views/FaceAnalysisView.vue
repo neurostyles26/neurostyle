@@ -79,6 +79,7 @@
       <ProfessionalCamera 
         ref="cameraRef" 
         @quality-change="onQualityChange"
+        @started="isCameraActive = true"
       />
 
       <!-- Processing Overlay (Refined for visibility) -->

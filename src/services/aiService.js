@@ -80,7 +80,8 @@ export const generateHairstyle = async (imageBlob, hairstyleName) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                version: "7762fd07cf27110544daefcd36eeaa371c7686d9a057e49e1d86d63ef546c7f7",
+                // Using a more stable SDXL version hash
+                version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
                 input: {
                     prompt: prompt,
                     image: imageUrl,

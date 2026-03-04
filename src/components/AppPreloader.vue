@@ -70,7 +70,11 @@ const progress = ref(0)
 const shopStore = useShopStore()
 
 onMounted(async () => {
-  shopStore.fetchSettings()
+  try {
+    await shopStore.fetchSettings()
+  } catch (err) {
+    console.warn("Preloader: Shop settings fetch failed, continuing with defaults.", err)
+  }
   
   // Smoothly increment progress
   const duration = 4000

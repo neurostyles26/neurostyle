@@ -124,14 +124,14 @@ const warning = ref('')
 const metrics = ref({})
 const facePos = ref({ x: 0, y: 0 })
 
-const emit = defineEmits(['quality-change'])
+const emit = defineEmits(['quality-change', 'started'])
 
 const initFaceLandmarker = async () => {
     try {
         const filesetResolver = await FilesetResolver.forVisionTasks(
             "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
         )
-        faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
+        const landmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
             baseOptions: {
                 modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
                 delegate: "GPU"
@@ -140,9 +140,12 @@ const initFaceLandmarker = async () => {
             runningMode: "VIDEO",
             numFaces: 1
         })
+        faceLandmarker = landmarker
+        return landmarker
     } catch (err) {
         console.error("FaceLandmarker Init Error:", err)
-        throw new Error("No se pudo cargar el motor biométrico.")
+        // Non-blocking error, we can still show camera
+        return null
     }
 }
 
@@ -170,20 +173,25 @@ const initCamera = async () => {
             const video = videoRef.value
             video.srcObject = mediaStream
             
-            // Wait for both
-            await Promise.all([
-                new Promise((resolve, reject) => {
-                    const timeout = setTimeout(() => reject(new Error("Video timeout")), 8000)
-                    video.onloadedmetadata = () => {
-                        clearTimeout(timeout)
-                        video.play().then(resolve).catch(reject)
-                    }
-                }),
-                landmarkerPromise
-            ])
+            // Wait for camera primarily
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => reject(new Error("Video timeout")), 8000)
+                video.onloadedmetadata = () => {
+                    clearTimeout(timeout)
+                    video.play().then(resolve).catch(reject)
+                }
+            })
+            
+            // Landmarker is secondary
+            try {
+                await landmarkerPromise
+            } catch (e) {
+                console.warn("Face AI failed to load, basic camera mode enabled.")
+            }
             
             loading.value = false
             active.value = true
+            emit('started')
             nextTick(() => startScanning())
         }
     } catch (err) {

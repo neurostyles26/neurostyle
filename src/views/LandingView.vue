@@ -133,7 +133,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import logoImg from '../assets/logo.png'
 import { useShopStore } from '../stores/shopStore'
 
