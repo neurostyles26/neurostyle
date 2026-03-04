@@ -100,6 +100,17 @@
            <span>ACCESO BARBERO</span>
            <div class="w-12 h-[1px] bg-white/10 group-hover:w-16 group-hover:bg-primary/40 transition-all duration-700"></div>
         </router-link>
+
+        <!-- PWA Install Button (Conditional) -->
+        <div v-if="deferredPrompt" class="mt-12 animate-reveal-actions">
+          <button 
+            @click="installApp"
+            class="group relative px-8 py-4 glass-panel border-primary/20 text-primary font-black text-[10px] rounded-2xl transition-all duration-500 hover:bg-primary hover:text-black hover:scale-105 active:scale-95 shadow-xl shadow-primary/5 uppercase tracking-[0.4em]"
+          >
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer-fast"></div>
+            Instalar Aplicación
+          </button>
+        </div>
       </div>
 
       <!-- Feature Badges Section (Minimalist) -->
@@ -127,10 +138,37 @@ import logoImg from '../assets/logo.png'
 import { useShopStore } from '../stores/shopStore'
 
 const shopStore = useShopStore()
+const deferredPrompt = ref(null)
 
 onMounted(() => {
     shopStore.fetchSettings()
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault()
+        // Stash the event so it can be triggered later.
+        deferredPrompt.value = e
+    })
+
+    window.addEventListener('appinstalled', () => {
+        deferredPrompt.value = null
+        console.log('PWA was installed')
+    })
 })
+
+const installApp = async () => {
+    if (!deferredPrompt.value) return
+    
+    // Show the prompt
+    deferredPrompt.value.prompt()
+    
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.value.userChoice
+    console.log(`User response to the install prompt: ${outcome}`)
+    
+    // We've used the prompt, and can't use it again, throw it away
+    deferredPrompt.value = null
+}
 </script>
 
 <style scoped>
