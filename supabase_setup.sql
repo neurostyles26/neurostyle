@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS public.shop_settings (
 
 -- 1.1 Add description column if it doesn't exist (Migration)
 ALTER TABLE public.shop_settings 
-ADD COLUMN IF NOT EXISTS description TEXT DEFAULT 'Elevando el arte de la barbería con precisión neural y estilo maestro.';
+ADD COLUMN IF NOT EXISTS description TEXT DEFAULT 'Elevando el arte de la barbería con precisión neural y estilo maestro.',
+ADD COLUMN IF NOT EXISTS whatsapp_number TEXT DEFAULT '573000000000';
 
 -- 2. Insert default singleton record
 INSERT INTO public.shop_settings (id, shop_name, description)

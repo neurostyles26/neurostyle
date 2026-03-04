@@ -7,6 +7,7 @@ export const useShopStore = defineStore('shop', () => {
     const shopDescription = ref('')
     const logoUrl = ref(null)
     const bgUrl = ref(null)
+    const whatsappNumber = ref('573000000000')
     const loading = ref(false)
 
     async function fetchSettings() {
@@ -22,6 +23,7 @@ export const useShopStore = defineStore('shop', () => {
                 shopDescription.value = data.description || ''
                 logoUrl.value = data.logo_url
                 bgUrl.value = data.bg_url
+                whatsappNumber.value = data.whatsapp_number || '573000000000'
             } else if (error && error.code === 'PGRST116') {
                 console.warn('No settings found. Using defaults.')
                 shopName.value = 'Nueva Barbería'
@@ -50,6 +52,7 @@ export const useShopStore = defineStore('shop', () => {
             if (updates.description !== undefined) shopDescription.value = updates.description
             if (updates.logo_url) logoUrl.value = updates.logo_url
             if (updates.bg_url) bgUrl.value = updates.bg_url
+            if (updates.whatsapp_number) whatsappNumber.value = updates.whatsapp_number
 
             return { success: true }
         } catch (err) {
@@ -63,6 +66,7 @@ export const useShopStore = defineStore('shop', () => {
         shopDescription,
         logoUrl,
         bgUrl,
+        whatsappNumber,
         loading,
         fetchSettings,
         updateSettings

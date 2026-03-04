@@ -54,6 +54,20 @@
                     ></textarea>
                 </div>
 
+                <div class="space-y-3">
+                    <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">WhatsApp para Pedidos (Código de área + número)</label>
+                    <div class="relative">
+                        <div class="absolute left-6 top-1/2 -translate-y-1/2 text-primary/40 font-black font-outfit">+</div>
+                        <input 
+                          v-model="whatsappNumber" 
+                          type="text" 
+                          class="w-full bg-white/[0.03] border border-white/5 rounded-2xl sm:rounded-3xl py-4 sm:py-6 pl-12 pr-6 sm:px-10 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-xl font-bold placeholder:text-gray-800" 
+                          placeholder="Ej: 573001234567"
+                        >
+                    </div>
+                    <p class="text-gray-600 text-[8px] uppercase tracking-wider ml-2">Sin espacios ni símbolos (+, -, etc.)</p>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <!-- Logo Upload -->
                     <div class="space-y-4">
@@ -134,6 +148,7 @@ const shopStore = useShopStore()
 const saving = ref(false)
 const shopName = ref('')
 const shopDescription = ref('')
+const whatsappNumber = ref('')
 
 const logoFile = ref(null)
 const logoPreview = ref(null)
@@ -144,6 +159,7 @@ onMounted(async () => {
     await shopStore.fetchSettings()
     shopName.value = shopStore.shopName
     shopDescription.value = shopStore.shopDescription
+    whatsappNumber.value = shopStore.whatsappNumber
 })
 
 const handleFileChange = (e, type) => {
@@ -193,6 +209,7 @@ const saveAll = async () => {
         const res = await shopStore.updateSettings({
             shop_name: shopName.value,
             description: shopDescription.value,
+            whatsapp_number: whatsappNumber.value,
             logo_url: logoUrl,
             bg_url: bgUrl
         })

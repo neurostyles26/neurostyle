@@ -92,9 +92,12 @@
 import { ref, onMounted } from 'vue'
 import { 
   LucideChevronLeft, LucideShoppingBag, LucidePackage, 
-  LucideMessageCircle 
+  LucideMessageCircle, LucideArrowRight
 } from 'lucide-vue-next'
 import { supabase } from '../services/supabase'
+import { useShopStore } from '../stores/shopStore'
+
+const shopStore = useShopStore()
 
 const products = ref([])
 const loading = ref(true)
@@ -125,13 +128,28 @@ const formatPrice = (p) => {
 }
 
 const handleWhatsAppOrder = (product) => {
-  const phoneNumber = "573000000000" // Placeholder for barber's number
-  const message = `Hola NeuroStyle! 👋 Me interesa el producto: *${product.name}* (${formatPrice(product.price)}). ¿Tienen disponibilidad?`
+  const phoneNumber = shopStore.whatsappNumber || "573000000000"
+  const priceFormatted = formatPrice(product.price)
+  
+  let message = `¡Hola! 👋 Me interesa adquirir este producto de su catálogo:\n\n`
+  message += `*Producto:* ${product.name}\n`
+  message += `*Valor:* ${priceFormatted}\n`
+  message += `*Categoría:* ${product.category}\n\n`
+  
+  if (product.image_url) {
+    message += `📸 Ver referencia: ${product.image_url}\n\n`
+  }
+  
+  message += `¿Tienen disponibilidad inmediata? Quedo atento, gracias.`
+  
   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
   window.open(url, '_blank')
 }
 
-onMounted(fetchProducts)
+onMounted(async () => {
+  await shopStore.fetchSettings()
+  fetchProducts()
+})
 </script>
 
 <style scoped>
