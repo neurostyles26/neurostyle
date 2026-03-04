@@ -1,6 +1,9 @@
+[build]
+  functions = "netlify/functions"
+
 [[redirects]]
-  from = "/replicate-api/*"
-  to = "https://api.replicate.com/:splat"
+  from = "/api/replicate"
+  to = "/.netlify/functions/replicate-proxy"
   status = 200
   force = true
 

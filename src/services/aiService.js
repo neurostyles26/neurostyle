@@ -64,23 +64,18 @@ export const uploadToSupabase = async (blob) => {
 export const generateHairstyle = async (imageBlob, hairstyleName) => {
     try {
         const imageUrl = await uploadToSupabase(imageBlob)
-        const REPLICATE_API_TOKEN = import.meta.env.VITE_REPLICATE_API_TOKEN
+        console.log("Image uploaded to Supabase:", imageUrl)
 
-        if (!REPLICATE_API_TOKEN) {
-            console.error("AI Service Error: VITE_REPLICATE_API_TOKEN is not defined.")
-            throw new Error("La API Key de Replicate no está configurada en el servidor. Por favor, reinicia el servidor 'npm run dev'.")
-        }
+        const prompt = `realistic 8k high quality photo, same person as in the picture but with a ${hairstyleName} haircut, cinematic lighting, sharp details, master barber work, maintaining identical facial features and skin tone, professional portrait`
 
-        const prompt = `realistic 8k high quality photo, same man as in the picture but with a ${hairstyleName} haircut, cinematic lighting, sharp details, master barber work, maintaining identical facial features and skin tone, professional portrait`
-
-        const response = await fetch("/replicate-api/v1/predictions", {
+        // Use the Netlify serverless function proxy (works in both dev and production)
+        const response = await fetch("/api/replicate?action=create", {
             method: "POST",
             headers: {
-                "Authorization": `Token ${REPLICATE_API_TOKEN}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                // Using a more stable SDXL version hash
+                // stability-ai/sdxl model
                 version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
                 input: {
                     prompt: prompt,
@@ -106,34 +101,39 @@ export const generateHairstyle = async (imageBlob, hairstyleName) => {
             throw new Error(prediction.error || prediction.detail)
         }
 
-        if (!prediction.urls || !prediction.urls.get) {
-            console.error("Incomplete prediction object:", prediction)
-            throw new Error("Respuesta incompleta de la IA. Verifica tu API Token.")
+        // Poll for completion using the serverless function
+        const predictionId = prediction.id
+        if (!predictionId) {
+            console.error("Missing prediction ID:", prediction)
+            throw new Error("Respuesta incompleta de la IA. No se recibió ID de predicción.")
         }
 
-        // Polling for web
-        const pollUrl = prediction.urls.get
         let attempts = 0
-        while (prediction.status !== "succeeded" && prediction.status !== "failed") {
+        while (prediction.status !== "succeeded" && prediction.status !== "failed" && prediction.status !== "canceled") {
             attempts++
-            if (attempts > 60) throw new Error("Timeout waiting for generation")
+            if (attempts > 90) throw new Error("Timeout: La generación tardó demasiado.")
             await new Promise(resolve => setTimeout(resolve, 2000))
 
-            // Ensure pollUrl also uses proxy
-            const proxiedPollUrl = pollUrl.replace('https://api.replicate.com', '/replicate-api')
-
-            const pollResponse = await fetch(proxiedPollUrl, {
-                headers: {
-                    "Authorization": `Token ${REPLICATE_API_TOKEN}`,
-                },
+            const pollResponse = await fetch(`/api/replicate?action=poll&id=${predictionId}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
             })
+
+            if (!pollResponse.ok) {
+                console.warn(`Poll attempt ${attempts} failed with status ${pollResponse.status}`)
+                continue
+            }
+
             prediction = await pollResponse.json()
+            console.log(`Poll ${attempts}: status=${prediction.status}`)
         }
 
         if (prediction.status === "succeeded") {
-            return typeof prediction.output === 'string' ? prediction.output : prediction.output[0]
+            const output = prediction.output
+            if (Array.isArray(output)) return output[output.length - 1]
+            return output
         } else {
-            throw new Error("Generation failed: " + (prediction.error || "Unknown error"))
+            throw new Error("Generación fallida: " + (prediction.error || prediction.status || "Error desconocido"))
         }
     } catch (error) {
         console.error("CRITICAL: AI Generation Error:", error)

@@ -44,14 +44,8 @@ export default defineConfig({
     })
   ],
   server: {
-    proxy: {
-      '/replicate-api': {
-        target: 'https://api.replicate.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/replicate-api/, ''),
-        secure: true
-      }
-    }
+    // In dev, proxy /api/replicate to Netlify Dev or handle locally
+    // For production, Netlify Functions handle this route
   },
   resolve: {
     alias: {
