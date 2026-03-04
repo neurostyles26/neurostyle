@@ -68,6 +68,17 @@
         </div>
       </div>
     </main>
+
+    <!-- Developer Credit -->
+    <footer class="mt-auto py-8 text-center z-10 opacity-30">
+      <a 
+        href="https://devedisof-mi-cv.netlify.app/" 
+        target="_blank" 
+        class="text-[8px] font-black text-gray-500 hover:text-primary uppercase tracking-[0.5em] transition-colors"
+      >
+        Developed by EDISSOF
+      </a>
+    </footer>
   </div>
 </template>
 

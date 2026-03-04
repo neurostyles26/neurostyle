@@ -52,8 +52,9 @@
       </div>
 
       <!-- Bottom Branding -->
-      <div class="absolute bottom-12 text-[8px] font-medium text-white/20 tracking-[0.6em] uppercase animate-fade-in-slow">
-          EST. 2024 <span class="mx-1 text-primary/20">|</span> MASTER BARBERING <span class="mx-1 text-primary/20">|</span> NEURAL TECH
+      <div class="absolute bottom-12 text-[8px] font-medium text-white/20 tracking-[0.6em] uppercase animate-fade-in-slow flex flex-col items-center gap-4">
+          <div>EST. 2024 <span class="mx-1 text-primary/20">|</span> MASTER BARBERING <span class="mx-1 text-primary/20">|</span> NEURAL TECH</div>
+          <div class="text-primary/40 tracking-[1em] ml-[1em]">BY EDISSOF</div>
       </div>
     </div>
   </transition>

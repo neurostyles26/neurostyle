@@ -129,6 +129,17 @@
 
     <!-- Bottom Footer Fade -->
     <div class="absolute bottom-0 left-0 right-0 h-[35vh] bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-0"></div>
+
+    <!-- Developer Credit -->
+    <div class="absolute bottom-8 z-20 animate-reveal-badges opacity-30 hover:opacity-100 transition-opacity duration-700">
+      <a 
+        href="https://devedisof-mi-cv.netlify.app/" 
+        target="_blank" 
+        class="text-[9px] font-black text-gray-500 hover:text-primary uppercase tracking-[0.4em] transition-colors flex items-center"
+      >
+        Developed by <span class="text-primary/60 ml-2 group-hover:text-primary transition-colors">EDISSOF</span>
+      </a>
+    </div>
   </div>
 </template>
 
