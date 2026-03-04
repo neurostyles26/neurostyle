@@ -176,8 +176,10 @@ import {
     LucidePackage, LucideImage, LucideX, LucideUpload
 } from 'lucide-vue-next'
 import { supabase } from '../services/supabase'
+import { useNotificationStore } from '../stores/notificationStore'
 
 const router = useRouter()
+const notificationStore = useNotificationStore()
 
 const products = ref([])
 const loading = ref(true)
@@ -265,6 +267,12 @@ const saveProduct = async () => {
         form.value = { name: '', price: '', stock: '', category: '' }
         imageFile.value = null
         imagePreview.value = null
+
+        notificationStore.notify({
+            title: 'MATRIZ ACTUALIZADA',
+            message: `${form.value.name} ha sido registrado con éxito.`,
+            type: 'success'
+        })
     } catch (err) {
         alert("Error al guardar: " + err.message)
     } finally {
@@ -283,6 +291,12 @@ const deleteProduct = async (prod) => {
         
         if (error) throw error
         products.value = products.value.filter(p => p.id !== prod.id)
+        
+        notificationStore.notify({
+            title: 'ACTIVO ELIMINADO',
+            message: 'El producto ha sido removido de la base de datos.',
+            type: 'warning'
+        })
     } catch (err) {
         alert("Error al eliminar: " + err.message)
     }

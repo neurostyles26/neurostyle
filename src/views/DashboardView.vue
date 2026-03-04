@@ -70,7 +70,7 @@
     </main>
 
     <!-- Developer Credit -->
-    <footer class="mt-auto py-8 text-center z-10 opacity-30">
+    <footer class="mt-auto py-8 text-center z-10 opacity-60">
       <a 
         href="https://devedisof-mi-cv.netlify.app/" 
         target="_blank" 
@@ -88,6 +88,23 @@ import {
   LucideShoppingBag, LucideUser, LucideSettings,
   LucideArrowRight 
 } from 'lucide-vue-next'
+
+import { useNotificationStore } from '../stores/notificationStore'
+import { onMounted } from 'vue'
+
+const notificationStore = useNotificationStore()
+
+onMounted(() => {
+  // Promo Notification
+  setTimeout(() => {
+    notificationStore.notify({
+      title: 'PROMOCIÓN EXCLUSIVA',
+      message: 'Nuevos estilos de tendencia cargados en el catálogo. ¡Revísalos!',
+      type: 'info',
+      duration: 7000
+    })
+  }, 2000)
+})
 
 const services = [
   { id: 1, title: 'Análisis Facial IA', desc: 'Mapeo biométrico avanzado para tu rostro.', icon: LucideScanFace, route: '/scan' },

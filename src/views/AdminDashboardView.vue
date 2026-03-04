@@ -116,12 +116,32 @@ import { supabase } from '../services/supabase'
 import logoImg from '../assets/logo.png'
 
 import { useShopStore } from '../stores/shopStore'
+import { useNotificationStore } from '../stores/notificationStore'
 
 const router = useRouter()
 const shopStore = useShopStore()
 
+const notificationStore = useNotificationStore()
+
 onMounted(() => {
   shopStore.fetchSettings()
+  
+  // Welcome Notification
+  notificationStore.notify({
+    title: 'SISTEMA NEURAL ACTIVO',
+    message: 'Bienvenido a la matriz de control, Comandante.',
+    type: 'info'
+  })
+
+  // Simulate user attention alert
+  setTimeout(() => {
+    notificationStore.notify({
+        title: 'ATENCIÓN REQUERIDA',
+        message: 'Hay 3 nuevos clientes esperando análisis biométrico.',
+        type: 'warning',
+        duration: 8000
+    })
+  }, 3000)
 })
 
 const stats = [

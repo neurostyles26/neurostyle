@@ -94,7 +94,7 @@
         <!-- Professional Access -->
         <router-link 
           to="/login" 
-          class="flex items-center space-x-4 text-gray-500 hover:text-primary transition-all duration-700 text-[9px] font-black uppercase tracking-[0.5em] mt-12 group opacity-40 hover:opacity-100"
+          class="flex items-center space-x-4 text-gray-400 hover:text-primary transition-all duration-700 text-[9px] font-black uppercase tracking-[0.5em] mt-12 group opacity-80 hover:opacity-100"
         >
            <div class="w-12 h-[1px] bg-white/10 group-hover:w-16 group-hover:bg-primary/40 transition-all duration-700"></div>
            <span>ACCESO BARBERO</span>
@@ -114,7 +114,7 @@
       </div>
 
       <!-- Feature Badges Section (Minimalist) -->
-      <div class="mt-32 mb-12 flex flex-wrap justify-center gap-10 md:gap-14 opacity-20 hover:opacity-100 transition-all duration-1000 animate-reveal-badges">
+      <div class="mt-32 mb-12 flex flex-wrap justify-center gap-10 md:gap-14 opacity-60 hover:opacity-100 transition-all duration-1000 animate-reveal-badges">
           <div class="flex flex-col items-center">
               <span class="text-[8px] font-bold tracking-[0.4em] uppercase">NEURAL MAPPING</span>
           </div>
@@ -131,7 +131,7 @@
     <div class="absolute bottom-0 left-0 right-0 h-[35vh] bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-0"></div>
 
     <!-- Developer Credit -->
-    <div class="absolute bottom-8 z-20 animate-reveal-badges opacity-30 hover:opacity-100 transition-opacity duration-700">
+    <div class="absolute bottom-8 z-20 animate-reveal-badges opacity-60 hover:opacity-100 transition-opacity duration-700">
       <a 
         href="https://devedisof-mi-cv.netlify.app/" 
         target="_blank" 
@@ -253,7 +253,7 @@ const installApp = async () => {
 
 @keyframes reveal-badges {
     0% { opacity: 0; }
-    100% { opacity: 0.2; }
+    100% { opacity: 0.6; }
 }
 
 .animate-reveal-badges {

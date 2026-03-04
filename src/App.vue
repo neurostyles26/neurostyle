@@ -3,6 +3,9 @@
     <!-- Professional Preloader -->
     <AppPreloader />
     
+    <!-- Elegant Notification System -->
+    <NotificationToast />
+    
     <router-view v-slot="{ Component }">
       <transition 
         name="page-fade" 
@@ -16,6 +19,7 @@
 
 <script setup>
 import AppPreloader from './components/AppPreloader.vue'
+import NotificationToast from './components/NotificationToast.vue'
 </script>
 
 
