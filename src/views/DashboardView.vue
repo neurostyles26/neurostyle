@@ -10,7 +10,7 @@
           <LucideUser class="text-primary" :size="28" />
         </div>
         <div>
-          <p class="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-1">Membresía Elite</p>
+          <p class="text-primary text-[10px] font-black uppercase tracking-[0.1em] mb-1">Membresía Elite</p>
           <h1 class="text-white text-3xl font-outfit font-bold tracking-tight">Hola, Explorador</h1>
         </div>
       </div>
@@ -55,12 +55,12 @@
       <div class="mt-12 p-10 rounded-[48px] glass-card border-primary/20 relative overflow-hidden group">
         <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 blur-[100px] rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
         <div class="relative z-10">
-            <h4 class="text-primary font-black text-sm uppercase tracking-[0.4em] mb-3 font-outfit">Estado Prioritario</h4>
+            <h4 class="text-primary font-black text-sm uppercase tracking-[0.2em] mb-3 font-outfit">Estado Prioritario</h4>
             <h5 class="text-white text-2xl font-outfit font-bold mb-4 tracking-tight">Reserva Personalizada</h5>
             <p class="text-gray-400 text-base mb-8 leading-relaxed max-w-xs">Tu historial estético nos permite asignar al maestro barbero ideal para tu tipo de rostro.</p>
             <router-link 
               to="/book" 
-              class="inline-flex items-center bg-primary text-black font-black px-10 py-5 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-primary/20 text-sm uppercase tracking-widest font-outfit"
+              class="inline-flex items-center bg-primary text-black font-black px-10 py-5 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-primary/20 text-sm uppercase tracking-wider font-outfit"
             >
               AGENDAR AHORA
               <LucideCalendar class="ml-3" :size="18" />

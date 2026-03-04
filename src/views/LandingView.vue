@@ -71,7 +71,7 @@
         >
           <!-- Shimmer logic -->
           <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          <span class="font-outfit uppercase tracking-[0.2em] relative z-10 transition-all duration-500 group-hover:tracking-[0.25em]">INICIAR ESCANEO IA</span>
+          <span class="font-outfit uppercase tracking-[0.1em] relative z-10 transition-all duration-500 group-hover:tracking-[0.15em]">INICIAR ESCANEO IA</span>
         </router-link>
 
         <!-- Secondary Actions in Row -->
@@ -80,14 +80,14 @@
             to="/book" 
             class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-2xl transition-all duration-500 flex items-center justify-center overflow-hidden border-white/5 hover:border-primary/40"
           >
-            <span class="font-outfit uppercase tracking-[0.2em] text-xs md:text-sm group-hover:text-primary transition-colors">CITAS</span>
+            <span class="font-outfit uppercase tracking-[0.1em] text-xs md:text-sm group-hover:text-primary transition-colors">CITAS</span>
           </router-link>
 
           <router-link 
             to="/store" 
             class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-2xl transition-all duration-500 border-white/5 hover:border-primary/40 flex items-center justify-center overflow-hidden"
           >
-            <span class="font-outfit uppercase tracking-[0.2em] text-xs md:text-sm group-hover:text-primary transition-colors">CATÁLOGO</span>
+            <span class="font-outfit uppercase tracking-[0.1em] text-xs md:text-sm group-hover:text-primary transition-colors">CATÁLOGO</span>
           </router-link>
         </div>
 
@@ -105,7 +105,7 @@
         <div v-if="deferredPrompt" class="mt-12 animate-reveal-actions">
           <button 
             @click="installApp"
-            class="group relative px-8 py-4 glass-panel border-primary/20 text-primary font-black text-[10px] rounded-2xl transition-all duration-500 hover:bg-primary hover:text-black hover:scale-105 active:scale-95 shadow-xl shadow-primary/5 uppercase tracking-[0.4em]"
+            class="group relative px-8 py-4 glass-panel border-primary/20 text-primary font-black text-[10px] rounded-2xl transition-all duration-500 hover:bg-primary hover:text-black hover:scale-105 active:scale-95 shadow-xl shadow-primary/5 uppercase tracking-[0.2em]"
           >
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer-fast"></div>
             Instalar Aplicación

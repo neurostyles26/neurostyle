@@ -20,7 +20,7 @@
       >
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
         <LucidePlus class="mr-2" :size="20" />
-        <span class="font-outfit uppercase tracking-widest text-sm">Añadir Activo</span>
+        <span class="font-outfit uppercase tracking-wider text-sm">Añadir Activo</span>
       </button>
     </header>
 
@@ -64,7 +64,7 @@
             </div>
 
             <div class="absolute bottom-6 left-6">
-                <span class="bg-black/80 backdrop-blur-md text-primary text-[9px] font-black uppercase px-4 py-1.5 rounded-full border border-primary/20 tracking-widest shadow-lg">
+                <span class="bg-black/80 backdrop-blur-md text-primary text-[9px] font-black uppercase px-4 py-1.5 rounded-full border border-primary/20 tracking-wider shadow-lg">
                     {{ product.category || 'Varios' }}
                 </span>
             </div>
@@ -83,7 +83,7 @@
                         <div v-for="i in 5" :key="i" class="w-1 h-1 rounded-full" :class="i <= (product.stock > 10 ? 5 : 2) ? 'bg-primary' : 'bg-white/10'"></div>
                     </div>
                 </div>
-                <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest group-hover:text-gray-400 transition-colors">{{ product.stock }} UNIDADES</p>
+                <p class="text-gray-500 text-[10px] font-black uppercase tracking-wider group-hover:text-gray-400 transition-colors">{{ product.stock }} UNIDADES</p>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@
                 <div class="flex items-center justify-between mb-12">
                     <div>
                         <h3 class="text-white text-4xl font-outfit font-black tracking-tighter mb-1 uppercase">Alta de Producto</h3>
-                        <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em]">Inventory Integration</p>
+                        <p class="text-primary text-[8px] font-black uppercase tracking-[0.2em]">Inventory Integration</p>
                     </div>
                     <button @click="showAddModal = false" class="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-primary transition-all border border-transparent hover:border-primary/20 rounded-2xl bg-white/5">
                         <LucideX :size="24" />
@@ -112,7 +112,7 @@
 
                 <form @submit.prevent="saveProduct">
                     <div class="space-y-3">
-                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.3em] ml-2">Foto del Producto (Alta Res)</label>
+                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">Foto del Producto (Alta Res)</label>
                         <div 
                             class="relative h-48 bg-white/[0.03] border-2 border-dashed border-white/10 rounded-[32px] flex flex-col items-center justify-center transition-all hover:bg-white/5 hover:border-primary/30 overflow-hidden group/upload"
                             @click="$refs.fileInput.click()"
@@ -121,30 +121,30 @@
                             <div class="relative z-10 flex flex-col items-center">
                                 <LucideUpload class="text-primary mb-4" :size="32" />
                                 <span class="text-white font-outfit font-bold text-sm">{{ imageFile ? imageFile.name : 'Subir Imagen' }}</span>
-                                <span class="text-gray-500 text-[8px] uppercase tracking-widest mt-1">PNG, JPG hasta 5MB</span>
+                                <span class="text-gray-500 text-[8px] uppercase tracking-wider mt-1">PNG, JPG hasta 5MB</span>
                             </div>
                             <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="handleFileChange">
                         </div>
                     </div>
 
                     <div class="space-y-3">
-                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.3em] ml-2">Nombre Comercial</label>
+                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.1em] ml-2">Nombre Comercial</label>
                         <input v-model="form.name" type="text" class="w-full bg-white/[0.03] border border-white/5 rounded-3xl py-6 px-8 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-xl font-bold placeholder:text-gray-800" placeholder="Ej: Pomada Gorilla Gold" required>
                     </div>
 
                     <div class="grid grid-cols-2 gap-8">
                         <div class="space-y-3">
-                            <label class="block text-primary text-[9px] font-black uppercase tracking-[0.3em] ml-2">Precio Elite (COP)</label>
+                            <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">Precio Elite (COP)</label>
                             <input v-model="form.price" type="number" class="w-full bg-white/[0.03] border border-white/5 rounded-3xl py-6 px-8 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-xl font-bold placeholder:text-gray-800" placeholder="0.00" required>
                         </div>
                         <div class="space-y-3">
-                            <label class="block text-primary text-[9px] font-black uppercase tracking-[0.3em] ml-2">Stock Inicial</label>
+                            <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">Stock Inicial</label>
                             <input v-model="form.stock" type="number" class="w-full bg-white/[0.03] border border-white/5 rounded-3xl py-6 px-8 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-xl font-bold placeholder:text-gray-800" placeholder="10" required>
                         </div>
                     </div>
 
                     <div class="space-y-3">
-                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.3em] ml-2">Categoría Logística</label>
+                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.1em] ml-2">Categoría Logística</label>
                         <input v-model="form.category" type="text" class="w-full bg-white/[0.03] border border-white/5 rounded-3xl py-6 px-8 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-xl font-bold placeholder:text-gray-800" placeholder="Grooming / Cuidado / Accesorios">
                     </div>
 
@@ -158,7 +158,7 @@
                             <div class="w-8 h-8 border-4 border-black/20 border-t-black rounded-full animate-spin"></div>
                         </template>
                         <template v-else>
-                            <span class="font-outfit uppercase tracking-widest">REGISTRAR EN MATRIZ</span>
+                            <span class="font-outfit uppercase tracking-wider">REGISTRAR EN MATRIZ</span>
                         </template>
                     </button>
                 </form>

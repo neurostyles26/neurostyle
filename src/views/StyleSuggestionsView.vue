@@ -85,7 +85,7 @@
                 v-if="selectedStyle?.id === style.id"
                 @click.stop="handleTryOn(style)"
                 :disabled="isGeneratingAI"
-                class="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-primary uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                class="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-primary uppercase tracking-wider hover:bg-primary hover:text-black transition-all"
             >
                 {{ isGeneratingAI && tryingOnId === style.id ? 'GENERANDO...' : 'PROBAR' }}
             </button>
@@ -160,7 +160,7 @@
                     </button>
                     <button 
                         @click="handleBooking"
-                        class="bg-primary py-6 rounded-3xl text-black font-black text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-primary/20"
+                        class="bg-primary py-6 rounded-3xl text-black font-black text-xs uppercase tracking-wider hover:scale-105 transition-all shadow-xl shadow-primary/20"
                     >
                         RESERVAR ESTE LOOK
                     </button>
@@ -189,7 +189,7 @@
                     class="w-full bg-primary text-black font-black py-6 rounded-3xl flex items-center justify-center text-xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/30 group relative overflow-hidden"
                 >
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    <span class="font-outfit uppercase tracking-widest">AGENDAR AHORA</span>
+                    <span class="font-outfit uppercase tracking-wider">AGENDAR AHORA</span>
                     <LucideScissors class="ml-3 group-hover:rotate-45 transition-transform" />
                 </button>
             </div>

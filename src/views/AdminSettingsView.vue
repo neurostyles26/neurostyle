@@ -11,7 +11,7 @@
         </button>
         <div>
             <h2 class="text-white font-outfit font-bold text-xl tracking-tight uppercase">Configuración de Marca</h2>
-            <p class="text-primary text-[8px] font-black uppercase tracking-[0.3em]">Identidad Neural & Branding</p>
+            <p class="text-primary text-[8px] font-black uppercase tracking-[0.2em]">Identidad Neural & Branding</p>
         </div>
       </div>
       
@@ -23,7 +23,7 @@
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
         <LucideSave v-if="!saving" class="mr-2" :size="20" />
         <div v-else class="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin mr-2"></div>
-        <span class="font-outfit uppercase tracking-widest text-sm">Guardar Cambios</span>
+        <span class="font-outfit uppercase tracking-wider text-sm">Guardar Cambios</span>
       </button>
     </header>
 
@@ -35,7 +35,7 @@
             
             <div class="space-y-8">
                 <div class="space-y-3">
-                    <label class="block text-primary text-[9px] font-black uppercase tracking-[0.4em] ml-2">Nombre Comercial</label>
+                    <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">Nombre Comercial</label>
                     <input 
                       v-model="shopName" 
                       type="text" 
@@ -47,7 +47,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <!-- Logo Upload -->
                     <div class="space-y-4">
-                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.4em] ml-2">Logo de la Barbería</label>
+                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">Logo de la Barbería</label>
                         <div 
                           class="relative aspect-square bg-white/[0.03] border-2 border-dashed border-white/10 rounded-[40px] flex flex-col items-center justify-center transition-all hover:bg-white/5 hover:border-primary/30 overflow-hidden group/upload cursor-pointer"
                           @click="$refs.logoInput.click()"
@@ -55,19 +55,19 @@
                             <img v-if="logoPreview || shopStore.logoUrl" :src="logoPreview || shopStore.logoUrl" class="absolute inset-0 w-full h-full object-contain p-12 transition-all duration-700" :class="{'opacity-40 group-hover/upload:opacity-100': !logoPreview}" />
                             <div v-if="!logoPreview && !shopStore.logoUrl" class="relative z-10 flex flex-col items-center">
                                 <LucideImage class="text-primary/40 mb-4" :size="48" />
-                                <span class="text-gray-500 font-bold text-[10px] uppercase tracking-widest">Subir Logo</span>
+                                <span class="text-gray-500 font-bold text-[10px] uppercase tracking-wider">Subir Logo</span>
                             </div>
                             <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover/upload:opacity-100 transition-opacity">
                                 <LucideUpload class="text-primary" :size="32" />
                             </div>
                             <input type="file" ref="logoInput" class="hidden" accept="image/*" @change="e => handleFileChange(e, 'logo')">
                         </div>
-                        <p class="text-gray-600 text-[8px] uppercase tracking-widest text-center px-4">Se recomienda fondo transparente (PNG)</p>
+                        <p class="text-gray-600 text-[8px] uppercase tracking-wider text-center px-4">Se recomienda fondo transparente (PNG)</p>
                     </div>
 
                     <!-- BG Upload -->
                     <div class="space-y-4">
-                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.4em] ml-2">Fondo Personalizado</label>
+                        <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">Fondo Personalizado</label>
                         <div 
                           class="relative aspect-square bg-white/[0.03] border-2 border-dashed border-white/10 rounded-[40px] flex flex-col items-center justify-center transition-all hover:bg-white/5 hover:border-primary/30 overflow-hidden group/upload cursor-pointer"
                           @click="$refs.bgInput.click()"
@@ -75,14 +75,14 @@
                             <img v-if="bgPreview || shopStore.bgUrl" :src="bgPreview || shopStore.bgUrl" class="absolute inset-0 w-full h-full object-cover transition-all duration-700" :class="{'opacity-30 group-hover/upload:opacity-60': !bgPreview}" />
                             <div v-if="!bgPreview && !shopStore.bgUrl" class="relative z-10 flex flex-col items-center">
                                 <LucideImage class="text-primary/40 mb-4" :size="48" />
-                                <span class="text-gray-500 font-bold text-[10px] uppercase tracking-widest">Subir Fondo</span>
+                                <span class="text-gray-500 font-bold text-[10px] uppercase tracking-wider">Subir Fondo</span>
                             </div>
                             <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover/upload:opacity-100 transition-opacity">
                                 <LucideUpload class="text-primary" :size="32" />
                             </div>
                             <input type="file" ref="bgInput" class="hidden" accept="image/*" @change="e => handleFileChange(e, 'bg')">
                         </div>
-                        <p class="text-gray-600 text-[8px] uppercase tracking-widest text-center px-4">Texturas oscuras cinematográficas preferidas</p>
+                        <p class="text-gray-600 text-[8px] uppercase tracking-wider text-center px-4">Texturas oscuras cinematográficas preferidas</p>
                     </div>
                 </div>
             </div>
