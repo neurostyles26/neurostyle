@@ -157,9 +157,8 @@
     </footer>
   </div>
 </template>
-  </div>
-</template>
 
+<script setup>
 import { onMounted, ref } from 'vue'
 import logoImg from '../assets/logo.png'
 import { LucideMenu, LucideX } from 'lucide-vue-next'
@@ -237,26 +236,6 @@ const installApp = async () => {
 
 .animate-reveal-logo {
     animation: reveal-logo 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes reveal-title {
-    0% { transform: translateY(50px); opacity: 0; filter: blur(15px); }
-    100% { transform: translateY(0); opacity: 1; filter: blur(0); }
-}
-
-.animate-reveal-title {
-    animation: reveal-title 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-    opacity: 0;
-}
-
-@keyframes reveal-desc {
-    0% { opacity: 0; letter-spacing: 0.3em; }
-    100% { opacity: 0.8; letter-spacing: 0.1em; }
-}
-
-.animate-reveal-desc {
-    animation: reveal-desc 2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
-    opacity: 0;
 }
 
 @keyframes reveal-actions {
