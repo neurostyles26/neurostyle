@@ -80,7 +80,7 @@ export const generateHairstyle = async (imageBlob, hairstyleName) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                version: "a10f97a55700da5105ca23d493f02f0503f7a77b8cf9610996992e9517c569f1",
+                version: "7762fd07cf27110544daefcd36eeaa371c7686d9a057e49e1d86d63ef546c7f7",
                 input: {
                     prompt: prompt,
                     image: imageUrl,
