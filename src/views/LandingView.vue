@@ -63,7 +63,7 @@
               target="_blank" 
               class="flex flex-col space-y-3 opacity-40 hover:opacity-100 transition-opacity"
             >
-              <span class="text-[8px] font-black tracking-[0.6em] text-primary uppercase">Elite Developer Portfolio</span>
+              <span class="text-[8px] font-black tracking-[0.6em] text-primary uppercase">BY DEVEDISOF</span>
               <div class="w-12 h-[1px] bg-primary/20"></div>
             </a>
           </div>
