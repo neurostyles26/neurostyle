@@ -4,13 +4,13 @@
     <div class="absolute top-0 right-0 w-full h-[30vh] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
 
     <!-- Header -->
-    <header class="flex items-center justify-between z-10 mb-10">
+    <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between z-10 mb-10 gap-6">
       <div class="flex items-center">
-        <button @click="router.push('/admin')" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors mr-6">
+        <button @click="router.push('/admin')" class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center glass-panel rounded-xl sm:rounded-2xl hover:bg-white/10 transition-colors mr-4 sm:mr-6">
           <LucideChevronLeft class="text-primary" />
         </button>
         <div>
-            <h2 class="text-white font-outfit font-bold text-xl tracking-tight uppercase">Configuración de Marca</h2>
+            <h2 class="text-white font-outfit font-bold text-lg sm:text-xl tracking-tight uppercase">Configuración de Marca</h2>
             <p class="text-primary text-[8px] font-black uppercase tracking-[0.2em]">Identidad Neural & Branding</p>
         </div>
       </div>
@@ -18,20 +18,20 @@
       <button 
         @click="saveAll" 
         :disabled="saving"
-        class="bg-primary text-black font-black px-10 py-4 rounded-2xl flex items-center hover:scale-[1.05] active:scale-95 transition-all shadow-xl shadow-primary/20 group relative overflow-hidden disabled:opacity-50"
+        class="bg-primary text-black font-black px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl flex items-center hover:scale-[1.05] active:scale-95 transition-all shadow-xl shadow-primary/20 group relative overflow-hidden disabled:opacity-50 w-full sm:w-auto justify-center"
       >
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
         <LucideSave v-if="!saving" class="mr-2" :size="20" />
         <div v-else class="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin mr-2"></div>
-        <span class="font-outfit uppercase tracking-wider text-sm">Guardar Cambios</span>
+        <span class="font-outfit uppercase tracking-wider text-xs sm:text-sm">Guardar Cambios</span>
       </button>
     </header>
 
     <main class="flex-1 z-10 max-w-4xl mx-auto w-full pb-20 overflow-y-auto">
       <div class="grid grid-cols-1 gap-10">
         <!-- Identity Section -->
-        <section class="glass-panel p-10 rounded-[48px] border-white/5">
-            <h3 class="text-white text-2xl font-outfit font-black mb-10 tracking-tight uppercase border-b border-white/5 pb-6">Identidad de la Peluquería</h3>
+        <section class="glass-panel p-6 sm:p-10 rounded-[32px] sm:rounded-[48px] border-white/5">
+            <h3 class="text-white text-xl sm:text-2xl font-outfit font-black mb-10 tracking-tight uppercase border-b border-white/5 pb-6">Identidad de la Peluquería</h3>
             
             <div class="space-y-8">
                 <div class="space-y-3">
@@ -39,7 +39,7 @@
                     <input 
                       v-model="shopName" 
                       type="text" 
-                      class="w-full bg-white/[0.03] border border-white/5 rounded-3xl py-6 px-10 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-2xl font-black placeholder:text-gray-800" 
+                      class="w-full bg-white/[0.03] border border-white/5 rounded-2xl sm:rounded-3xl py-4 sm:py-6 px-6 sm:px-10 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-lg sm:text-2xl font-black placeholder:text-gray-800" 
                       placeholder="Ej: Golden Masters Barber"
                     >
                 </div>
@@ -89,7 +89,7 @@
         </section>
 
         <!-- Brand Engine Section -->
-        <section class="bg-primary/5 border border-primary/20 rounded-[56px] p-12 lg:p-16 relative overflow-hidden group">
+        <section class="bg-primary/5 border border-primary/20 rounded-[32px] sm:rounded-[56px] p-8 sm:p-12 lg:p-16 relative overflow-hidden group">
             <div class="absolute -right-32 -top-32 w-96 h-96 bg-primary/10 blur-[150px] rounded-full"></div>
             <div class="flex flex-col lg:flex-row items-center gap-12 relative z-10">
                 <div class="w-32 h-32 glass-panel rounded-full flex items-center justify-center p-6 border-white/20">

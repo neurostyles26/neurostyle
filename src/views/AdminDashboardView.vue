@@ -51,11 +51,11 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8 md:p-16 overflow-y-auto z-10 relative">
+    <main class="flex-1 p-4 sm:p-8 md:p-16 overflow-y-auto z-10 relative">
       <header class="mb-16 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
         <div>
-          <h1 class="text-white text-5xl md:text-6xl font-outfit font-black tracking-tighter mb-4">Panel de <span class="text-primary italic">Control</span></h1>
-          <p class="text-gray-500 text-sm font-bold uppercase tracking-[0.3em]">Bienvenido, Comandante del Estilo</p>
+          <h1 class="text-white text-3xl sm:text-5xl md:text-6xl font-outfit font-black tracking-tighter mb-4">Panel de <span class="text-primary italic">Control</span></h1>
+          <p class="text-gray-500 text-[10px] sm:text-sm font-bold uppercase tracking-[0.3em]">Bienvenido, Comandante del Estilo</p>
         </div>
         
         <div class="flex items-center space-x-4">
@@ -67,8 +67,8 @@
       </header>
 
       <!-- Stats Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-        <div v-for="(stat, i) in stats" :key="i" class="glass-panel p-10 rounded-[48px] border-white/5 hover:border-primary/30 transition-all duration-500 group hover:-translate-y-2 relative overflow-hidden">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 mb-16">
+        <div v-for="(stat, i) in stats" :key="i" class="glass-panel p-6 sm:p-10 rounded-[32px] sm:rounded-[48px] border-white/5 hover:border-primary/30 transition-all duration-500 group hover:-translate-y-2 relative overflow-hidden">
           <div class="absolute -right-5 -top-5 w-24 h-24 bg-primary/5 blur-2xl rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
           
           <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 border border-primary/20 group-hover:bg-primary group-hover:shadow-[0_0_20px_#DAA520] transition-all duration-500">
@@ -81,7 +81,7 @@
       </div>
 
       <!-- Specialized Admin Banner -->
-      <div class="bg-primary/5 border border-primary/20 rounded-[56px] p-12 lg:p-20 relative overflow-hidden group">
+      <div class="bg-primary/5 border border-primary/20 rounded-[32px] sm:rounded-[56px] p-8 sm:p-12 lg:p-20 relative overflow-hidden group">
         <div class="absolute -right-32 -top-32 w-96 h-96 bg-primary/10 blur-[150px] rounded-full group-hover:bg-primary/20 transition-all duration-1000"></div>
         <div class="max-w-2xl relative z-10">
             <h2 class="text-primary text-3xl font-outfit font-black mb-6 tracking-tight uppercase">Métricas de Rendimiento IA</h2>
@@ -89,8 +89,8 @@
                 Optimiza tu flujo de trabajo con nuestro motor de análisis. 
                 Hemos detectado un incremento del <span class="text-white font-bold">24%</span> en la retención de clientes tras implementar las sugerencias biométricas.
             </p>
-            <div class="flex flex-wrap gap-6">
-                <button class="bg-primary text-black font-black px-12 py-6 rounded-3xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary/30 group/btn relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <button class="bg-primary text-black font-black px-8 sm:px-12 py-4 sm:py-6 rounded-2xl sm:rounded-3xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary/30 group/btn relative overflow-hidden text-sm sm:text-base">
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
                     <span class="font-outfit uppercase tracking-widest">CREAR PROMOCIÓN</span>
                 </button>

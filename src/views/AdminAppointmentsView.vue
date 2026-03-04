@@ -4,15 +4,15 @@
     <div class="absolute top-0 right-0 w-full h-[30vh] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
 
     <!-- Header -->
-    <header class="flex items-center justify-between mb-10 z-10">
-      <button @click="router.push('/admin')" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors">
+    <header class="flex items-center justify-between mb-10 z-10 px-2 lg:px-0">
+      <button @click="router.push('/admin')" class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center glass-panel rounded-xl sm:rounded-2xl hover:bg-white/10 transition-colors">
         <LucideChevronLeft class="text-primary" />
       </button>
       <div class="text-center">
-          <h2 class="text-white font-outfit font-bold text-xl tracking-tight">Agenda Global</h2>
+          <h2 class="text-white font-outfit font-bold text-lg sm:text-xl tracking-tight">Agenda Global</h2>
           <p class="text-primary text-[8px] font-black uppercase tracking-[0.3em]">Supervisión Operacional</p>
       </div>
-      <div class="w-12"></div>
+      <div class="w-10 sm:w-12"></div>
     </header>
 
     <main class="flex-1 z-10 overflow-y-auto pr-1">
@@ -36,7 +36,7 @@
         <div 
             v-for="appt in appointments" 
             :key="appt.id"
-            class="glass-panel p-8 rounded-[40px] border-white/5 relative overflow-hidden group hover:border-primary/20 transition-all duration-500 hover:translate-y-[-4px]"
+            class="glass-panel p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border-white/5 relative overflow-hidden group hover:border-primary/20 transition-all duration-500 hover:translate-y-[-4px]"
         >
           <!-- Status Indicator Stripe -->
           <div :class="[
@@ -45,12 +45,12 @@
           ]"></div>
 
           <div class="flex items-start justify-between mb-8 relative z-10">
-            <div class="flex items-center">
-                <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary font-outfit font-black text-2xl mr-6 uppercase border border-primary/20 group-hover:bg-primary group-hover:text-black transition-all duration-500">
+            <div class="flex items-center flex-1">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-primary font-outfit font-black text-xl sm:text-2xl mr-4 sm:mr-6 uppercase border border-primary/20 group-hover:bg-primary group-hover:text-black transition-all duration-500 shrink-0">
                     {{ appt.client_name?.[0] || '?' }}
                 </div>
-                <div>
-                    <h4 class="text-white font-outfit font-bold text-xl mb-2 tracking-tight">{{ appt.client_name }}</h4>
+                <div class="min-w-0 flex-1">
+                    <h4 class="text-white font-outfit font-bold text-lg sm:text-xl mb-1 sm:mb-2 tracking-tight truncate">{{ appt.client_name }}</h4>
                     <span :class="[
                         'text-[9px] font-black uppercase px-3 py-1 rounded-full border tracking-widest',
                         appt.status === 'Pendiente' ? 'text-yellow-500 border-yellow-500/20 bg-yellow-500/5' : 'text-green-500 border-green-500/20 bg-green-500/5'
@@ -59,9 +59,9 @@
                     </span>
                 </div>
             </div>
-            <div class="text-right">
-                <p class="text-primary font-outfit font-black text-2xl gold-glow mb-1">{{ appt.time }}</p>
-                <p class="text-gray-500 text-[10px] uppercase font-black tracking-[0.2em] font-outfit">{{ formatDate(appt.date) }}</p>
+            <div class="text-right shrink-0">
+                <p class="text-primary font-outfit font-black text-xl sm:text-2xl gold-glow mb-1">{{ appt.time }}</p>
+                <p class="text-gray-500 text-[8px] sm:text-[10px] uppercase font-black tracking-[0.2em] font-outfit">{{ formatDate(appt.date) }}</p>
             </div>
           </div>
 

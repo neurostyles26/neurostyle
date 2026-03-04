@@ -4,29 +4,30 @@
     <div class="absolute top-0 left-0 w-full h-[30vh] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
 
     <!-- Header -->
-    <header class="flex items-center justify-between z-10 mb-10">
+    <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between z-10 mb-10 gap-6 px-2">
       <div class="flex items-center">
-        <button @click="router.push('/admin')" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors mr-6">
+        <button @click="router.push('/admin')" class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center glass-panel rounded-xl sm:rounded-2xl hover:bg-white/10 transition-colors mr-4 sm:mr-6">
           <LucideChevronLeft class="text-primary" />
         </button>
         <div>
-            <h2 class="text-white font-outfit font-bold text-xl tracking-tight">Inventario Maestro</h2>
-            <p class="text-primary text-[8px] font-black uppercase tracking-[0.3em]">Matriz de Productos Neurales</p>
+            <h2 class="text-white font-outfit font-bold text-lg sm:text-xl tracking-tight">Inventario Maestro</h2>
+            <p class="text-primary text-[8px] font-black uppercase tracking-[0.2em]">Matriz de Productos Neurales</p>
         </div>
       </div>
       <button 
         @click="showAddModal = true"
-        class="bg-primary text-black font-black px-8 py-4 rounded-2xl flex items-center hover:scale-105 transition-all shadow-xl shadow-primary/20 group relative overflow-hidden"
+        class="bg-primary text-black font-black px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl flex items-center hover:scale-105 transition-all shadow-xl shadow-primary/20 group relative overflow-hidden w-full sm:w-auto justify-center"
       >
         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
         <LucidePlus class="mr-2" :size="20" />
-        <span class="font-outfit uppercase tracking-wider text-sm">Añadir Activo</span>
+        <span class="font-outfit uppercase tracking-wider text-xs sm:text-sm">Añadir Activo</span>
       </button>
     </header>
 
-    <main class="flex-1 z-10 overflow-y-auto pr-1">
+    <!-- Main Content -->
+    <main class="flex-1 p-4 sm:p-6 overflow-y-auto pr-1">
       <div v-if="loading" class="flex flex-col items-center justify-center h-64">
-        <div class="relative w-16 h-16 mb-6">
+        <div class="relative w-12 h-12 sm:w-16 sm:h-16 mb-6">
             <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
             <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -98,8 +99,8 @@
         leave-active-class="transition duration-300 ease-in"
         leave-to-class="opacity-0"
     >
-        <div v-if="showAddModal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-end md:items-center justify-center p-6">
-            <div class="w-full max-w-xl glass-panel border-white/10 rounded-[56px] p-10 md:p-16 overflow-y-auto max-h-[90vh] shadow-[0_50px_100px_rgba(0,0,0,0.8)] relative animate-fade-in-up">
+        <div v-if="showAddModal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-end md:items-center justify-center p-0 sm:p-6">
+            <div class="w-full max-w-xl glass-panel border-white/10 rounded-t-[40px] sm:rounded-[56px] p-8 sm:p-10 md:p-16 overflow-y-auto max-h-[95vh] shadow-[0_50px_100px_rgba(0,0,0,0.8)] relative animate-fade-in-up">
                 <div class="flex items-center justify-between mb-12">
                     <div>
                         <h3 class="text-white text-4xl font-outfit font-black tracking-tighter mb-1 uppercase">Alta de Producto</h3>
