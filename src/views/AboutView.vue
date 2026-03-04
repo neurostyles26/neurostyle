@@ -9,7 +9,7 @@
       </button>
       <div>
           <h2 class="text-white font-outfit font-bold text-2xl tracking-tight uppercase">Sobre el Creador</h2>
-          <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em]">Arquitecto del Sistema</p>
+          <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em]">Devedisof Elite Developer</p>
       </div>
     </header>
 
