@@ -23,12 +23,18 @@
         </div>
       </div>
 
-      <h1 class="text-white text-5xl sm:text-7xl font-outfit font-black mb-6 tracking-tighter uppercase gold-glow">
-        EDISSOF
+      <h1 class="text-white text-5xl sm:text-7xl font-outfit font-black mb-2 tracking-tighter uppercase gold-glow">
+        EDISSON PINZA
       </h1>
       
+      <!-- Digital Signature Effect -->
+      <div class="mb-8 overflow-hidden">
+        <span class="signature-text text-primary/60 text-3xl sm:text-4xl block animate-signature">Edisson Pinza</span>
+        <div class="h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent w-full mt-2"></div>
+      </div>
+      
       <p class="text-gray-400 text-lg sm:text-xl font-light mb-12 leading-relaxed tracking-wide">
-        Visionario tecnológico y desarrollador principal de la plataforma <span class="text-white font-black italic">NeuroStyle</span>. Especializado en fusionar la inteligencia artificial con la elegancia del mundo real.
+        Visionario tecnológico y desarrollador principal bajo la firma <span class="text-white font-black italic">Devedisof</span>. Creador de la plataforma <span class="text-primary font-black italic">NeuroStyle IA</span>, especializada en fusionar inteligencia artificial con la elegancia del mundo real.
       </p>
 
       <div class="flex flex-wrap justify-center gap-6 mb-16">
@@ -64,8 +70,8 @@
       </div>
     </main>
 
-    <footer class="mt-20 py-12 border-top border-white/5 text-center relative z-10">
-      <p class="text-white/20 text-[8px] font-black uppercase tracking-[0.8em]">EDISSOF ELITE DEVELOPER <span class="mx-2 text-primary/20">|</span> 2024</p>
+    <footer class="mt-20 py-12 border-t border-white/5 text-center relative z-10">
+      <p class="text-white/20 text-[8px] font-black uppercase tracking-[0.8em]">EDISSON PINZA <span class="mx-2 text-primary/20">|</span> DEVEDISOF ELITE DEVELOPER</p>
     </footer>
   </div>
 </template>
@@ -80,5 +86,24 @@ const router = useRouter()
 <style scoped>
 .gold-glow {
   text-shadow: 0 0 20px rgba(218, 165, 32, 0.4);
+}
+
+@font-face {
+  font-family: 'Signature';
+  src: url('https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&display=swap');
+}
+
+.signature-text {
+  font-family: 'Mrs Saint Delafield', cursive;
+  filter: drop-shadow(0 0 10px rgba(218, 165, 32, 0.3));
+}
+
+@keyframes signature-draw {
+  0% { opacity: 0; transform: translateY(10px) skewX(-10deg); filter: blur(10px); }
+  100% { opacity: 1; transform: translateY(0) skewX(0); filter: blur(0); }
+}
+
+.animate-signature {
+  animation: signature-draw 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 </style>

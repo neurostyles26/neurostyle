@@ -45,7 +45,7 @@
             @click="isMenuOpen = false"
           >
             <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-1">Sobre el Creador</span>
-            <span class="text-[8px] text-gray-600 uppercase tracking-[0.2em]">Visión & Portafolio de Edissof</span>
+            <span class="text-[8px] text-gray-600 uppercase tracking-[0.2em]">Visión & Portafolio de Edisson Pinza</span>
           </router-link>
           
           <router-link 
