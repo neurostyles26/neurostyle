@@ -71,7 +71,7 @@
         >
           <!-- Shimmer logic -->
           <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          <span class="font-outfit uppercase tracking-[0.2em] relative z-10 transition-all duration-500 group-hover:tracking-[0.25em]">INICIAR ESCANEO AI</span>
+          <span class="font-outfit uppercase tracking-[0.2em] relative z-10 transition-all duration-500 group-hover:tracking-[0.25em]">INICIAR ESCANEO IA</span>
         </router-link>
 
         <!-- Secondary Actions in Row -->
@@ -119,7 +119,7 @@
               <span class="text-[8px] font-bold tracking-[0.4em] uppercase">NEURAL MAPPING</span>
           </div>
           <div class="flex flex-col items-center">
-              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">GENERATIVE AI</span>
+              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">IA GENERATIVA</span>
           </div>
           <div class="flex flex-col items-center">
               <span class="text-[8px] font-bold tracking-[0.4em] uppercase">MASTER STYLE</span>
