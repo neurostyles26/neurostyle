@@ -5,7 +5,7 @@
 
     <!-- Header -->
     <header class="flex items-center justify-between mb-10 z-10">
-      <button @click="$router.push('/admin')" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors">
+      <button @click="router.push('/admin')" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors">
         <LucideChevronLeft class="text-primary" />
       </button>
       <div class="text-center">
@@ -84,11 +84,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { 
     LucideChevronLeft, LucideCalendar, 
     LucideScissors, LucideTrash2 
 } from 'lucide-vue-next'
 import { supabase } from '../services/supabase'
+
+const router = useRouter()
 
 const appointments = ref([])
 const loading = ref(true)

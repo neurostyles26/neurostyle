@@ -111,6 +111,7 @@ import {
   LucideTrendingUp, LucideSettings
 } from 'lucide-vue-next'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase } from '../services/supabase'
 import logoImg from '../assets/logo.png'
 

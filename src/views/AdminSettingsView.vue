@@ -6,7 +6,7 @@
     <!-- Header -->
     <header class="flex items-center justify-between z-10 mb-10">
       <div class="flex items-center">
-        <button @click="$router.push('/admin')" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors mr-6">
+        <button @click="router.push('/admin')" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors mr-6">
           <LucideChevronLeft class="text-primary" />
         </button>
         <div>
@@ -110,6 +110,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { 
   LucideChevronLeft, LucideSave, 
   LucideUpload, LucideImage 
@@ -118,6 +119,7 @@ import { useShopStore } from '../stores/shopStore'
 import { supabase } from '../services/supabase'
 import logoImg from '../assets/logo.png'
 
+const router = useRouter()
 const shopStore = useShopStore()
 const saving = ref(false)
 const shopName = ref('')
