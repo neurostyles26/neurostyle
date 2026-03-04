@@ -1,11 +1,19 @@
 // Netlify Serverless Function: Replicate API Proxy
 export const handler = async (event) => {
-    const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN
+    const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN || process.env.VITE_REPLICATE_API_TOKEN
+
+    // Diagnostic logging for Netlify Function Logs
+    console.log("Event Path:", event.path);
+    console.log("Token detected?", !!REPLICATE_API_TOKEN);
 
     if (!REPLICATE_API_TOKEN) {
+        console.error("CRITICAL: REPLICATE_API_TOKEN missing from process.env");
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "REPLICATE_API_TOKEN not configured in Netlify." })
+            body: JSON.stringify({
+                error: "REPLICATE_API_TOKEN no configurado en Netlify.",
+                debug: "Si ya lo agregaste, RECUERDA HACER UN 'NEW DEPLOY' EN NETLIFY para que los cambios surtan efecto."
+            })
         }
     }
 
