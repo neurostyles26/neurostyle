@@ -6,15 +6,16 @@
       autoplay
       playsinline
       muted
-      class="absolute inset-0 w-full h-full object-cover z-0"
-      style="transform: scaleX(-1); will-change: transform; object-position: center;"
+      webkit-playsinline
+      class="absolute inset-0 w-full h-full object-cover pointer-events-none"
+      style="transform: scaleX(-1); object-position: center; z-index: 1; opacity: 1 !important; visibility: visible !important;"
     ></video>
 
     <!-- HUD / Mesh Canvas Overlay -->
     <canvas
       ref="canvasRef"
-      class="absolute inset-0 w-full h-full z-10 pointer-events-none"
-      style="transform: scaleX(-1);"
+      class="absolute inset-0 w-full h-full pointer-events-none"
+      style="transform: scaleX(-1); z-index: 10;"
       :class="{ 'opacity-0': !active, 'opacity-100': active }"
     ></canvas>
 
@@ -173,22 +174,32 @@ const initCamera = async () => {
         
         if (videoRef.value) {
             const video = videoRef.value
-            video.srcObject = mediaStream
-            
-            // Wait for camera primarily with more robust events
+            // Force playback and wait for actual frames
             await new Promise((resolve, reject) => {
-                const timeout = setTimeout(() => reject(new Error("Video timeout")), 8000)
+                const timeout = setTimeout(() => reject(new Error("Video playback timeout")), 10000);
                 
-                const onVideoReady = () => {
-                    clearTimeout(timeout)
-                    video.play().then(resolve).catch(reject)
-                }
+                const onPlaying = () => {
+                    if (video.videoWidth > 0) {
+                        clearTimeout(timeout);
+                        video.removeEventListener('playing', onPlaying);
+                        resolve();
+                    }
+                };
 
-                if (video.readyState >= 2) {
-                    onVideoReady()
-                } else {
-                    video.onloadeddata = onVideoReady
-                    video.onloadedmetadata = onVideoReady
+                video.addEventListener('playing', onPlaying);
+                
+                video.srcObject = mediaStream;
+                video.load();
+                
+                // Play might return a promise
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        console.error("Play error:", err);
+                        // If it's a permission/interruption error, we still try to proceed
+                        if (video.readyState >= 2) resolve();
+                        else reject(err);
+                    });
                 }
             })
             
