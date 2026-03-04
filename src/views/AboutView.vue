@@ -22,10 +22,6 @@
           </div>
         </div>
       </div>
-
-      <h1 class="text-white text-5xl sm:text-7xl font-outfit font-black mb-2 tracking-tighter uppercase gold-glow">
-        EDISSON PINZA
-      </h1>
       
       <!-- Digital Signature Effect -->
       <div class="mb-8 overflow-hidden">
