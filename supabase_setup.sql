@@ -31,9 +31,29 @@ DROP POLICY IF EXISTS "Allow authenticated update of shop_settings" ON public.sh
 CREATE POLICY "Allow authenticated update of shop_settings" ON public.shop_settings
 FOR UPDATE TO authenticated USING (true);
 
--- 5. Storage Buckets Setup
--- IMPORTANT: Run these in the 'Storage' section of your Supabase Dashboard
--- 1. Create a bucket named 'branding'
--- 2. Set the 'branding' bucket to PUBLIC
--- 3. Create a bucket named 'products'
--- 4. Set the 'products' bucket to PUBLIC
+-- 5. Storage Buckets Initialization (SQL Alternative)
+-- If your workspace allows it, you can run this to create the buckets:
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('branding', 'branding', true)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('products', 'products', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- 6. Storage Policies (Allow anyone to upload if authenticated)
+-- Policy for 'branding'
+CREATE POLICY "Public Access Branding" ON storage.objects FOR SELECT USING (bucket_id = 'branding');
+CREATE POLICY "Admin Upload Branding" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'branding');
+
+-- Policy for 'products'
+CREATE POLICY "Public Access Products" ON storage.objects FOR SELECT USING (bucket_id = 'products');
+CREATE POLICY "Admin Upload Products" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'products');
+
+
+-- ==========================================
+-- FINAL INSTRUCTIONS:
+-- 1. Go to Supabase Dashboard -> SQL Editor -> Paste & Run this script.
+-- 2. If the buckets are still not visible, go to "Storage" in the left sidebar 
+--    and manually create 'branding' and 'products' as PUBLIC buckets.
+-- ==========================================

@@ -6,8 +6,8 @@
       autoplay
       playsinline
       muted
-      class="absolute inset-0 w-full h-full object-cover"
-      style="transform: scaleX(-1);"
+      class="absolute inset-0 w-full h-full object-cover z-0"
+      style="transform: scaleX(-1); will-change: transform; object-position: center;"
     ></video>
 
     <!-- HUD / Mesh Canvas Overlay -->
@@ -175,12 +175,20 @@ const initCamera = async () => {
             const video = videoRef.value
             video.srcObject = mediaStream
             
-            // Wait for camera primarily
+            // Wait for camera primarily with more robust events
             await new Promise((resolve, reject) => {
                 const timeout = setTimeout(() => reject(new Error("Video timeout")), 8000)
-                video.onloadedmetadata = () => {
+                
+                const onVideoReady = () => {
                     clearTimeout(timeout)
                     video.play().then(resolve).catch(reject)
+                }
+
+                if (video.readyState >= 2) {
+                    onVideoReady()
+                } else {
+                    video.onloadeddata = onVideoReady
+                    video.onloadedmetadata = onVideoReady
                 }
             })
             
