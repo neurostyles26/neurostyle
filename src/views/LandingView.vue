@@ -29,7 +29,23 @@
           <!-- Multi-layered Glows -->
           <div class="absolute inset-0 bg-primary/25 blur-3xl rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse-glow"></div>
           <div class="absolute -inset-4 border border-primary/5 rounded-full animate-spin-extremely-slow"></div>
-          
+          <!-- Top Elite Header (NeuroStyle Signature) -->
+    <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-6 md:px-12">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20 p-1.5">
+          <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_#DAA520]" alt="NS" />
+        </div>
+        <div>
+          <span class="text-white text-[10px] font-black uppercase tracking-[0.4em] block">NeuroStyle IA</span>
+          <span class="text-primary text-[6px] font-black uppercase tracking-[0.2em] block">Powered by Neural Tech</span>
+        </div>
+      </div>
+      
+      <div class="hidden md:flex items-center space-x-12">
+        <router-link to="/about" class="text-white/40 hover:text-white transition-colors text-[9px] font-black uppercase tracking-[0.3em]">SOBRE EL CREADOR</router-link>
+        <router-link to="/support" class="text-white/40 hover:text-white transition-colors text-[9px] font-black uppercase tracking-[0.3em]">SOPORTE</router-link>
+      </div>
+    </header>
           <div class="relative w-full h-full glass-panel rounded-full flex items-center justify-center shadow-2xl border-white/5 overflow-hidden p-8">
              <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.5)] transition-transform duration-1000 group-hover:scale-110" alt="NeuroStyle Logo" />
              
@@ -42,23 +58,21 @@
       </div>
 
       <!-- Main Title -->
-      <div class="overflow-hidden mb-4">
-          <p class="text-primary text-[10px] font-black uppercase tracking-[0.6em] mb-4 animate-reveal-title opacity-80">Powered by</p>
-          <h1 class="text-white text-6xl md:text-9xl font-outfit font-black tracking-[-0.07em] leading-none animate-reveal-title">
-            NEURO<span class="gold-text-gradient italic relative inline-block">STYLE
-              <!-- Subtle Underline Glow -->
-              <span class="absolute bottom-2 left-0 w-full h-[2px] bg-primary/20 blur-[4px]"></span>
-            </span>
-          </h1>
-      </div>
       
       <!-- Description / Shop Name -->
-      <div class="animate-reveal-desc">
-        <h2 class="text-white text-xl md:text-2xl font-outfit font-bold tracking-[0.2em] mb-4 uppercase italic">
-          {{ shopStore.shopName || 'Estudio de Innovación Capilar' }}
-        </h2>
-        <p class="text-gray-400 text-xs md:text-sm max-w-2xl mx-auto mb-20 font-light leading-relaxed tracking-[0.2em] uppercase opacity-60">
-          Master Barbering <span class="mx-2 text-primary/40">·</span> Precision Intelligence <span class="mx-2 text-primary/40">·</span> Biometría Neural
+      <div class="relative z-10 flex flex-col items-center animate-fade-in-up">
+        <!-- Main Shop Identity -->
+        <div v-if="shopStore.logoUrl" class="w-48 h-48 sm:w-64 sm:h-64 mb-12 relative group">
+          <div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full group-hover:bg-primary/40 transition-all duration-1000"></div>
+          <img :src="shopStore.logoUrl" class="w-full h-full object-contain relative z-10 filter drop-shadow-[0_0_30px_#DAA520]" :alt="shopStore.shopName" />
+        </div>
+
+        <h1 class="text-white text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter mb-6 uppercase text-center text-glow">
+          {{ shopStore.shopName }}
+        </h1>
+        
+        <p class="text-gray-400 text-sm sm:text-lg md:text-xl font-light max-w-2xl text-center mb-16 leading-relaxed tracking-wide px-6">
+          {{ shopStore.shopDescription || 'Elevando el arte de la barbería con precisión neural y estilo maestro.' }}
         </p>
       </div>
 
@@ -130,15 +144,18 @@
     <!-- Bottom Footer Fade -->
     <div class="absolute bottom-0 left-0 right-0 h-[35vh] bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-0"></div>
 
-    <!-- Developer Credit -->
-    <div class="absolute bottom-8 z-20 animate-reveal-badges opacity-60 hover:opacity-100 transition-opacity duration-700">
-      <a 
-        href="https://devedisof-mi-cv.netlify.app/" 
-        target="_blank" 
-        class="text-[9px] font-black text-gray-500 hover:text-primary uppercase tracking-[0.4em] transition-colors flex items-center"
-      >
-        Developed by <span class="text-primary/60 ml-2 group-hover:text-primary transition-colors">EDISSOF</span>
-      </a>
+    <!-- Developer Credit & Navigation -->
+    <div class="absolute bottom-8 left-0 right-0 z-20 px-6 md:px-12 animate-reveal-badges">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 py-8 border-t border-white/5 bg-black/40 backdrop-blur-md rounded-t-[40px]">
+        <div class="flex items-center space-x-8">
+          <router-link to="/about" class="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-colors">SOBRE EL CREADOR</router-link>
+          <router-link to="/support" class="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-colors">SOPORTE</router-link>
+        </div>
+        
+        <div class="text-[8px] font-black uppercase tracking-[0.6em] text-primary/30">
+          POWERED BY NEUROSTYLE IA
+        </div>
+      </div>
     </div>
   </div>
 </template>

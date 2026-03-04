@@ -6,6 +6,7 @@
 CREATE TABLE IF NOT EXISTS public.shop_settings (
     id UUID PRIMARY KEY DEFAULT '00000000-0000-0000-0000-000000000001'::uuid,
     shop_name TEXT DEFAULT 'NeuroStyle Barber',
+    description TEXT DEFAULT 'Elevando el arte de la barbería con precisión neural y estilo maestro.',
     logo_url TEXT,
     bg_url TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -13,8 +14,8 @@ CREATE TABLE IF NOT EXISTS public.shop_settings (
 );
 
 -- 2. Insert default singleton record
-INSERT INTO public.shop_settings (id, shop_name)
-VALUES ('00000000-0000-0000-0000-000000000001'::uuid, 'NeuroStyle Barber')
+INSERT INTO public.shop_settings (id, shop_name, description)
+VALUES ('00000000-0000-0000-0000-000000000001'::uuid, 'NeuroStyle Barber', 'Elevando el arte de la barbería con precisión neural y estilo maestro.')
 ON CONFLICT (id) DO NOTHING;
 
 -- 3. Enable Row Level Security

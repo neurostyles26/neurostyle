@@ -64,6 +64,16 @@ const routes = [
         component: () => import('../views/GroomingStoreView.vue')
     },
     {
+        path: '/about',
+        name: 'About',
+        component: () => import('../views/AboutView.vue')
+    },
+    {
+        path: '/support',
+        name: 'Support',
+        component: () => import('../views/SupportView.vue')
+    },
+    {
         path: '/:pathMatch(.*)*',
         redirect: '/'
     }

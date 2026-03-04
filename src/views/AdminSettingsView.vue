@@ -44,6 +44,16 @@
                     >
                 </div>
 
+                <div class="space-y-3">
+                    <label class="block text-primary text-[9px] font-black uppercase tracking-[0.2em] ml-2">Presentación de la Barbería</label>
+                    <textarea 
+                      v-model="shopDescription" 
+                      rows="4"
+                      class="w-full bg-white/[0.03] border border-white/5 rounded-2xl sm:rounded-3xl py-4 sm:py-6 px-6 sm:px-10 text-white focus:outline-none focus:border-primary/50 transition-all font-outfit text-sm font-medium placeholder:text-gray-800 resize-none" 
+                      placeholder="Describe la experiencia que ofreces a tus clientes..."
+                    ></textarea>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <!-- Logo Upload -->
                     <div class="space-y-4">
@@ -123,6 +133,7 @@ const router = useRouter()
 const shopStore = useShopStore()
 const saving = ref(false)
 const shopName = ref('')
+const shopDescription = ref('')
 
 const logoFile = ref(null)
 const logoPreview = ref(null)
@@ -132,6 +143,7 @@ const bgPreview = ref(null)
 onMounted(async () => {
     await shopStore.fetchSettings()
     shopName.value = shopStore.shopName
+    shopDescription.value = shopStore.shopDescription
 })
 
 const handleFileChange = (e, type) => {
@@ -180,6 +192,7 @@ const saveAll = async () => {
 
         const res = await shopStore.updateSettings({
             shop_name: shopName.value,
+            description: shopDescription.value,
             logo_url: logoUrl,
             bg_url: bgUrl
         })

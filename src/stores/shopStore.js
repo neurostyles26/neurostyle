@@ -4,6 +4,7 @@ import { supabase } from '../services/supabase'
 
 export const useShopStore = defineStore('shop', () => {
     const shopName = ref('Cargando...')
+    const shopDescription = ref('')
     const logoUrl = ref(null)
     const bgUrl = ref(null)
     const loading = ref(false)
@@ -11,7 +12,6 @@ export const useShopStore = defineStore('shop', () => {
     async function fetchSettings() {
         loading.value = true
         try {
-            // Assume there's only one shop record for now
             const { data, error } = await supabase
                 .from('shop_settings')
                 .select('*')
@@ -19,15 +19,17 @@ export const useShopStore = defineStore('shop', () => {
 
             if (!error && data) {
                 shopName.value = data.shop_name
+                shopDescription.value = data.description || ''
                 logoUrl.value = data.logo_url
                 bgUrl.value = data.bg_url
             } else if (error && error.code === 'PGRST116') {
-                // Table might be there but empty, or RLS issues
                 console.warn('No settings found. Using defaults.')
                 shopName.value = 'Nueva Barbería'
+                shopDescription.value = 'Tu descripción aquí.'
             } else {
                 console.error('Fetch settings error:', error.message)
                 shopName.value = 'NeuroStyle Barber'
+                shopDescription.value = 'Elite Barbering & Neural Tech'
             }
         } catch (err) {
             console.error('Shop fetch error:', err)
@@ -40,11 +42,12 @@ export const useShopStore = defineStore('shop', () => {
         try {
             const { error } = await supabase
                 .from('shop_settings')
-                .upsert({ id: '00000000-0000-0000-0000-000000000001', ...updates }) // Use a fixed ID for the main shop
+                .upsert({ id: '00000000-0000-0000-0000-000000000001', ...updates })
 
             if (error) throw error
 
             if (updates.shop_name) shopName.value = updates.shop_name
+            if (updates.description !== undefined) shopDescription.value = updates.description
             if (updates.logo_url) logoUrl.value = updates.logo_url
             if (updates.bg_url) bgUrl.value = updates.bg_url
 
@@ -57,6 +60,7 @@ export const useShopStore = defineStore('shop', () => {
 
     return {
         shopName,
+        shopDescription,
         logoUrl,
         bgUrl,
         loading,
