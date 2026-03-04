@@ -17,7 +17,7 @@
 
     <main class="flex-1 z-10 overflow-y-auto pr-1">
       <!-- Analysis Summary Card -->
-      <div class="glass-panel p-8 rounded-[40px] mb-10 relative group overflow-hidden border-primary/20">
+      <div class="glass-panel p-6 md:p-8 rounded-3xl mb-10 relative group overflow-hidden border-primary/20">
         <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
         
         <div class="flex items-center space-x-6 relative z-10 text-left">
@@ -53,7 +53,7 @@
           :key="style.id"
           @click="selectedStyle = style"
           :class="[
-            'p-8 glass-panel rounded-[44px] transition-all duration-500 cursor-pointer group relative overflow-hidden',
+            'p-8 glass-panel rounded-3xl transition-all duration-500 cursor-pointer group relative overflow-hidden',
             selectedStyle?.id === style.id ? 'border-primary/50 bg-primary/5 shadow-[0_15px_30px_rgba(218,165,32,0.1)]' : 'border-white/5 opacity-70 hover:opacity-100'
           ]"
         >
@@ -105,21 +105,21 @@
         leave-active-class="transition duration-300 ease-in"
         leave-to-class="opacity-0 scale-95"
     >
-        <div v-if="showResultModal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-6">
-            <div class="w-full max-w-lg glass-panel border-white/10 rounded-[56px] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)] flex flex-col h-[80vh]">
+        <div v-if="showResultModal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4 md:p-6">
+            <div class="w-full max-w-lg glass-panel border-white/10 rounded-[32px] md:rounded-[56px] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)] flex flex-col h-[85vh] md:h-[80vh]">
                 <!-- Header -->
-                <div class="p-8 pb-4 flex items-center justify-between">
+                <div class="p-6 md:p-8 pb-4 flex items-center justify-between">
                     <div>
-                        <h3 class="text-white text-3xl font-outfit font-black tracking-tighter uppercase mb-1">Previsualización IA</h3>
+                        <h3 class="text-white text-2xl md:text-3xl font-outfit font-black tracking-tighter uppercase mb-1">Previsualización IA</h3>
                         <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em]">Experiencia {{ tryingOnStyleName }}</p>
                     </div>
-                    <button @click="showResultModal = false" class="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-primary transition-all rounded-2xl bg-white/5">
-                        <LucideX :size="24" />
+                    <button @click="showResultModal = false" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-gray-500 hover:text-primary transition-all rounded-2xl bg-white/5">
+                        <LucideX :size="20" />
                     </button>
                 </div>
 
                 <!-- Comparison Area -->
-                <div class="flex-1 relative bg-black/20 m-6 rounded-[40px] overflow-hidden border border-white/5">
+                <div class="flex-1 relative bg-black/20 m-4 md:m-6 rounded-3xl overflow-hidden border border-white/5">
                     <div class="absolute inset-0 flex">
                         <!-- Before -->
                         <div class="relative flex-1 group" :class="{ 'flex-none w-1/2': showComparison }">

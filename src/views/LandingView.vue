@@ -58,12 +58,12 @@
           {{ shopStore.shopName || 'Estudio de Innovación Capilar' }}
         </h2>
         <p class="text-gray-400 text-xs md:text-sm max-w-2xl mx-auto mb-20 font-light leading-relaxed tracking-[0.2em] uppercase opacity-60">
-          Master Barbering &bull; Precision Intelligence &bull; Biometría Neural
+          Master Barbering <span class="mx-2 text-primary/40">·</span> Precision Intelligence <span class="mx-2 text-primary/40">·</span> Biometría Neural
         </p>
       </div>
 
       <!-- Staggered Action Buttons (Icon-free) -->
-      <div class="flex flex-col gap-6 justify-center items-center w-full max-w-md animate-reveal-actions">
+      <div class="flex flex-col gap-8 justify-center items-center w-full max-w-md animate-reveal-actions">
         <!-- AI Scan Button (The Star) -->
         <router-link 
           to="/scan" 
@@ -114,7 +114,7 @@
       </div>
 
       <!-- Feature Badges Section (Minimalist) -->
-      <div class="mt-28 flex flex-wrap justify-center gap-14 opacity-20 hover:opacity-100 transition-all duration-1000 animate-reveal-badges">
+      <div class="mt-32 mb-12 flex flex-wrap justify-center gap-10 md:gap-14 opacity-20 hover:opacity-100 transition-all duration-1000 animate-reveal-badges">
           <div class="flex flex-col items-center">
               <span class="text-[8px] font-bold tracking-[0.4em] uppercase">NEURAL MAPPING</span>
           </div>

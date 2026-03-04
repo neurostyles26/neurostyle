@@ -11,7 +11,7 @@
       leave-to-class="opacity-0 scale-95"
     >
       <div v-if="showConsent" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
-        <div class="glass-panel max-w-md w-full p-8 rounded-[40px] border-white/10 flex flex-col items-center text-center shadow-[0_0_50px_rgba(218,165,32,0.1)]">
+        <div class="glass-panel max-w-md w-full p-6 md:p-8 rounded-3xl border-white/10 flex flex-col items-center text-center shadow-[0_0_50px_rgba(218,165,32,0.1)]">
           <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 animate-pulse">
             <LucideShieldCheck class="text-primary" :size="40" />
           </div>
@@ -127,7 +127,7 @@
         </button>
         
         <p class="text-gray-600 text-center text-[9px] mt-8 px-10 leading-relaxed uppercase tracking-[0.3em] font-medium opacity-50">
-            PROCESADO POR NEUROSTYLE ENGINE &bull; LOCAL ONLY
+            PROCESADO POR NEUROSTYLE ENGINE <span class="mx-1 text-primary/20">|</span> LOCAL ONLY
         </p>
     </div>
   </div>

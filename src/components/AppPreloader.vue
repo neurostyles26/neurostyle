@@ -53,7 +53,7 @@
 
       <!-- Bottom Branding -->
       <div class="absolute bottom-12 text-[8px] font-medium text-white/20 tracking-[0.6em] uppercase animate-fade-in-slow">
-          EST. 2024 &bull; MASTER BARBERING &bull; NEURAL TECH
+          EST. 2024 <span class="mx-1 text-primary/20">|</span> MASTER BARBERING <span class="mx-1 text-primary/20">|</span> NEURAL TECH
       </div>
     </div>
   </transition>
