@@ -207,6 +207,7 @@ import {
 } from 'lucide-vue-next'
 import { useScanStore } from '../stores/scanStore'
 import aiService from '../services/aiService'
+import { haircutCatalog } from '../data/haircutCatalog'
 
 const route = useRoute()
 const router = useRouter()
@@ -226,38 +227,12 @@ const generatedImage = ref(null)
 const showResultModal = ref(false)
 const showComparison = ref(true)
 
-const stylesDb = [
-    {
-        id: "c1",
-        name: "Textured Crop",
-        gender: "Caballero",
-        faceShapes: ["Ovalado", "Redondo", "Cuadrado", "Diamante"],
-        desc: "El corte tendencia #1 del 2026. Flequillo corto texturizado con laterales degradados (fade) de alta precisión.",
-        matchScore: 98,
-        maintenance: "Medio"
-    },
-    {
-        id: "c2",
-        name: "Modern Mullet",
-        gender: "Caballero",
-        faceShapes: ["Diamante", "Alargado", "Ovalado"],
-        desc: "Audaz y vanguardista. Corto al frente y lados, con capas traseras dramáticas y mucha textura.",
-        matchScore: 95,
-        maintenance: "Alto"
-    },
-    {
-        id: "c3",
-        name: "Low Taper Fade",
-        gender: "Caballero",
-        faceShapes: ["Cuadrado", "Ovalado", "Redondo"],
-        desc: "Elegancia minimalista. Un degradado sutil y gradual concentrado en las patillas y la línea de la nuca.",
-        matchScore: 92,
-        maintenance: "Bajo"
-    }
-]
+// stylesDb removed, using imported haircutCatalog
 
 const filteredStyles = computed(() => {
-    return stylesDb.filter(s => s.gender === gender.value && s.faceShapes.includes(faceShape.value))
+    return haircutCatalog
+        .filter(s => s.gender === gender.value && s.faceShapes.includes(faceShape.value))
+        .sort((a, b) => b.matchScore - a.matchScore)
 })
 
 const recommendationText = computed(() => {
