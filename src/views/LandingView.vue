@@ -1,172 +1,173 @@
 <template>
-  <div class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#020202] py-12 px-6 font-inter transition-all duration-1000" :style="shopStore.bgUrl ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url(${shopStore.bgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}">
+  <div class="relative min-h-screen flex flex-col items-center overflow-hidden bg-[#020202] font-inter transition-all duration-1000" :style="shopStore.bgUrl ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url(${shopStore.bgUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}">
     <!-- Sophisticated Background Layering -->
     <div v-if="!shopStore.bgUrl" class="absolute inset-0 z-0 pointer-events-none">
-      <!-- Deep Animated Glows -->
       <div class="absolute top-[-10%] left-[-5%] w-[60%] h-[60%] bg-primary/10 blur-[160px] rounded-full animate-pulse-slow"></div>
       <div class="absolute bottom-[-10%] right-[-5%] w-[50%] h-[50%] bg-primary/5 blur-[140px] rounded-full animate-pulse-slow" style="animation-delay: 5s"></div>
-      
-      <!-- Fine Scanning Grid -->
       <div class="absolute inset-0 opacity-[0.04]" :style="{ backgroundImage: 'linear-gradient(rgba(218,165,32,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(218,165,32,0.1) 1px, transparent 1px)', backgroundSize: '60px 60px' }"></div>
-      
-      <!-- Scanning Beam Effect -->
       <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-scanning-beam"></div>
-
-      <!-- Noise Texture for Organic Feel -->
-      <div class="absolute inset-0 opacity-[0.02] mix-blend-overlay" :style="{ backgroundImage: 'url(https://grainy-gradients.vercel.app/noise.svg)' }"></div>
     </div>
 
-    <!-- Content Wrapper -->
-    <div class="z-10 w-full max-w-5xl text-center flex flex-col items-center">
-      <!-- Secondary Shop Logo (New) -->
-      <div v-if="shopStore.logoUrl" class="mb-4 animate-reveal-logo opacity-60 hover:opacity-100 transition-opacity">
-         <img :src="shopStore.logoUrl" class="h-12 object-contain filter drop-shadow-lg" :alt="shopStore.shopName" />
-      </div>
-
-      <!-- Premium Logo Section (NeuroStyle) -->
-      <div class="mb-14 group cursor-default animate-reveal-logo">
-        <div class="relative w-36 h-36 mx-auto transition-all duration-1000">
-          <!-- Multi-layered Glows -->
-          <div class="absolute inset-0 bg-primary/25 blur-3xl rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse-glow"></div>
-          <div class="absolute -inset-4 border border-primary/5 rounded-full animate-spin-extremely-slow"></div>
-          <!-- Top Elite Header (NeuroStyle Signature) -->
-    <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-6 md:px-12">
-      <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/20 p-1.5">
+    <!-- Top Elite Header (Fixed) -->
+    <header class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 py-4 md:px-12 glass-panel border-b border-white/5 backdrop-blur-xl">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 p-1.5 shrink-0">
           <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_#DAA520]" alt="NS" />
         </div>
-        <div>
-          <span class="text-white text-[10px] font-black uppercase tracking-[0.4em] block">NeuroStyle IA</span>
-          <span class="text-primary text-[6px] font-black uppercase tracking-[0.2em] block">Powered by Neural Tech</span>
+        <div class="min-w-0">
+          <span class="text-white text-[10px] font-black uppercase tracking-[0.4em] block truncate">NeuroStyle IA</span>
+          <span class="text-primary text-[6px] font-black uppercase tracking-[0.2em] block truncate">Powered by Neural Tech</span>
         </div>
       </div>
       
-      <div class="hidden md:flex items-center space-x-12">
-        <router-link to="/about" class="text-white/40 hover:text-white transition-colors text-[9px] font-black uppercase tracking-[0.3em]">SOBRE EL CREADOR</router-link>
-        <router-link to="/support" class="text-white/40 hover:text-white transition-colors text-[9px] font-black uppercase tracking-[0.3em]">SOPORTE</router-link>
-      </div>
+      <!-- Hamburger Menu Button -->
+      <button 
+        @click="isMenuOpen = !isMenuOpen" 
+        class="w-10 h-10 flex items-center justify-center glass-panel rounded-xl hover:bg-white/10 transition-colors pointer-events-auto"
+      >
+        <component :is="isMenuOpen ? LucideX : LucideMenu" class="text-primary" :size="20" />
+      </button>
     </header>
-          <div class="relative w-full h-full glass-panel rounded-full flex items-center justify-center shadow-2xl border-white/5 overflow-hidden p-8">
-             <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.5)] transition-transform duration-1000 group-hover:scale-110" alt="NeuroStyle Logo" />
-             
-             <!-- Shimmer effect -->
+
+    <!-- Slide-over Mobile Menu -->
+    <transition
+      enter-active-class="transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)"
+      enter-from-class="translate-x-full opacity-0"
+      leave-active-class="transition-all duration-300 ease-in"
+      leave-to-class="translate-x-full opacity-0"
+    >
+      <div v-if="isMenuOpen" class="fixed inset-0 z-[95] flex justify-end">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="isMenuOpen = false"></div>
+        <div class="relative w-80 h-full glass-panel border-l border-white/5 p-12 flex flex-col pt-32 bg-black/95">
+          <router-link 
+            to="/about" 
+            class="group mb-10"
+            @click="isMenuOpen = false"
+          >
+            <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-1">Sobre el Creador</span>
+            <span class="text-[8px] text-gray-600 uppercase tracking-[0.2em]">Visión & Portafolio de Edissof</span>
+          </router-link>
+          
+          <router-link 
+            to="/support" 
+            class="group mb-12"
+            @click="isMenuOpen = false"
+          >
+            <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-1">Soporte Maestro</span>
+            <span class="text-[8px] text-gray-600 uppercase tracking-[0.2em]">Conserjería Técnica</span>
+          </router-link>
+
+          <div class="mt-auto">
+             <a 
+              href="https://devedisof-mi-cv.netlify.app/" 
+              target="_blank" 
+              class="flex flex-col space-y-3 opacity-40 hover:opacity-100 transition-opacity"
+            >
+              <span class="text-[8px] font-black tracking-[0.6em] text-primary uppercase">Elite Developer Portfolio</span>
+              <div class="w-12 h-[1px] bg-primary/20"></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </transition>
+
+    <!-- Main Hero Landing -->
+    <main class="z-10 w-full max-w-5xl flex flex-col items-center pt-32 pb-20 px-6">
+      <div class="flex flex-col items-center animate-fade-in-up w-full">
+        <!-- Main Shop Logo -->
+        <div class="w-48 h-48 sm:w-64 sm:h-64 mb-12 relative group shrink-0">
+          <div class="absolute inset-0 bg-primary/25 blur-3xl rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse-glow"></div>
+          <div class="relative w-full h-full glass-panel rounded-full flex items-center justify-center shadow-2xl border-white/10 overflow-hidden p-8">
+             <img 
+               v-if="shopStore.logoUrl"
+               :src="shopStore.logoUrl" 
+               class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.5)] transition-transform duration-1000 group-hover:scale-110" 
+               :alt="shopStore.shopName" 
+             />
+             <img 
+               v-else
+               :src="logoImg" 
+               class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.5)] transition-transform duration-1000 group-hover:scale-110 opacity-20" 
+               alt="Placeholder" 
+             />
              <div class="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
                 <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer-fast"></div>
              </div>
           </div>
         </div>
-      </div>
 
-      <!-- Main Title -->
-      
-      <!-- Description / Shop Name -->
-      <div class="relative z-10 flex flex-col items-center animate-fade-in-up">
-        <!-- Main Shop Identity -->
-        <div v-if="shopStore.logoUrl" class="w-48 h-48 sm:w-64 sm:h-64 mb-12 relative group">
-          <div class="absolute inset-0 bg-primary/20 blur-[100px] rounded-full group-hover:bg-primary/40 transition-all duration-1000"></div>
-          <img :src="shopStore.logoUrl" class="w-full h-full object-contain relative z-10 filter drop-shadow-[0_0_30px_#DAA520]" :alt="shopStore.shopName" />
-        </div>
-
-        <h1 class="text-white text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter mb-6 uppercase text-center text-glow">
+        <!-- Shop Info -->
+        <h1 class="text-white text-5xl sm:text-7xl md:text-8xl font-outfit font-black tracking-tighter mb-6 uppercase text-center text-glow break-words w-full leading-[0.9]">
           {{ shopStore.shopName }}
         </h1>
         
-        <p class="text-gray-400 text-sm sm:text-lg md:text-xl font-light max-w-2xl text-center mb-16 leading-relaxed tracking-wide px-6">
+        <p class="text-gray-400 text-sm sm:text-base md:text-xl font-light max-w-2xl text-center mb-16 leading-relaxed tracking-widest px-6 uppercase opacity-80 break-words">
           {{ shopStore.shopDescription || 'Elevando el arte de la barbería con precisión neural y estilo maestro.' }}
         </p>
       </div>
 
-      <!-- Staggered Action Buttons (Icon-free) -->
+      <!-- Action Buttons -->
       <div class="flex flex-col gap-8 justify-center items-center w-full max-w-md animate-reveal-actions">
-        <!-- AI Scan Button (The Star) -->
         <router-link 
           to="/scan" 
           class="group relative w-full px-10 py-7 bg-primary text-black font-black text-xl rounded-2xl transition-all duration-700 hover:scale-[1.03] active:scale-95 shadow-[0_25px_50px_-12px_rgba(218,165,32,0.4)] flex items-center justify-center overflow-hidden"
         >
-          <!-- Shimmer logic -->
           <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          <span class="font-outfit uppercase tracking-[0.1em] relative z-10 transition-all duration-500 group-hover:tracking-[0.15em]">INICIAR ESCANEO IA</span>
+          <span class="font-outfit uppercase tracking-[0.1em] relative z-10 transition-all duration-500 group-hover:tracking-[0.15em] text-center">INICIAR ESCANEO IA</span>
         </router-link>
 
-        <!-- Secondary Actions in Row -->
         <div class="grid grid-cols-2 gap-4 w-full">
           <router-link 
             to="/book" 
-            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-2xl transition-all duration-500 flex items-center justify-center overflow-hidden border-white/5 hover:border-primary/40"
+            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-[24px] transition-all duration-500 flex items-center justify-center overflow-hidden border-white/5 hover:border-primary/40"
           >
-            <span class="font-outfit uppercase tracking-[0.1em] text-xs md:text-sm group-hover:text-primary transition-colors">CITAS</span>
+            <span class="font-outfit uppercase tracking-[0.1em] text-[10px] group-hover:text-primary transition-colors">Agendar Cita</span>
           </router-link>
 
           <router-link 
             to="/store" 
-            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-2xl transition-all duration-500 border-white/5 hover:border-primary/40 flex items-center justify-center overflow-hidden"
+            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-[24px] transition-all duration-500 border-white/5 hover:border-primary/40 flex items-center justify-center overflow-hidden"
           >
-            <span class="font-outfit uppercase tracking-[0.1em] text-xs md:text-sm group-hover:text-primary transition-colors">CATÁLOGO</span>
+            <span class="font-outfit uppercase tracking-[0.1em] text-[10px] group-hover:text-primary transition-colors">Ver Catálogo</span>
           </router-link>
         </div>
 
         <!-- Professional Access -->
         <router-link 
           to="/login" 
-          class="flex items-center space-x-4 text-gray-400 hover:text-primary transition-all duration-700 text-[9px] font-black uppercase tracking-[0.5em] mt-12 group opacity-80 hover:opacity-100"
+          class="flex items-center space-x-3 text-gray-500 hover:text-primary transition-all duration-700 text-[10px] font-black uppercase tracking-[0.4em] mt-8 group opacity-60 hover:opacity-100"
         >
-           <div class="w-12 h-[1px] bg-white/10 group-hover:w-16 group-hover:bg-primary/40 transition-all duration-700"></div>
-           <span>ACCESO BARBERO</span>
-           <div class="w-12 h-[1px] bg-white/10 group-hover:w-16 group-hover:bg-primary/40 transition-all duration-700"></div>
+           <div class="w-8 h-[1px] bg-white/10 group-hover:w-12 group-hover:bg-primary/40 transition-all duration-700"></div>
+           <span>Acceso Barbero</span>
+           <div class="w-8 h-[1px] bg-white/10 group-hover:w-12 group-hover:bg-primary/40 transition-all duration-700"></div>
         </router-link>
-
-        <!-- PWA Install Button (Conditional) -->
-        <div v-if="deferredPrompt" class="mt-12 animate-reveal-actions">
-          <button 
-            @click="installApp"
-            class="group relative px-8 py-4 glass-panel border-primary/20 text-primary font-black text-[10px] rounded-2xl transition-all duration-500 hover:bg-primary hover:text-black hover:scale-105 active:scale-95 shadow-xl shadow-primary/5 uppercase tracking-[0.2em]"
-          >
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer-fast"></div>
-            Instalar Aplicación
-          </button>
-        </div>
       </div>
 
-      <!-- Feature Badges Section (Minimalist) -->
-      <div class="mt-32 mb-12 flex flex-wrap justify-center gap-10 md:gap-14 opacity-60 hover:opacity-100 transition-all duration-1000 animate-reveal-badges">
-          <div class="flex flex-col items-center">
-              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">NEURAL MAPPING</span>
-          </div>
-          <div class="flex flex-col items-center">
-              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">IA GENERATIVA</span>
-          </div>
-          <div class="flex flex-col items-center">
-              <span class="text-[8px] font-bold tracking-[0.4em] uppercase">MASTER STYLE</span>
-          </div>
+      <!-- Feature Badges Section -->
+      <div class="mt-24 flex flex-wrap justify-center gap-6 opacity-40 hover:opacity-100 transition-all duration-1000 animate-reveal-badges px-6">
+          <span class="text-[8px] font-black tracking-[0.4em] uppercase border border-white/5 px-6 py-2.5 rounded-full">Neural Mapping</span>
+          <span class="text-[8px] font-black tracking-[0.4em] uppercase border border-white/5 px-6 py-2.5 rounded-full">AI Generative</span>
+          <span class="text-[8px] font-black tracking-[0.4em] uppercase border border-white/5 px-6 py-2.5 rounded-full">Master Style</span>
       </div>
-    </div>
+    </main>
 
-    <!-- Bottom Footer Fade -->
-    <div class="absolute bottom-0 left-0 right-0 h-[35vh] bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none z-0"></div>
-
-    <!-- Developer Credit & Navigation -->
-    <div class="absolute bottom-8 left-0 right-0 z-20 px-6 md:px-12 animate-reveal-badges">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 py-8 border-t border-white/5 bg-black/40 backdrop-blur-md rounded-t-[40px]">
-        <div class="flex items-center space-x-8">
-          <router-link to="/about" class="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-colors">SOBRE EL CREADOR</router-link>
-          <router-link to="/support" class="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-colors">SOPORTE</router-link>
-        </div>
-        
-        <div class="text-[8px] font-black uppercase tracking-[0.6em] text-primary/30">
-          POWERED BY NEUROSTYLE IA
-        </div>
-      </div>
-    </div>
+    <!-- Bottom Footer -->
+    <footer class="mt-auto py-12 w-full text-center relative z-20 border-t border-white/5 bg-black/40 backdrop-blur-md">
+        <p class="text-white/20 text-[7px] font-black uppercase tracking-[0.8em]">MARCA REGISTRADA <span class="mx-2 text-primary/20">|</span> POWERED BY NEUROSTYLE IA</p>
+    </footer>
+  </div>
+</template>
   </div>
 </template>
 
-<script setup>
 import { onMounted, ref } from 'vue'
 import logoImg from '../assets/logo.png'
+import { LucideMenu, LucideX } from 'lucide-vue-next'
 import { useShopStore } from '../stores/shopStore'
 
 const shopStore = useShopStore()
 const deferredPrompt = ref(null)
+const isMenuOpen = ref(false)
 
 onMounted(() => {
     shopStore.fetchSettings()
