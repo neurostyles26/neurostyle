@@ -13,6 +13,10 @@ CREATE TABLE IF NOT EXISTS public.shop_settings (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 1.1 Add description column if it doesn't exist (Migration)
+ALTER TABLE public.shop_settings 
+ADD COLUMN IF NOT EXISTS description TEXT DEFAULT 'Elevando el arte de la barbería con precisión neural y estilo maestro.';
+
 -- 2. Insert default singleton record
 INSERT INTO public.shop_settings (id, shop_name, description)
 VALUES ('00000000-0000-0000-0000-000000000001'::uuid, 'NeuroStyle Barber', 'Elevando el arte de la barbería con precisión neural y estilo maestro.')
