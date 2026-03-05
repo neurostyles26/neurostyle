@@ -72,7 +72,7 @@ export const applyHairstyleOverlay = async (userImageBase64, landmarks, hairstyl
                 ctx.drawImage(
                     hairImg,
                     -overlayWidth / 2,
-                    -overlayHeight * 0.3, // Lowered even further (from 0.45) to sit naturally on forehead
+                    -overlayHeight * 0.25, // Centering the hairline better (from 0.3)
                     overlayWidth,
                     overlayHeight
                 )

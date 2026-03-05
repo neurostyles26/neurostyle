@@ -1,6 +1,5 @@
-<template>
-  <div class="relative w-full h-full bg-transparent overflow-hidden flex items-center justify-center">
-    <!-- Camera Feed (The Bottom Layer) -->
+  <div class="relative w-full h-full bg-transparent overflow-hidden flex items-center justify-center" style="background-color: transparent !important;">
+    <!-- Camera Feed (LOWER LAYER - Z-INDEX 0) -->
     <video
       ref="videoRef"
       autoplay
@@ -8,7 +7,7 @@
       muted
       webkit-playsinline
       class="absolute inset-0 w-full h-full object-cover pointer-events-none"
-      style="transform: scaleX(-1); object-position: center; z-index: 0; opacity: 1 !important;"
+      style="transform: scaleX(-1); object-position: center; z-index: 0; opacity: 1 !important; background: transparent !important;"
     ></video>
 
     <!-- HUD / Mesh Canvas Overlay -->
@@ -59,41 +58,34 @@
     <!-- Real-time HUD UI -->
     <div v-if="active" class="absolute inset-0 pointer-events-none z-20 flex flex-col items-center justify-center">
         <!-- Visual Silhouette Guide (The Frame) -->
-        <div class="absolute inset-0 flex items-center justify-center opacity-40 transition-all duration-700" :class="isQualityGood ? 'scale-100' : 'scale-[1.05]'">
-            <svg width="100%" height="100%" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full max-w-lg">
-                <path 
-                    d="M200 100C120 100 60 160 60 280C60 400 120 500 200 500C280 500 340 400 340 280C340 160 280 100 200 100Z" 
-                    :stroke="isQualityGood ? '#DAA520' : '#ef4444'" 
-                    stroke-width="2" 
-                    stroke-dasharray="10 10"
-                    class="transition-colors duration-500"
-                />
-                <circle cx="200" cy="220" r="5" :fill="isQualityGood ? '#DAA520' : '#ef4444'" class="animate-pulse" />
-                <rect x="140" y="480" width="120" height="2" :fill="isQualityGood ? '#DAA520' : '#ef4444'" opacity="0.5" />
-            </svg>
-        </div>
-
-        <!-- Frame Accents (Corner brackets) -->
-        <div class="absolute inset-x-8 inset-y-16 border border-white/5 rounded-[60px]">
-            <div :class="['absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 rounded-tl-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
-            <div :class="['absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 rounded-tr-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
-            <div :class="['absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 rounded-bl-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
-            <div :class="['absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 rounded-br-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+            <div class="relative w-72 h-96 sm:w-80 sm:h-[450px] flex items-center justify-center border-2 border-dashed border-white/20 rounded-full transition-all duration-700" :class="isQualityGood ? 'border-primary/60 scale-100' : 'border-red-500/40 scale-[1.02]'">
+                <div class="absolute inset-0 bg-primary/5 blur-3xl rounded-full opacity-20"></div>
+                <!-- Face Mask SVG -->
+                <svg width="240" height="320" viewBox="0 0 240 320" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-60">
+                    <path d="M120 20C70 20 30 70 30 140C30 210 70 290 120 290C170 290 210 210 210 140C210 70 170 20 120 20Z" :stroke="isQualityGood ? '#DAA520' : '#ef4444'" stroke-width="2" />
+                    <circle cx="80" cy="120" r="4" :fill="isQualityGood ? '#DAA520' : '#ef4444'" opacity="0.4" />
+                    <circle cx="160" cy="120" r="4" :fill="isQualityGood ? '#DAA520' : '#ef4444'" opacity="0.4" />
+                    <path d="M90 210C100 220 140 220 150 210" :stroke="isQualityGood ? '#DAA520' : '#ef4444'" stroke-width="2" opacity="0.4" />
+                </svg>
+                <!-- Central Indicator -->
+                <div class="w-1 h-32 bg-primary/20 absolute top-0 left-1/2 -translate-x-1/2"></div>
+            </div>
         </div>
 
         <!-- Status Warnings (Center bottom) -->
-        <div class="absolute bottom-40 w-full flex justify-center px-10">
+        <div class="absolute bottom-40 w-full flex flex-col items-center justify-center px-10">
             <transition enter-active-class="animate-bounce" leave-active-class="opacity-0">
-                <div v-show="warning" class="bg-red-600/90 backdrop-blur-md text-white font-black text-[10px] px-10 py-4 rounded-full uppercase tracking-[0.3em] shadow-2xl border border-white/10 text-center">
+                <div v-show="warning" class="bg-red-600/90 backdrop-blur-md text-white font-black text-[12px] px-10 py-5 rounded-full uppercase tracking-[0.3em] shadow-2xl border border-white/10 text-center mb-4">
                     {{ warning }}
                 </div>
             </transition>
             <transition enter-active-class="animate-pulse" leave-active-class="opacity-0">
-                <div v-show="!warning && isQualityGood" class="bg-primary text-black font-black text-[10px] px-10 py-4 rounded-full uppercase tracking-[0.3em] shadow-[0_0_50px_rgba(218,165,32,0.4)] text-center">
-                    Posición Perfecta - Analizando
+                <div v-show="!warning && isQualityGood" class="bg-primary text-black font-black text-[12px] px-10 py-5 rounded-full uppercase tracking-[0.3em] shadow-[0_0_50px_rgba(218,165,32,0.6)] text-center">
+                    POSICIÓN PERFECTA - LISTO
                 </div>
-                <div v-show="!warning && !isQualityGood && active" class="bg-white/10 backdrop-blur-md text-white/60 font-black text-[10px] px-10 py-4 rounded-full uppercase tracking-[0.3em] border border-white/5 text-center">
-                    Encuadra tu rostro en la silueta
+                <div v-show="!warning && !isQualityGood && active" class="bg-white/10 backdrop-blur-md text-white font-black text-[12px] px-10 py-5 rounded-full uppercase tracking-[0.3em] border border-white/10 text-center">
+                    UBICA TU ROSTRO EN EL MARCO
                 </div>
             </transition>
         </div>
@@ -155,6 +147,15 @@ const initCamera = async () => {
     error.value = false
     errorMessage.value = ''
     
+    // Safety timeout to prevent stuck loading screen
+    const safetyTimeout = setTimeout(() => {
+        if (loading.value) {
+            console.warn("Camera: Safety timeout reached. Forcing loading to false.")
+            loading.value = false
+            active.value = true
+        }
+    }, 12000)
+    
     try {
         const landmarkerPromise = initFaceLandmarker()
         
@@ -207,6 +208,7 @@ const initCamera = async () => {
                 console.warn("Face AI failed to load, basic camera mode enabled.")
             }
             
+            clearTimeout(safetyTimeout)
             loading.value = false
             active.value = true
             emit('started')

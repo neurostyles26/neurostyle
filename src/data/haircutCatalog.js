@@ -17,7 +17,8 @@ export const haircutCatalog = [
         faceShapes: ["Diamante", "Alargado", "Ovalado"],
         desc: "Audaz y vanguardista. Corto al frente y lados, con capas traseras dramáticas y mucha textura.",
         maintenance: "Alto",
-        matchScore: 95
+        matchScore: 95,
+        overlayImage: "/assets/hairstyles/m2_undercut_fade.png"
     },
     {
         id: "m3",
@@ -128,7 +129,8 @@ export const haircutCatalog = [
         faceShapes: ["Redondo", "Cuadrado", "Ovalado"],
         desc: "Clásico infalible. Capas largas para dar ligereza y flequillo abierto para suavizar facciones.",
         maintenance: "Medio",
-        matchScore: 96
+        matchScore: 96,
+        overlayImage: "/assets/hairstyles/f2_long_wavy.png"
     },
     {
         id: "f7",

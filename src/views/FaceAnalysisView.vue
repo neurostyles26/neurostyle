@@ -1,5 +1,4 @@
-<template>
-  <div class="min-h-screen bg-black flex flex-col p-6 font-inter overflow-hidden relative">
+  <div class="min-h-screen bg-transparent flex flex-col p-6 font-inter overflow-hidden relative">
     <!-- Animated background aura -->
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[50vh] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
 
