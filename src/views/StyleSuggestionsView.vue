@@ -42,10 +42,14 @@
 
       <!-- Recommendations Section -->
       <div class="mb-8 flex items-baseline justify-between px-2">
-        <h4 class="text-white text-xl font-outfit font-bold tracking-tight">Cortes Sugeridos</h4>
-        <div class="h-[1px] flex-1 bg-white/5 mx-4"></div>
-        <span class="text-primary text-[10px] font-bold uppercase tracking-widest">{{ filteredStyles.length }} Opciones</span>
-      </div>
+  <h4 class="text-white text-xl font-outfit font-bold tracking-tight">Cortes Sugeridos</h4>
+  <div class="h-[1px] flex-1 bg-white/5 mx-4"></div>
+  <span class="text-primary text-[10px] font-bold uppercase tracking-widest">{{ filteredStyles.length }} Opciones</span>
+</div>
+<!-- Fallback when no styles available -->
+<div v-if="filteredStyles.length === 0" class="text-center text-gray-400 py-8">
+  No hay estilos disponibles para la forma de rostro detectada. Ajusta la posición o prueba con otra forma.
+</div>
 
       <div class="space-y-6 mb-32">
         <div 

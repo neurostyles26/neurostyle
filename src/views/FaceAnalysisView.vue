@@ -1,4 +1,5 @@
-  <div class="min-h-screen bg-transparent flex flex-col p-6 font-inter overflow-hidden relative">
+<template>
+  <div class="min-h-screen bg-gradient-to-b from-[#0a0a0a] to-[#141414] flex flex-col p-6 font-inter overflow-hidden relative">
     <!-- Animated background aura -->
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[50vh] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -43,8 +44,8 @@
         <LucideChevronLeft class="text-primary" />
       </router-link>
       <div class="text-center">
-          <h2 class="text-white font-outfit font-bold text-xl tracking-tight uppercase">Escáner Biométrico</h2>
-          <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em] opacity-60">Motor de Análisis de Precisión</p>
+          <h2 class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-200 font-outfit font-black text-2xl tracking-tight uppercase drop-shadow-sm">Escáner Biométrico</h2>
+          <p class="text-primary text-[9px] font-black uppercase tracking-[0.4em] opacity-80 mt-1">Motor de Análisis de Precisión</p>
       </div>
       <div class="w-12 flex justify-end">
         <LucideLock class="text-white/20" :size="16" />
@@ -74,7 +75,7 @@
     </div>
 
     <!-- Camera Container -->
-    <div class="relative flex-1 rounded-[48px] overflow-hidden border border-white/10 bg-transparent shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-10 transition-all duration-700">
+    <div class="relative flex-1 rounded-[48px] overflow-hidden border border-white/20 bg-white/5 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-10 transition-all duration-700">
       <ProfessionalCamera 
         ref="cameraRef" 
         @quality-change="onQualityChange"
@@ -109,24 +110,24 @@
     </div>
 
     <!-- Info & Controls -->
-    <div class="mt-8 pb-4 z-10 flex flex-col items-center w-full">
-        <div class="flex items-center space-x-3 mb-8 bg-white/5 py-2.5 px-6 rounded-full border border-white/5 backdrop-blur-md">
+    <div class="mt-8 pb-4 z-10 flex flex-col items-center w-full glass-panel p-6 rounded-[32px] border border-white/10 shadow-2xl shadow-black/50">
+        <div class="flex items-center space-x-3 mb-6 bg-black/40 py-2.5 px-6 rounded-full border border-white/5 backdrop-blur-md">
             <div :class="['w-1.5 h-1.5 rounded-full shadow-lg transition-colors duration-500', isCameraActive ? 'bg-green-500 shadow-green-500/50 animate-pulse' : 'bg-red-500 shadow-red-500/50']"></div>
-            <p class="text-white/60 text-[9px] font-bold uppercase tracking-[0.2em]">{{ isCameraActive ? 'IA ACTIVA: ANÁLISIS EN TIEMPO REAL' : 'SISTEMA EN ESPERA' }}</p>
+            <p class="text-white/80 text-[10px] font-bold uppercase tracking-[0.2em]">{{ isCameraActive ? 'IA ACTIVA: ANÁLISIS EN TIEMPO REAL' : 'SISTEMA EN ESPERA' }}</p>
         </div>
         
         <button 
             @click="handleStartScan" 
             :disabled="processing"
-            class="w-full max-w-sm bg-primary text-black font-black py-7 rounded-[32px] flex items-center justify-center text-xl hover:scale-[1.02] active:scale-95 disabled:opacity-30 transition-all shadow-[0_15px_40px_rgba(218,165,32,0.3)] relative overflow-hidden group"
+            class="w-full max-w-sm bg-gradient-to-r from-primary to-amber-500 text-black font-black py-6 rounded-[24px] flex items-center justify-center text-lg hover:scale-[1.02] active:scale-95 disabled:opacity-30 transition-all shadow-[0_15px_40px_rgba(218,165,32,0.4)] relative overflow-hidden group"
         >
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            <span class="font-outfit uppercase tracking-[0.1em] group-hover:tracking-[0.15em] transition-all duration-500">
+            <span class="font-outfit uppercase tracking-[0.15em] transition-all duration-500 drop-shadow-md">
               {{ !isCameraActive ? 'CONECTAR ESCÁNER' : (isQualityGood ? 'ANALIZAR BIOMETRÍA' : 'FORZAR ANÁLISIS') }}
             </span>
         </button>
         
-        <p class="text-gray-600 text-center text-[9px] mt-8 px-10 leading-relaxed uppercase tracking-[0.3em] font-medium opacity-50">
+        <p class="text-gray-500 text-center text-[8px] mt-6 px-10 leading-relaxed uppercase tracking-[0.4em] font-medium opacity-60">
             PROCESADO POR NEUROSTYLE ENGINE <span class="mx-1 text-primary/20">|</span> LOCAL ONLY
         </p>
     </div>

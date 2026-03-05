@@ -1,3 +1,4 @@
+<template>
   <div class="relative w-full h-full bg-transparent overflow-hidden flex items-center justify-center" style="background-color: transparent !important;">
     <!-- Camera Feed (LOWER LAYER - Z-INDEX 0) -->
     <video
@@ -31,7 +32,7 @@
     </div>
 
     <!-- Permission Request -->
-    <div v-if="!active && !error && !loading" class="absolute inset-0 z-40 flex flex-col items-center justify-center p-8 bg-black">
+    <div v-if="!active && !error && !loading" class="absolute inset-0 z-40 flex flex-col items-center justify-center p-8 bg-black/40 backdrop-blur-md">
         <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-8 animate-pulse">
             <LucideShieldCheck class="text-primary" :size="40" />
         </div>
@@ -39,19 +40,19 @@
         <p class="text-gray-400 text-center text-sm mb-10 max-w-xs leading-relaxed">
             Necesitamos acceso a tu cámara para realizar el escaneo biométrico 3D.
         </p>
-        <button @click="initCamera" class="w-full max-w-xs bg-primary text-black font-bold py-5 rounded-2xl shadow-lg shadow-primary/20">
+        <button @click="initCamera" class="w-full max-w-xs bg-primary text-black font-bold py-5 rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
             CONCEDER PERMISO
         </button>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="absolute inset-0 z-30 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+    <div v-if="loading" class="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-md">
       <div class="flex flex-col items-center">
           <div class="relative w-20 h-20 mb-6">
               <div class="absolute inset-0 border-2 border-primary/20 rounded-full"></div>
               <div class="absolute inset-0 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <p class="text-primary font-black text-[10px] tracking-[0.4em] uppercase animate-pulse">Cargando Motores Biométricos...</p>
+          <p class="text-primary font-black text-[10px] tracking-[0.4em] uppercase animate-pulse drop-shadow-[0_0_8px_rgba(218,165,32,0.8)]">Cargando Motores Biométricos...</p>
       </div>
     </div>
 
