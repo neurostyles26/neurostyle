@@ -1,3 +1,4 @@
+<template>
   <div class="relative w-full h-full bg-transparent overflow-hidden flex items-center justify-center">
     <!-- Camera Feed (The Bottom Layer) -->
     <video
