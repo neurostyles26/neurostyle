@@ -89,22 +89,9 @@
         leave-active-class="transition-opacity duration-500"
         leave-to-class="opacity-0"
       >
-        <div v-if="processing" class="absolute inset-0 bg-black/40 backdrop-blur-[4px] flex flex-col items-center justify-center z-50 text-center px-10">
-            <div class="relative w-24 h-24 mb-10">
-                <div class="absolute inset-0 border-[1px] border-primary/20 rounded-full"></div>
-                <div class="absolute inset-0 border-[1px] border-primary border-t-transparent rounded-full animate-spin"></div>
-                <div class="absolute inset-6 border-[0.5px] border-primary/40 rounded-full animate-pulse"></div>
-            </div>
-            
-            <h3 class="text-white font-outfit font-black text-3xl mb-4 tracking-tighter uppercase gold-glow">{{ status }}</h3>
-            
-            <div class="w-full max-w-[200px] h-0.5 bg-white/10 rounded-full overflow-hidden mb-4">
-                <div class="h-full bg-primary animate-progress-fill"></div>
-            </div>
-            
-            <p class="text-primary/60 font-mono text-[9px] uppercase tracking-[0.3em] animate-pulse">
-                Procesando malla geométrica facial...
-            </p>
+        <div v-if="processing" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-50">
+            <h3 class="text-white font-bold text-2xl mb-4 uppercase">{{ status }}</h3>
+            <p class="text-primary/80 font-mono text-xs uppercase animate-pulse">Procesando malla geométrica...</p>
         </div>
       </transition>
     </div>
