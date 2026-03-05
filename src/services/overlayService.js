@@ -53,9 +53,9 @@ export const applyHairstyleOverlay = async (userImageBase64, landmarks, hairstyl
                 const angle = Math.atan2(dy, dx)
 
                 // Calculate Center Position
-                // Anchor to forehead but shifted up slightly
+                // Anchor to forehead (landmark 10) but lowered for natural fit
                 const centerX = forehead.x * w
-                const centerY = (forehead.y * h) - (overlayHeight * 0.1) // Adjust offset based on forehead
+                const centerY = forehead.y * h // Neutral point
 
                 // 3. Draw Overlay
                 ctx.save()
@@ -72,7 +72,7 @@ export const applyHairstyleOverlay = async (userImageBase64, landmarks, hairstyl
                 ctx.drawImage(
                     hairImg,
                     -overlayWidth / 2,
-                    -overlayHeight * 0.4, // Shift up further to cover top of head
+                    -overlayHeight * 0.3, // Lowered even further (from 0.45) to sit naturally on forehead
                     overlayWidth,
                     overlayHeight
                 )

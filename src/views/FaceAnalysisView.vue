@@ -75,7 +75,7 @@
     </div>
 
     <!-- Camera Container -->
-    <div class="relative flex-1 rounded-[48px] overflow-hidden border border-white/10 bg-[#050505] shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-10 transition-all duration-700">
+    <div class="relative flex-1 rounded-[48px] overflow-hidden border border-white/10 bg-transparent shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-10 transition-all duration-700">
       <ProfessionalCamera 
         ref="cameraRef" 
         @quality-change="onQualityChange"

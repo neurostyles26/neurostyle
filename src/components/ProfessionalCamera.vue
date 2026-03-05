@@ -1,6 +1,5 @@
-<template>
-  <div class="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
-    <!-- Camera Feed -->
+  <div class="relative w-full h-full bg-transparent overflow-hidden flex items-center justify-center">
+    <!-- Camera Feed (The Bottom Layer) -->
     <video
       ref="videoRef"
       autoplay
@@ -8,7 +7,7 @@
       muted
       webkit-playsinline
       class="absolute inset-0 w-full h-full object-cover pointer-events-none"
-      style="transform: scaleX(-1); object-position: center; z-index: 1; opacity: 1 !important; visibility: visible !important;"
+      style="transform: scaleX(-1); object-position: center; z-index: 0; opacity: 1 !important;"
     ></video>
 
     <!-- HUD / Mesh Canvas Overlay -->
@@ -57,46 +56,43 @@
     </div>
 
     <!-- Real-time HUD UI -->
-    <div v-if="active" class="absolute inset-0 pointer-events-none z-20 flex flex-col items-center justify-center p-10">
-        <!-- Frame Accents (Thicker and brighter) -->
-        <div class="absolute inset-x-6 inset-y-12 border border-white/5 rounded-[60px]">
-            <div :class="['absolute top-0 left-0 w-20 h-20 border-t-[8px] border-l-[8px] rounded-tl-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
-            <div :class="['absolute top-0 right-0 w-20 h-20 border-t-[8px] border-r-[8px] rounded-tr-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
-            <div :class="['absolute bottom-0 left-0 w-20 h-20 border-b-[8px] border-l-[8px] rounded-bl-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
-            <div :class="['absolute bottom-0 right-0 w-20 h-20 border-b-[8px] border-r-[8px] rounded-br-[50px] m-1 transition-all duration-500 shadow-[0_0_15px_rgba(218,165,32,0.3)]', isQualityGood ? 'border-primary' : 'border-red-500/60']"></div>
+    <div v-if="active" class="absolute inset-0 pointer-events-none z-20 flex flex-col items-center justify-center">
+        <!-- Visual Silhouette Guide (The Frame) -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-40 transition-all duration-700" :class="isQualityGood ? 'scale-100' : 'scale-[1.05]'">
+            <svg width="100%" height="100%" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full max-w-lg">
+                <path 
+                    d="M200 100C120 100 60 160 60 280C60 400 120 500 200 500C280 500 340 400 340 280C340 160 280 100 200 100Z" 
+                    :stroke="isQualityGood ? '#DAA520' : '#ef4444'" 
+                    stroke-width="2" 
+                    stroke-dasharray="10 10"
+                    class="transition-colors duration-500"
+                />
+                <circle cx="200" cy="220" r="5" :fill="isQualityGood ? '#DAA520' : '#ef4444'" class="animate-pulse" />
+                <rect x="140" y="480" width="120" height="2" :fill="isQualityGood ? '#DAA520' : '#ef4444'" opacity="0.5" />
+            </svg>
         </div>
 
-        <!-- HUD Left (Enhanced Contrast) -->
-        <div class="absolute top-24 left-14 text-white/50 font-mono text-[9px] space-y-3 uppercase tracking-[0.2em] hidden md:block">
-            <div class="flex items-center">
-                <div :class="['w-1.5 h-1.5 mr-3 transition-colors duration-500', isQualityGood ? 'bg-primary' : 'bg-red-500']"></div>
-                <span class="gold-glow">SENS_VAL: {{ metrics.heightWidthRatio ? metrics.heightWidthRatio.toFixed(2) : 'CALIBRATING' }}</span>
-            </div>
-            <div class="flex items-center">
-                <div :class="['w-1.5 h-1.5 mr-3 transition-colors duration-500', isQualityGood ? 'bg-primary' : 'bg-red-500']"></div>
-                <span class="gold-glow">BIOM_LOCK: {{ isQualityGood ? 'HIGH' : 'LOW' }}</span>
-            </div>
-            <div class="flex items-center">
-                <div :class="['w-1.5 h-1.5 mr-3 transition-colors duration-500', isQualityGood ? 'bg-primary' : 'bg-red-500']"></div>
-                <span class="gold-glow">QUALITY: {{ qualityScore }}%</span>
-            </div>
+        <!-- Frame Accents (Corner brackets) -->
+        <div class="absolute inset-x-8 inset-y-16 border border-white/5 rounded-[60px]">
+            <div :class="['absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 rounded-tl-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
+            <div :class="['absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 rounded-tr-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
+            <div :class="['absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 rounded-bl-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
+            <div :class="['absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 rounded-br-[40px] transition-all duration-500', isQualityGood ? 'border-primary' : 'border-red-500/40']"></div>
         </div>
 
-        <!-- HID Right -->
-        <div class="absolute top-24 right-14 text-right text-white/30 font-mono text-[9px] space-y-3 uppercase tracking-[0.2em] hidden md:block">
-            <p class="gold-glow">X: {{ Math.round(facePos.x * 100) }} Y: {{ Math.round(facePos.y * 100) }}</p>
-            <p>RESOLUTION: 720P</p>
-            <p class="text-primary/40">NEURAL_ENGINE: AKTIV</p>
-        </div>
-
-        <!-- Status Warnings -->
-        <div class="absolute bottom-36 text-center pointer-events-none">
+        <!-- Status Warnings (Center bottom) -->
+        <div class="absolute bottom-40 w-full flex justify-center px-10">
             <transition enter-active-class="animate-bounce" leave-active-class="opacity-0">
-                <div v-if="warning" class="bg-red-600 text-white font-black text-[10px] px-8 py-3 rounded-full uppercase tracking-[0.3em] shadow-2xl border border-white/10">
+                <div v-show="warning" class="bg-red-600/90 backdrop-blur-md text-white font-black text-[10px] px-10 py-4 rounded-full uppercase tracking-[0.3em] shadow-2xl border border-white/10 text-center">
                     {{ warning }}
                 </div>
-                <div v-else-if="isQualityGood" class="bg-primary text-black font-black text-[10px] px-8 py-3 rounded-full uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(218,165,32,0.4)] animate-pulse">
-                    Centro Óptico Identificado
+            </transition>
+            <transition enter-active-class="animate-pulse" leave-active-class="opacity-0">
+                <div v-show="!warning && isQualityGood" class="bg-primary text-black font-black text-[10px] px-10 py-4 rounded-full uppercase tracking-[0.3em] shadow-[0_0_50px_rgba(218,165,32,0.4)] text-center">
+                    Posición Perfecta - Analizando
+                </div>
+                <div v-show="!warning && !isQualityGood && active" class="bg-white/10 backdrop-blur-md text-white/60 font-black text-[10px] px-10 py-4 rounded-full uppercase tracking-[0.3em] border border-white/5 text-center">
+                    Encuadra tu rostro en la silueta
                 </div>
             </transition>
         </div>
