@@ -72,82 +72,121 @@
     </transition>
 
     <!-- Main Hero Landing -->
-    <main class="z-10 w-full max-w-5xl flex flex-col items-center pt-32 pb-20 px-6">
-      <div class="flex flex-col items-center animate-fade-in-up w-full">
-        <!-- Main Shop Logo -->
-        <div class="w-48 h-48 sm:w-64 sm:h-64 mb-12 relative group shrink-0">
-          <div class="absolute inset-0 bg-primary/25 blur-3xl rounded-full opacity-60 group-hover:opacity-100 transition-opacity duration-1000 animate-pulse-glow"></div>
-          <div class="relative w-full h-full glass-panel rounded-full flex items-center justify-center shadow-2xl border-white/10 overflow-hidden p-8">
-             <img 
-               v-if="shopStore.logoUrl"
-               :src="shopStore.logoUrl" 
-               class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.5)] transition-transform duration-1000 group-hover:scale-110" 
-               :alt="shopStore.shopName" 
-             />
-             <img 
-               v-else
-               :src="logoImg" 
-               class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.5)] transition-transform duration-1000 group-hover:scale-110 opacity-20" 
-               alt="Placeholder" 
-             />
-             <div class="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
-                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer-fast"></div>
-             </div>
+    <main class="z-10 w-full max-w-6xl flex flex-col items-center pt-32 pb-20 px-6">
+      <div class="flex flex-col items-center animate-fade-in-up w-full text-center">
+        <!-- Sculptural Logo Lens -->
+        <div class="relative w-40 h-40 sm:w-56 sm:h-56 mb-12 group">
+          <div class="absolute inset-[-20px] bg-primary/20 blur-[60px] rounded-full animate-pulse-glow"></div>
+          <div class="relative w-full h-full rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-white/10 to-primary/40 shadow-[0_0_50px_rgba(218,165,32,0.2)]">
+            <div class="w-full h-full rounded-full bg-[#050505] flex items-center justify-center overflow-hidden p-8 border border-white/5 relative">
+              <img 
+                v-if="shopStore.logoUrl"
+                :src="shopStore.logoUrl" 
+                class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(218,165,32,0.4)] transition-all duration-1000 group-hover:scale-110 group-hover:rotate-3" 
+                :alt="shopStore.shopName" 
+              />
+              <img 
+                v-else
+                :src="logoImg" 
+                class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(218,165,32,0.4)] opacity-20" 
+                alt="Placeholder" 
+              />
+              <!-- Shimmer effect -->
+              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            </div>
           </div>
+          <!-- Decorative Rings -->
+          <div class="absolute inset-[-10px] border border-primary/10 rounded-full animate-spin-extremely-slow"></div>
+          <div class="absolute inset-[-30px] border border-white/5 rounded-full animate-spin-extremely-slow" style="animation-direction: reverse; animation-duration: 120s"></div>
         </div>
 
-        <!-- Shop Info -->
-        <h1 class="text-white text-5xl sm:text-7xl md:text-8xl font-outfit font-black tracking-tighter mb-6 uppercase text-center text-glow break-words w-full leading-[0.9]">
-          {{ shopStore.shopName }}
-        </h1>
+        <!-- Innovative Typography -->
+        <div class="relative mb-6">
+          <h1 class="text-white text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter uppercase leading-[0.85] text-glow overflow-visible px-4">
+            {{ shopStore.shopName }}
+          </h1>
+          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-48 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+        </div>
         
-        <p class="text-gray-400 text-sm sm:text-base md:text-xl font-light max-w-2xl text-center mb-16 leading-relaxed tracking-widest px-6 uppercase opacity-80 break-words">
-          {{ shopStore.shopDescription || 'Elevando el arte de la barbería con precisión neural y estilo maestro.' }}
+        <p class="text-gray-500 text-xs sm:text-sm md:text-lg font-medium max-w-xl mb-20 leading-relaxed tracking-[0.3em] uppercase opacity-60">
+          {{ shopStore.shopDescription || 'Precision Neural & Master Barbering' }}
         </p>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex flex-col gap-8 justify-center items-center w-full max-w-md animate-reveal-actions">
-        <router-link 
-          to="/scan" 
-          class="group relative w-full px-10 py-7 bg-primary text-black font-black text-xl rounded-2xl transition-all duration-700 hover:scale-[1.03] active:scale-95 shadow-[0_25px_50px_-12px_rgba(218,165,32,0.4)] flex items-center justify-center overflow-hidden"
-        >
-          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          <span class="font-outfit uppercase tracking-[0.1em] relative z-10 transition-all duration-500 group-hover:tracking-[0.15em] text-center">INICIAR ESCANEO IA</span>
-        </router-link>
+      <!-- Innovative Role Selection -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl animate-reveal-actions">
+        
+        <!-- CLIENT CARD -->
+        <div class="group relative">
+          <div class="absolute inset-0 bg-primary/5 blur-2xl rounded-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <div class="relative glass-panel rounded-[40px] p-8 border-white/5 flex flex-col h-full hover:border-primary/30 transition-all duration-500 overflow-hidden">
+            <div class="flex items-center justify-between mb-10">
+              <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                <LucideSparkles class="text-primary" :size="28" />
+              </div>
+              <span class="text-[8px] font-black tracking-[0.4em] text-primary/40 uppercase">Experiencia Cliente</span>
+            </div>
 
-        <div class="grid grid-cols-2 gap-4 w-full">
-          <router-link 
-            to="/book" 
-            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-[24px] transition-all duration-500 flex items-center justify-center overflow-hidden border-white/5 hover:border-primary/40"
-          >
-            <span class="font-outfit uppercase tracking-[0.1em] text-[10px] group-hover:text-primary transition-colors">Agendar Cita</span>
-          </router-link>
+            <h3 class="text-white text-3xl font-outfit font-black mb-4 tracking-tight uppercase">Tu Mejor Versión</h3>
+            <p class="text-gray-500 text-xs font-medium uppercase tracking-widest leading-relaxed mb-10">
+              Usa nuestra IA para encontrar el corte perfecto basado en tu biometría facial.
+            </p>
 
-          <router-link 
-            to="/store" 
-            class="group relative px-6 py-5 glass-card text-white font-bold text-base rounded-[24px] transition-all duration-500 border-white/5 hover:border-primary/40 flex items-center justify-center overflow-hidden"
-          >
-            <span class="font-outfit uppercase tracking-[0.1em] text-[10px] group-hover:text-primary transition-colors">Ver Catálogo</span>
-          </router-link>
+            <router-link 
+              to="/scan" 
+              class="mt-auto w-full bg-primary text-black font-black py-5 rounded-2xl flex items-center justify-center text-sm tracking-[0.15em] uppercase hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20"
+            >
+              Iniciar Escaneo IA
+            </router-link>
+
+            <div class="flex gap-3 mt-4">
+              <router-link to="/book" class="flex-1 py-4 glass-panel border-white/5 rounded-xl text-[9px] font-black text-white/40 hover:text-white text-center uppercase tracking-widest transition-colors hover:bg-white/5">Citas</router-link>
+              <router-link to="/store" class="flex-1 py-4 glass-panel border-white/5 rounded-xl text-[9px] font-black text-white/40 hover:text-white text-center uppercase tracking-widest transition-colors hover:bg-white/5">Catálogo</router-link>
+            </div>
+            
+            <!-- Background Decoration -->
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/5 blur-3xl rounded-full"></div>
+          </div>
         </div>
 
-        <!-- Professional Access -->
-        <router-link 
-          to="/login" 
-          class="flex items-center space-x-3 text-gray-500 hover:text-primary transition-all duration-700 text-[10px] font-black uppercase tracking-[0.4em] mt-8 group opacity-60 hover:opacity-100"
-        >
-           <div class="w-8 h-[1px] bg-white/10 group-hover:w-12 group-hover:bg-primary/40 transition-all duration-700"></div>
-           <span>Acceso Barbero</span>
-           <div class="w-8 h-[1px] bg-white/10 group-hover:w-12 group-hover:bg-primary/40 transition-all duration-700"></div>
-        </router-link>
+        <!-- BARBER CARD -->
+        <div class="group relative">
+          <div class="absolute inset-0 bg-white/5 blur-2xl rounded-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <div class="relative glass-panel rounded-[40px] p-8 border-white/5 flex flex-col h-full hover:border-white/20 transition-all duration-500 overflow-hidden">
+            <div class="flex items-center justify-between mb-10">
+              <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/40 transition-colors">
+                <LucideScissors class="text-white/40 group-hover:text-primary transition-colors" :size="28" />
+              </div>
+              <span class="text-[8px] font-black tracking-[0.4em] text-white/20 uppercase">Portal Maestro</span>
+            </div>
+
+            <h3 class="text-white text-3xl font-outfit font-black mb-4 tracking-tight uppercase">Gestión Elite</h3>
+            <p class="text-gray-500 text-xs font-medium uppercase tracking-widest leading-relaxed mb-10">
+              Panel de control avanzado para barberos y administración de tienda.
+            </p>
+
+            <router-link 
+              to="/login" 
+              class="mt-auto w-full bg-white/5 text-white/60 font-black py-5 rounded-2xl border border-white/10 flex items-center justify-center text-sm tracking-[0.15em] uppercase hover:bg-white/10 hover:text-white transition-all group-hover:border-primary/20"
+            >
+              Acceso Profesional
+            </router-link>
+            
+            <!-- Animated Barber Pole Accent -->
+            <div class="absolute right-6 top-1/2 -translate-y-1/2 w-1 h-32 opacity-10 group-hover:opacity-30 transition-opacity">
+                <div class="w-full h-full bg-gradient-to-b from-primary via-blue-500 to-red-500 animate-pulse-slow"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Feature Badges Section -->
-      <div class="mt-24 flex flex-wrap justify-center gap-6 opacity-40 hover:opacity-100 transition-all duration-1000 animate-reveal-badges px-6">
-          <span class="text-[8px] font-black tracking-[0.4em] uppercase border border-white/5 px-6 py-2.5 rounded-full">Neural Mapping</span>
-          <span class="text-[8px] font-black tracking-[0.4em] uppercase border border-white/5 px-6 py-2.5 rounded-full">AI Generative</span>
-          <span class="text-[8px] font-black tracking-[0.4em] uppercase border border-white/5 px-6 py-2.5 rounded-full">Master Style</span>
+      <!-- Innovative Feature Badges -->
+      <div class="mt-32 flex flex-wrap justify-center gap-4 opacity-30 hover:opacity-100 transition-all duration-1000 px-6">
+          <div v-for="tag in ['Neural Mapping', 'AI Generative', 'Master Style', 'Real-time Overlay']" :key="tag" class="px-5 py-2 glass-panel border-white/5 rounded-full flex items-center space-x-2">
+            <div class="w-1 h-1 bg-primary rounded-full animate-pulse"></div>
+            <span class="text-[7px] font-black tracking-[0.3em] uppercase text-white/60">{{ tag }}</span>
+          </div>
       </div>
     </main>
 
@@ -161,7 +200,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import logoImg from '../assets/logo.png'
-import { LucideMenu, LucideX } from 'lucide-vue-next'
+import { LucideMenu, LucideX, LucideSparkles, LucideScissors } from 'lucide-vue-next'
 import { useShopStore } from '../stores/shopStore'
 
 const shopStore = useShopStore()
