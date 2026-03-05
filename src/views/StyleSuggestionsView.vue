@@ -110,7 +110,7 @@
                 <!-- Header -->
                 <div class="p-6 md:p-8 pb-4 flex items-center justify-between">
                     <div>
-                        <h3 class="text-white text-2xl md:text-3xl font-outfit font-black tracking-tighter uppercase mb-1">Previsualización IA</h3>
+                        <h3 class="text-white text-2xl md:text-3xl font-outfit font-black tracking-tighter uppercase mb-1">Previsualización {{ isUsingOverlay ? 'Instantánea' : 'IA' }}</h3>
                         <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em]">Experiencia {{ tryingOnStyleName }}</p>
                     </div>
                     <button @click="showResultModal = false" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-gray-500 hover:text-primary transition-all rounded-2xl bg-white/5">
@@ -144,7 +144,7 @@
                             <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                         </div>
                         <p class="text-primary text-[10px] font-black uppercase tracking-[0.4em] animate-pulse text-center px-10">
-                            Moldeando tu nuevo estilo con inteligencia neural...
+                            {{ isUsingOverlay ? 'Renderizando superposición instantánea...' : 'Moldeando tu nuevo estilo con inteligencia neural...' }}
                         </p>
                     </div>
                 </div>
@@ -207,6 +207,7 @@ import {
 } from 'lucide-vue-next'
 import { useScanStore } from '../stores/scanStore'
 import aiService from '../services/aiService'
+import overlayService from '../services/overlayService'
 import { haircutCatalog } from '../data/haircutCatalog'
 
 const route = useRoute()
@@ -224,6 +225,7 @@ const isGeneratingAI = ref(false)
 const tryingOnId = ref(null)
 const tryingOnStyleName = ref('')
 const generatedImage = ref(null)
+const isUsingOverlay = ref(false)
 const showResultModal = ref(false)
 const showComparison = ref(true)
 
@@ -261,18 +263,35 @@ const handleTryOn = async (style) => {
     isGeneratingAI.value = true
     showResultModal.value = true
     generatedImage.value = null
-    showComparison.value = false // Start with single before, then show comparison when done
+    showComparison.value = false
+    isUsingOverlay.value = true // We prioritize the free overlay
 
     try {
-        // Convert base64 to blob for service
-        const res = await fetch(scanStore.capturedImage)
-        const blob = await res.blob()
-        
-        const resultUrl = await aiService.generateHairstyle(blob, style.name)
-        generatedImage.value = resultUrl
-        showComparison.value = true
+        if (style.overlayImage) {
+            // Use FREE instant overlay
+            console.log("Using Free Overlay for:", style.name)
+            const resultUrl = await overlayService.applyHairstyleOverlay(
+                scanStore.capturedImage,
+                scanStore.landmarks,
+                style.overlayImage
+            )
+            generatedImage.value = resultUrl
+            showComparison.value = true
+            isGeneratingAI.value = false
+        } else {
+            // Fallback to AI (or show message)
+            isUsingOverlay.value = false
+            console.log("No overlay asset. Using AI for:", style.name)
+            
+            const res = await fetch(scanStore.capturedImage)
+            const blob = await res.blob()
+            
+            const resultUrl = await aiService.generateHairstyle(blob, style.name)
+            generatedImage.value = resultUrl
+            showComparison.value = true
+        }
     } catch (error) {
-        console.error("AI Try-On Error:", error)
+        console.error("Try-On Error:", error)
         alert(`ERROR TÉCNICO: ${error.message}`)
         showResultModal.value = false
     } finally {

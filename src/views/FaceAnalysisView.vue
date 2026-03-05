@@ -190,8 +190,9 @@ const handleStartScan = async () => {
         return
     }
 
-    const { img, biometrics } = result
+    const { img, biometrics, landmarks } = result
     scanStore.setCapturedImage(img)
+    scanStore.setLandmarks(landmarks)
 
     setTimeout(() => {
         status.value = 'MAPEO GEOMÉTRICO'

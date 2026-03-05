@@ -5,11 +5,15 @@ export const useScanStore = defineStore('scan', {
         capturedImage: null,
         faceShape: null,
         gender: 'Caballero',
-        analysisComplete: false
+        analysisComplete: false,
+        landmarks: null
     }),
     actions: {
         setCapturedImage(image) {
             this.capturedImage = image
+        },
+        setLandmarks(landmarks) {
+            this.landmarks = landmarks
         },
         setScanResult(shape, gender) {
             this.faceShape = shape
@@ -19,6 +23,7 @@ export const useScanStore = defineStore('scan', {
         resetScan() {
             this.capturedImage = null
             this.faceShape = null
+            this.landmarks = null
             this.analysisComplete = false
         }
     }

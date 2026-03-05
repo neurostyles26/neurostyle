@@ -7,7 +7,8 @@ export const haircutCatalog = [
         faceShapes: ["Ovalado", "Redondo", "Cuadrado", "Diamante"],
         desc: "El corte tendencia #1. Flequillo corto texturizado con laterales degradados (fade) de alta precisión. Ideal para dar volumen superior.",
         maintenance: "Medio",
-        matchScore: 98
+        matchScore: 98,
+        overlayImage: "/assets/hairstyles/m1_textured_crop_fade.png"
     },
     {
         id: "m2",
@@ -81,7 +82,8 @@ export const haircutCatalog = [
         faceShapes: ["Ovalado", "Redondo", "Cuadrado"],
         desc: "Capas voluminosas que enmarcan el rostro, creando un efecto de alas. Máximo movimiento y glamour.",
         maintenance: "Alto",
-        matchScore: 97
+        matchScore: 97,
+        overlayImage: "/assets/hairstyles/f1_butterfly_cut.png"
     },
     {
         id: "f2",

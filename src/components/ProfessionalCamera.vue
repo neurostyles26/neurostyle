@@ -350,11 +350,13 @@ defineExpose({
         
         const landmarksRes = faceLandmarker.detectForVideo(video, performance.now())
         if (landmarksRes.faceLandmarks && landmarksRes.faceLandmarks.length > 0) {
-            const currentMetrics = calculateFaceMetrics(landmarksRes.faceLandmarks[0])
+            const landmarks = landmarksRes.faceLandmarks[0]
+            const currentMetrics = calculateFaceMetrics(landmarks)
             const result = determineFaceShape(currentMetrics)
             return {
                 img: canvas.toDataURL('image/jpeg', 0.8),
-                biometrics: result
+                biometrics: result,
+                landmarks: landmarks
             }
         }
         return null
