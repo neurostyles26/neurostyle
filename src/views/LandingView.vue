@@ -188,6 +188,24 @@
             <span class="text-[7px] font-black tracking-[0.3em] uppercase text-white/60">{{ tag }}</span>
           </div>
       </div>
+      <!-- PWA Install Prompt (Floating) -->
+      <transition
+        enter-active-class="transition duration-700 ease-out"
+        enter-from-class="translate-y-20 opacity-0"
+        leave-active-class="transition duration-500 ease-in"
+        leave-to-class="translate-y-20 opacity-0"
+      >
+        <div v-if="deferredPrompt" class="fixed bottom-10 right-6 z-[110] md:right-12">
+          <button 
+            @click="installApp"
+            class="group relative flex items-center space-x-4 bg-primary text-black font-black px-6 py-4 rounded-2xl shadow-[0_20px_40px_rgba(218,165,32,0.3)] hover:scale-110 active:scale-95 transition-all overflow-hidden"
+          >
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <LucideDownload :size="20" class="group-hover:bounce" />
+            <span class="text-[10px] uppercase tracking-[0.2em]">Instalar App</span>
+          </button>
+        </div>
+      </transition>
     </main>
 
     <!-- Bottom Footer -->
@@ -200,7 +218,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import logoImg from '../assets/logo.png'
-import { LucideMenu, LucideX, LucideSparkles, LucideScissors } from 'lucide-vue-next'
+import { LucideMenu, LucideX, LucideSparkles, LucideScissors, LucideDownload } from 'lucide-vue-next'
 import { useShopStore } from '../stores/shopStore'
 
 const shopStore = useShopStore()
