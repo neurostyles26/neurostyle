@@ -60,76 +60,67 @@ const stream = ref(null)
 const emit = defineEmits(['started'])
 
 const initCamera = async () => {
-    console.log("ProfessionalCamera: Iniciando initCamera...");
+    console.log("ProfessionalCamera: Iniciando proceso...");
     if (loading.value) return
     loading.value = true
     error.value = false
     errorMessage.value = ''
 
     try {
-        console.log("ProfessionalCamera: Solicitando permisos de cámara...");
         const constraints = {
             video: {
                 facingMode: 'user',
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+                width: { ideal: 640 }, // Using lower ideal resolution for better compatibility
+                height: { ideal: 480 }
             },
             audio: false
         }
 
         let mediaStream
         try {
+            console.log("Tentativa 1: MediaDevices con constraints...");
             mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
         } catch (e) {
-            console.warn("ProfessionalCamera: Fallo con constraints ideales, intentando básicos...", e);
-            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            console.warn("Tentativa 2: Fallo constraints, usando genéricos...", e);
+            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true })
         }
         
-        console.log("ProfessionalCamera: Stream obtenido con éxito.");
         stream.value = mediaStream
 
         if (videoRef.value) {
             videoRef.value.srcObject = mediaStream
             
-            // Wait for video to be ready with a timeout
-            await new Promise((resolve, reject) => {
-                const timeout = setTimeout(() => {
-                    console.warn("ProfessionalCamera: Timeout esperando onloadedmetadata, intentando play directo...");
-                    videoRef.value.play().then(resolve).catch(reject);
-                }, 3000);
+            // Critical: Ensure video is ready and playing
+            videoRef.value.setAttribute('autoplay', '')
+            videoRef.value.setAttribute('muted', '')
+            videoRef.value.setAttribute('playsinline', '')
 
-                videoRef.value.onloadedmetadata = () => {
-                    clearTimeout(timeout);
-                    console.log("ProfessionalCamera: Metadata cargada, iniciando play...");
-                    videoRef.value.play()
-                        .then(() => {
-                            console.log("ProfessionalCamera: Video reproduciéndose.");
-                            resolve();
-                        })
-                        .catch(err => {
-                            console.error("ProfessionalCamera: Error en video.play():", err);
-                            reject(err);
-                        });
+            // Force play after a short delay to ensure stream is loaded
+            setTimeout(async () => {
+                try {
+                    await videoRef.value.play()
+                    console.log("Cámara: Reproducción iniciada correctamente.");
+                    loading.value = false
+                    active.value = true
+                    emit('started')
+                } catch (playErr) {
+                    console.error("Error al iniciar reproducción de video:", playErr);
+                    errorMessage.value = "Error al iniciar el video. Toca 'Reintentar'."
+                    error.value = true
+                    loading.value = false
                 }
-            })
-
-            loading.value = false
-            active.value = true
-            console.log("ProfessionalCamera: Cámara activa, emitiendo 'started'.");
-            emit('started')
+            }, 300)
         }
     } catch (err) {
-        console.error("ProfessionalCamera: Error crítico:", err)
+        console.error("Error crítico de cámara:", err)
         error.value = true
         loading.value = false
         active.value = false
         
-        if (err.name === 'NotAllowedError') {
-            errorMessage.value = 'Permiso de cámara denegado. Por favor, actívalo en la configuración de tu navegador.'
-        } else if (err.name === 'NotFoundError') {
-            errorMessage.value = 'No se encontró ninguna cámara en este dispositivo.'
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            errorMessage.value = 'Permiso de cámara denegado. Por favor, habilítalo en tu navegador.'
         } else {
-            errorMessage.value = `Error: ${err.message || 'No se pudo acceder a la cámara.'}`
+            errorMessage.value = `Error: ${err.message || 'No se puede acceder a la cámara.'}`
         }
     }
 }

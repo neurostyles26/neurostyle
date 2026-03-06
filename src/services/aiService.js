@@ -68,17 +68,85 @@ export const uploadImage = async (imageB64) => {
 }
 
 /**
- * AI Hairstyle Generation using LightX API (via Netlify Proxy)
+ * AI Hairstyle Generation using HuggingFace Inference API
+ * Model: stabilityai/stable-diffusion-2-inpainting
  */
-export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
-    // We use our proxy to avoid CORS and hide the key
-    const PROXY_URL = "/api/lightx"
+export const generateHairstyleHF = async (imageB64, maskB64, hairstylePrompt) => {
+    const HF_TOKEN = import.meta.env.VITE_HUGGING_FACE_TOKEN
+
+    if (!HF_TOKEN || !HF_TOKEN.startsWith('hf_')) {
+        console.warn("Token de Hugging Face no válido o ausente (debe empezar con hf_). Usando LightX como respaldo...");
+        return null; // Signals to try LightX
+    }
 
     try {
-        // 1. Get public URL via Supabase
-        const publicUrl = await uploadImage(imageB64)
+        const imageBlob = await fetch(imageB64).then(r => r.blob())
+        const maskBlob = await fetch(maskB64).then(r => r.blob())
 
-        // 2. Request Hairstyle Transformation
+        // Combine prompts according to user template
+        const fullPrompt = `portrait photo of the same person with a ${hairstylePrompt}, professional barber haircut, ultra realistic, photorealistic, preserve facial identity, replace hair only`
+        const negativePrompt = "distorted face, blurry, unrealistic skin, extra eyes, bad anatomy"
+
+        // For HF Inpainting, we often send a combined payload or specific headers
+        // This implementation follows the standard HF Inference API pattern
+        const response = await fetch(
+            "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-inpainting",
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${HF_TOKEN}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    inputs: {
+                        image: await blobToBase64(imageBlob),
+                        mask: await blobToBase64(maskBlob),
+                        prompt: fullPrompt,
+                        negative_prompt: negativePrompt
+                    }
+                })
+            }
+        )
+
+        if (!response.ok) {
+            const error = await response.json()
+            throw new Error(`HF API Error: ${error.error || response.statusText}`)
+        }
+
+        const resultBlob = await response.blob()
+        return URL.createObjectURL(resultBlob)
+    } catch (error) {
+        console.error("HuggingFace Generation Failed:", error)
+        throw error
+    }
+}
+
+const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+};
+
+/**
+ * Main AI Hairstyle Generation Entry Point
+ */
+export const generateHairstyle = async (imageB64, maskB64, hairstylePrompt) => {
+    // 1. Try Hugging Face first (as requested in latest prompt)
+    try {
+        const hfResult = await generateHairstyleHF(imageB64, maskB64, hairstylePrompt)
+        if (hfResult) return hfResult
+    } catch (e) {
+        console.warn("Hugging Face falló, intentando LightX...", e)
+    }
+
+    // 2. Fallback to LightX proxy (which we have working with the provided key)
+    const PROXY_URL = "/api/lightx"
+    try {
+        // ... (existing LightX logic)
+        const publicUrl = await uploadImage(imageB64)
         console.log("Solicitando peinado (via Proxy)...");
         const hairResponse = await fetch(`${PROXY_URL}?action=hairstyle`, {
             method: "POST",
@@ -90,41 +158,26 @@ export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
         })
 
         const hairData = await hairResponse.json()
-        if (!hairResponse.ok) {
-            throw new Error(hairData.error || hairData.message || "Error al solicitar peinado.")
-        }
+        if (!hairResponse.ok) throw new Error(hairData.error || hairData.message || "Error al solicitar peinado.")
 
         const orderId = hairData.body?.orderId
         if (!orderId) throw new Error("No se recibió un Order ID de LightX.")
 
-        console.log("Pedido creado. ID:", orderId);
-
-        // 3. Poll for Status
         let attempts = 0
         while (attempts < 60) {
             attempts++
-            console.log(`Verificando estado (intento ${attempts})...`);
             await new Promise(r => setTimeout(r, 2000))
-
             const statusResponse = await fetch(`${PROXY_URL}?action=status`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ orderId })
             })
-
             const statusData = await statusResponse.json()
-            if (!statusResponse.ok) continue;
-
+            if (!statusResponse.ok) continue
             const { status, resUrl } = statusData.body || {}
-
-            if (status === "completed" && resUrl) {
-                console.log("Simulación completada!");
-                return resUrl
-            } else if (status === "failed") {
-                throw new Error("La IA de LightX falló al procesar el peinado.")
-            }
+            if (status === "completed" && resUrl) return resUrl
+            if (status === "failed") throw new Error("La IA de LightX falló.")
         }
-
         throw new Error("Tiempo de espera agotado.")
     } catch (error) {
         console.error("AI Service Error:", error)
