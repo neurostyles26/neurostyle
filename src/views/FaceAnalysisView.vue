@@ -89,13 +89,55 @@
 
     </main>
 
-    <!-- Styling Overlay (Bottom Picker if needed) -->
-    <transition enter-active-class="translate-y-full" enter-to-class="translate-y-0" leave-active-class="translate-y-full">
-        <div v-if="step === 'capture' && !isCameraActive" class="fixed inset-x-0 bottom-0 z-[100] p-6 bg-black/90 backdrop-blur-xl border-t border-white/10 rounded-t-[40px]">
-            <h2 class="text-white font-bold mb-4">Comenzar Análisis</h2>
-            <button @click="startCamera" class="w-full bg-primary text-black font-black py-5 rounded-2xl uppercase tracking-widest text-sm shadow-xl shadow-primary/20">
-                Encender Cámara
-            </button>
+    <!-- Privacy Consent Overlay -->
+    <transition enter-active-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="opacity-0 scale-95">
+        <div v-if="step === 'capture' && !isCameraActive" class="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <div class="bg-[#121212] w-full max-w-lg rounded-[40px] border border-white/10 p-8 shadow-2xl">
+                <div class="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center mb-6">
+                    <LucideShieldCheck class="text-primary" :size="32" />
+                </div>
+                
+                <h2 class="text-white font-outfit font-black text-2xl uppercase tracking-tight mb-4">Aviso de Privacidad y Derechos</h2>
+                
+                <div class="space-y-4 text-gray-400 text-sm leading-relaxed mb-8">
+                    <p>
+                        Para ofrecerte una simulación precisa, NeuroStyle procesará una representación matemática de tu rostro (Face Mesh) en tiempo real. 
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-start gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+                            <span>Tus datos biométricos **no se almacenan** de forma permanente.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+                            <span>La imagen se utiliza únicamente para el análisis de estilo por IA.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+                            <span>Al continuar, otorgas permiso para acceder a tu cámara y procesar tu imagen.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button 
+                        @click="startCamera" 
+                        class="w-full bg-primary text-black font-black py-5 rounded-2xl uppercase tracking-widest text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    >
+                        Aceptar y Continuar
+                    </button>
+                    <button 
+                        @click="router.push('/')" 
+                        class="w-full bg-white/5 text-white/50 font-bold py-4 rounded-2xl uppercase tracking-widest text-[10px] hover:text-white transition-colors"
+                    >
+                        Cancelar
+                    </button>
+                </div>
+
+                <p class="text-[9px] text-center text-gray-600 mt-6 uppercase tracking-wider">
+                    Powered by NeuroStyle AI • Protegemos tu privacidad
+                </p>
+            </div>
         </div>
     </transition>
   </div>
@@ -107,7 +149,8 @@ import { useRouter } from 'vue-router'
 import { 
   LucideChevronLeft, 
   LucideSparkles,
-  LucideCamera
+  LucideCamera,
+  LucideShieldCheck
 } from 'lucide-vue-next'
 import { FilesetResolver, FaceLandmarker } from '@mediapipe/tasks-vision'
 import ProfessionalCamera from '../components/ProfessionalCamera.vue'
