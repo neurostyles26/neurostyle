@@ -68,47 +68,36 @@ export const uploadImage = async (imageB64) => {
 }
 
 /**
- * AI Hairstyle Generation using LightX API
+ * AI Hairstyle Generation using LightX API (via Netlify Proxy)
  */
 export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
-    const LIGHTX_KEY = import.meta.env.VITE_HUGGING_FACE_TOKEN
-    const BASE_URL = "https://api.lightxeditor.com/external/api/v1"
-
-    if (!LIGHTX_KEY) throw new Error("API Key de LightX no configurada en VITE_HUGGING_FACE_TOKEN")
+    // We use our proxy to avoid CORS and hide the key
+    const PROXY_URL = "/api/lightx"
 
     try {
         // 1. Get public URL via Supabase
         const publicUrl = await uploadImage(imageB64)
 
         // 2. Request Hairstyle Transformation
-        console.log("Solicitando peinado a LightX API...");
-        const hairResponse = await fetch(`${BASE_URL}/hairstyle`, {
+        console.log("Solicitando peinado (via Proxy)...");
+        const hairResponse = await fetch(`${PROXY_URL}?action=hairstyle`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-api-key": LIGHTX_KEY
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 imageUrl: publicUrl,
                 textPrompt: hairstylePrompt
             })
         })
 
-        if (!hairResponse.ok) {
-            const err = await hairResponse.json()
-            console.error("Error de LightX API (Hairstyle):", err);
-            throw new Error(err.message || "Error al solicitar el peinado a LightX.")
-        }
-
         const hairData = await hairResponse.json()
-        const orderId = hairData.body?.orderId
-
-        if (!orderId) {
-            console.error("Respuesta inesperada de LightX:", hairData);
-            throw new Error("No se recibió un Order ID de LightX.")
+        if (!hairResponse.ok) {
+            throw new Error(hairData.error || hairData.message || "Error al solicitar peinado.")
         }
 
-        console.log("Pedido creado. Order ID:", orderId);
+        const orderId = hairData.body?.orderId
+        if (!orderId) throw new Error("No se recibió un Order ID de LightX.")
+
+        console.log("Pedido creado. ID:", orderId);
 
         // 3. Poll for Status
         let attempts = 0
@@ -117,35 +106,28 @@ export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
             console.log(`Verificando estado (intento ${attempts})...`);
             await new Promise(r => setTimeout(r, 2000))
 
-            const statusResponse = await fetch(`${BASE_URL}/order-status`, {
+            const statusResponse = await fetch(`${PROXY_URL}?action=status`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": LIGHTX_KEY
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ orderId })
             })
 
-            if (!statusResponse.ok) {
-                console.warn("Fallo temporal al consultar estado. Reintentando...");
-                continue;
-            }
-
             const statusData = await statusResponse.json()
+            if (!statusResponse.ok) continue;
+
             const { status, resUrl } = statusData.body || {}
 
             if (status === "completed" && resUrl) {
-                console.log("Simulación completada con éxito:", resUrl);
+                console.log("Simulación completada!");
                 return resUrl
             } else if (status === "failed") {
-                console.error("LightX informó un fallo en el pedido.");
-                throw new Error("La generación del peinado falló en los servidores de LightX.")
+                throw new Error("La IA de LightX falló al procesar el peinado.")
             }
         }
 
-        throw new Error("Tiempo de espera agotado. La IA está tardando demasiado.")
+        throw new Error("Tiempo de espera agotado.")
     } catch (error) {
-        console.error("Error general en generateHairstyle:", error)
+        console.error("AI Service Error:", error)
         throw error
     }
 }
