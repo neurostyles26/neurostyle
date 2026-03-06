@@ -20,7 +20,7 @@
         <div class="relative flex-1 rounded-[40px] overflow-hidden border border-white/10 bg-white/5 shadow-2xl mb-8">
             <ProfessionalCamera 
               ref="cameraRef" 
-              @started="isCameraActive = true"
+              @started="onCameraStarted"
             />
             
             <!-- Hidden Canvas for FaceMesh Processing -->
@@ -187,10 +187,17 @@ const initFaceAI = async () => {
 }
 
 const startCamera = () => {
+    console.log("FaceAnalysisView: Llamando a initCamera()");
     if (cameraRef.value) cameraRef.value.initCamera()
 }
 
+const onCameraStarted = () => {
+    console.log("FaceAnalysisView: Evento 'started' recibido");
+    isCameraActive.value = true
+}
+
 const handleCapture = async () => {
+    console.log("FaceAnalysisView: Iniciando captura...");
     const img = cameraRef.value.capture()
     if (!img) return
 
