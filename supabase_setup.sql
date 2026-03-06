@@ -47,14 +47,28 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('products', 'products', true)
 ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('hairstyles', 'hairstyles', true)
+ON CONFLICT (id) DO NOTHING;
+
 -- 6. Storage Policies (Allow anyone to upload if authenticated)
 -- Policy for 'branding'
+DROP POLICY IF EXISTS "Public Access Branding" ON storage.objects;
 CREATE POLICY "Public Access Branding" ON storage.objects FOR SELECT USING (bucket_id = 'branding');
+DROP POLICY IF EXISTS "Admin Upload Branding" ON storage.objects;
 CREATE POLICY "Admin Upload Branding" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'branding');
 
 -- Policy for 'products'
+DROP POLICY IF EXISTS "Public Access Products" ON storage.objects;
 CREATE POLICY "Public Access Products" ON storage.objects FOR SELECT USING (bucket_id = 'products');
+DROP POLICY IF EXISTS "Admin Upload Products" ON storage.objects;
 CREATE POLICY "Admin Upload Products" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'products');
+
+-- Policy for 'hairstyles'
+DROP POLICY IF EXISTS "Public Access Hairstyles" ON storage.objects;
+CREATE POLICY "Public Access Hairstyles" ON storage.objects FOR SELECT USING (bucket_id = 'hairstyles');
+DROP POLICY IF EXISTS "API Upload Hairstyles" ON storage.objects;
+CREATE POLICY "API Upload Hairstyles" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'hairstyles'); 
 
 
 -- ==========================================

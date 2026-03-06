@@ -1,3 +1,5 @@
+import { supabase } from './supabase'
+
 export const FACE_SHAPES = {
     OVAL: 'Ovalado',
     ROUND: 'Redondo',
@@ -31,46 +33,94 @@ export const getHairstyleRecommendations = (faceShape) => {
 }
 
 /**
- * AI Hairstyle Generation using HuggingFace Inference API
+ * Upload image to Supabase to get a public URL for LightX
  */
-export const generateHairstyle = async (imageB64, maskB64, hairstylePrompt) => {
-    const HF_TOKEN = import.meta.env.VITE_HUGGING_FACE_TOKEN
+export const uploadImage = async (imageB64) => {
+    try {
+        const response = await fetch(imageB64)
+        const blob = await response.blob()
+        const fileName = `input_${Date.now()}.jpg`
+        const filePath = `scans/${fileName}`
 
-    if (!HF_TOKEN) {
-        throw new Error("VITE_HUGGING_FACE_TOKEN no configurado en .env")
+        const { data, error } = await supabase.storage
+            .from('hairstyles') // Ensure this bucket exists and is public
+            .upload(filePath, blob, { contentType: 'image/jpeg' })
+
+        if (error) throw error
+
+        const { data: { publicUrl } } = supabase.storage
+            .from('hairstyles')
+            .getPublicUrl(filePath)
+
+        return publicUrl
+    } catch (error) {
+        console.error("Supabase Upload Error:", error)
+        throw new Error("No se pudo subir la imagen para procesar.")
     }
+}
+
+/**
+ * AI Hairstyle Generation using LightX API
+ */
+export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
+    const LIGHTX_KEY = import.meta.env.VITE_HUGGING_FACE_TOKEN // Reusing the env var for now
+    const BASE_URL = "https://api.lightxeditor.com/external/api/v1"
 
     try {
-        // Convert base64 to Blob for sending
-        const imageBlob = await fetch(imageB64).then(r => r.blob())
-        const maskBlob = await fetch(maskB64).then(r => r.blob())
+        // 1. Get public URL via Supabase
+        const publicUrl = await uploadImage(imageB64)
 
-        const formData = new FormData()
-        formData.append("image", imageBlob)
-        formData.append("mask", maskBlob)
-        formData.append("prompt", `portrait photo of the same person with a ${hairstylePrompt}, professional barber haircut, ultra realistic, photorealistic, preserve facial identity, replace hair only`)
-        formData.append("negative_prompt", "distorted face, blurry, unrealistic skin, extra eyes, bad anatomy, different person face")
+        // 2. Request Hairstyle Transformation
+        const hairResponse = await fetch(`${BASE_URL}/hairstyle`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": LIGHTX_KEY
+            },
+            body: JSON.stringify({
+                imageUrl: publicUrl,
+                textPrompt: hairstylePrompt
+            })
+        })
 
-        const response = await fetch(
-            "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-inpainting",
-            {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${HF_TOKEN}`
-                },
-                body: formData
-            }
-        )
-
-        if (!response.ok) {
-            const error = await response.json()
-            throw new Error(`HF API Error: ${error.error || response.statusText}`)
+        if (!hairResponse.ok) {
+            const err = await hairResponse.json()
+            throw new Error(err.message || "Error al solicitar el peinado.")
         }
 
-        const resultBlob = await response.blob()
-        return URL.createObjectURL(resultBlob)
+        const hairData = await hairResponse.json()
+        const orderId = hairData.body?.orderId
+
+        if (!orderId) throw new Error("No se recibió un Order ID de LightX.")
+
+        // 3. Poll for Status
+        let attempts = 0
+        while (attempts < 60) {
+            attempts++
+            await new Promise(r => setTimeout(r, 2000))
+
+            const statusResponse = await fetch(`${BASE_URL}/order-status`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-api-key": LIGHTX_KEY
+                },
+                body: JSON.stringify({ orderId })
+            })
+
+            const statusData = await statusResponse.json()
+            const { status, resUrl } = statusData.body || {}
+
+            if (status === "completed" && resUrl) {
+                return resUrl
+            } else if (status === "failed") {
+                throw new Error("La generación del peinado falló en LightX.")
+            }
+        }
+
+        throw new Error("Tiempo de espera agotado para la generación.")
     } catch (error) {
-        console.error("AI Generation Failed:", error)
+        console.error("LightX API Error:", error)
         throw error
     }
 }
