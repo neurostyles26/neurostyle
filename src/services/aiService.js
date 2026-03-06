@@ -37,25 +37,33 @@ export const getHairstyleRecommendations = (faceShape) => {
  */
 export const uploadImage = async (imageB64) => {
     try {
+        console.log("Iniciando carga a Supabase...");
         const response = await fetch(imageB64)
+        if (!response.ok) throw new Error("Error al convertir imagen base64")
         const blob = await response.blob()
+
         const fileName = `input_${Date.now()}.jpg`
         const filePath = `scans/${fileName}`
 
+        console.log("Subiendo archivo a bucket 'hairstyles'...");
         const { data, error } = await supabase.storage
-            .from('hairstyles') // Ensure this bucket exists and is public
+            .from('hairstyles')
             .upload(filePath, blob, { contentType: 'image/jpeg' })
 
-        if (error) throw error
+        if (error) {
+            console.error("Error detallado de Supabase Storage:", error);
+            throw new Error(`Supabase Error: ${error.message}. ¿Creaste el bucket 'hairstyles' y lo pusiste público?`);
+        }
 
         const { data: { publicUrl } } = supabase.storage
             .from('hairstyles')
             .getPublicUrl(filePath)
 
+        console.log("Imagen subida con éxito. URL pública:", publicUrl);
         return publicUrl
     } catch (error) {
-        console.error("Supabase Upload Error:", error)
-        throw new Error("No se pudo subir la imagen para procesar.")
+        console.error("Excepción en uploadImage:", error)
+        throw error
     }
 }
 
@@ -63,14 +71,17 @@ export const uploadImage = async (imageB64) => {
  * AI Hairstyle Generation using LightX API
  */
 export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
-    const LIGHTX_KEY = import.meta.env.VITE_HUGGING_FACE_TOKEN // Reusing the env var for now
+    const LIGHTX_KEY = import.meta.env.VITE_HUGGING_FACE_TOKEN
     const BASE_URL = "https://api.lightxeditor.com/external/api/v1"
+
+    if (!LIGHTX_KEY) throw new Error("API Key de LightX no configurada en VITE_HUGGING_FACE_TOKEN")
 
     try {
         // 1. Get public URL via Supabase
         const publicUrl = await uploadImage(imageB64)
 
         // 2. Request Hairstyle Transformation
+        console.log("Solicitando peinado a LightX API...");
         const hairResponse = await fetch(`${BASE_URL}/hairstyle`, {
             method: "POST",
             headers: {
@@ -85,18 +96,25 @@ export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
 
         if (!hairResponse.ok) {
             const err = await hairResponse.json()
-            throw new Error(err.message || "Error al solicitar el peinado.")
+            console.error("Error de LightX API (Hairstyle):", err);
+            throw new Error(err.message || "Error al solicitar el peinado a LightX.")
         }
 
         const hairData = await hairResponse.json()
         const orderId = hairData.body?.orderId
 
-        if (!orderId) throw new Error("No se recibió un Order ID de LightX.")
+        if (!orderId) {
+            console.error("Respuesta inesperada de LightX:", hairData);
+            throw new Error("No se recibió un Order ID de LightX.")
+        }
+
+        console.log("Pedido creado. Order ID:", orderId);
 
         // 3. Poll for Status
         let attempts = 0
         while (attempts < 60) {
             attempts++
+            console.log(`Verificando estado (intento ${attempts})...`);
             await new Promise(r => setTimeout(r, 2000))
 
             const statusResponse = await fetch(`${BASE_URL}/order-status`, {
@@ -108,19 +126,26 @@ export const generateHairstyle = async (imageB64, _, hairstylePrompt) => {
                 body: JSON.stringify({ orderId })
             })
 
+            if (!statusResponse.ok) {
+                console.warn("Fallo temporal al consultar estado. Reintentando...");
+                continue;
+            }
+
             const statusData = await statusResponse.json()
             const { status, resUrl } = statusData.body || {}
 
             if (status === "completed" && resUrl) {
+                console.log("Simulación completada con éxito:", resUrl);
                 return resUrl
             } else if (status === "failed") {
-                throw new Error("La generación del peinado falló en LightX.")
+                console.error("LightX informó un fallo en el pedido.");
+                throw new Error("La generación del peinado falló en los servidores de LightX.")
             }
         }
 
-        throw new Error("Tiempo de espera agotado para la generación.")
+        throw new Error("Tiempo de espera agotado. La IA está tardando demasiado.")
     } catch (error) {
-        console.error("LightX API Error:", error)
+        console.error("Error general en generateHairstyle:", error)
         throw error
     }
 }
