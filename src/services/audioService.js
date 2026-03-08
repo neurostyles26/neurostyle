@@ -5,7 +5,7 @@
 
 // Use professional sounds from a CDN as defaults
 const SOUNDS = {
-    WELCOME: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3', // Soft ambient reveal
+    WELCOME: 'https://assets.mixkit.co/active_storage/sfx/2627/2627-preview.mp3', // Futuristic digital reveal
     NOTIFICATION: 'https://assets.mixkit.co/active_storage/sfx/2357/2357-preview.mp3', // Tech chime
     SUCCESS: 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3', // Positive feedback
     ALERT: 'https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3' // Urgent alert

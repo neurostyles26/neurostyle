@@ -19,12 +19,21 @@
 
 <script setup>
 import { onMounted, onUnmounted } from 'vue'
-import AppPreloader from './components/AppPreloader.vue'
 import NotificationToast from './components/NotificationToast.vue'
 import { realtimeNotificationService } from './services/realtimeNotificationService'
+import { audioService } from './services/audioService'
 
 onMounted(() => {
   realtimeNotificationService.init()
+  
+  // Unlock audio on first user interaction
+  const unlockAudio = () => {
+    audioService.init()
+    window.removeEventListener('click', unlockAudio)
+    window.removeEventListener('touchstart', unlockAudio)
+  }
+  window.addEventListener('click', unlockAudio)
+  window.addEventListener('touchstart', unlockAudio)
 })
 
 onUnmounted(() => {
