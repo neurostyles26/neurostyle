@@ -12,6 +12,20 @@ class RealtimeNotificationService {
 
         console.log('Initializing Realtime Notification Service...')
 
+        // Request browser notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission()
+        }
+
+        const showExternalNotification = (title, body) => {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: '/pwa-192x192.png'
+                })
+            }
+        }
+
         // 1. Listen for new appointments (Admin View)
         supabase
             .channel('admin-appointments')
@@ -21,13 +35,17 @@ class RealtimeNotificationService {
                 (payload) => {
                     console.log('New Appointment Received:', payload)
 
+                    const title = 'Nueva Cita Agendada'
+                    const message = `${payload.new.client_name} ha reservado para las ${payload.new.time}.`
+
                     notificationStore.notify({
-                        title: 'Nueva Cita Agendada',
-                        message: `${payload.new.client_name} ha reservado para las ${payload.new.time}.`,
+                        title: title,
+                        message: message,
                         type: 'info',
                         duration: 8000
                     })
 
+                    showExternalNotification(title, message)
                     audioService.playNotification()
                 }
             )
@@ -52,13 +70,15 @@ class RealtimeNotificationService {
                         if (status === 'Confirmed') type = 'success'
                         if (status === 'Cancelled') type = 'error'
 
+                        const title = 'Actualización de Turno'
                         notificationStore.notify({
-                            title: 'Actualización de Turno',
+                            title: title,
                             message: message,
                             type: type,
                             duration: 10000
                         })
 
+                        showExternalNotification(title, message)
                         audioService.playNotification()
                     }
                 }
@@ -74,13 +94,17 @@ class RealtimeNotificationService {
                 (payload) => {
                     console.log('New Product Released:', payload)
 
+                    const title = '¡Nueva Tendencia!'
+                    const message = `Hemos añadido un nuevo producto: ${payload.new.name}`
+
                     notificationStore.notify({
-                        title: '¡Nueva Tendencia!',
-                        message: `Hemos añadido un nuevo producto: ${payload.new.name}`,
+                        title: title,
+                        message: message,
                         type: 'success',
                         duration: 8000
                     })
 
+                    showExternalNotification(title, message)
                     audioService.playSuccess()
                 }
             )

@@ -64,7 +64,7 @@ FOR SELECT USING (true); -- Simplified for public PWA
 
 DROP POLICY IF EXISTS "Allow admin full access to appointments" ON public.appointments;
 CREATE POLICY "Allow admin full access to appointments" ON public.appointments
-FOR ALL TO authenticated USING (true);
+FOR ALL TO authenticated USING (auth.jwt() ->> 'email' = 'admin@neurostyle.com'); -- Cambia esto por tu email real
 
 -- ==========================================
 -- 8. Create products table
@@ -89,7 +89,7 @@ FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Allow admin full access to products" ON public.products;
 CREATE POLICY "Allow admin full access to products" ON public.products
-FOR ALL TO authenticated USING (true);
+FOR ALL TO authenticated USING (auth.jwt() ->> 'email' = 'admin@neurostyle.com'); -- Cambia esto por tu email real
 
 -- ==========================================
 -- 9. ENABLE SUPABASE REALTIME
