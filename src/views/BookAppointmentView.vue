@@ -113,6 +113,7 @@ import {
     LucideCalendar
 } from 'lucide-vue-next'
 import { supabase } from '../services/supabase'
+import { audioService } from '../services/audioService'
 
 const route = useRoute()
 const router = useRouter()
@@ -191,6 +192,7 @@ const confirmBooking = async () => {
         
         if (error) throw error
         
+        audioService.playSuccess()
         alert("¡Cita Agendada con éxito!")
         router.push('/dashboard')
     } catch (err) {

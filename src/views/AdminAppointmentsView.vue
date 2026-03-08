@@ -90,6 +90,7 @@ import {
     LucideScissors, LucideTrash2 
 } from 'lucide-vue-next'
 import { supabase } from '../services/supabase'
+import { audioService } from '../services/audioService'
 
 const router = useRouter()
 
@@ -122,6 +123,8 @@ const deleteAppointment = async (appt) => {
             .delete()
             .eq('id', appt.id)
         if (error) throw error
+        
+        audioService.playAlert()
         appointments.value = appointments.value.filter(a => a.id !== appt.id)
     } catch (err) {
         alert(err.message)

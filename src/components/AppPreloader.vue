@@ -69,8 +69,13 @@ import { useShopStore } from '../stores/shopStore'
 const show = ref(true)
 const progress = ref(0)
 const shopStore = useShopStore()
+import { audioService } from '../services/audioService'
 
 onMounted(async () => {
+  // Start Audio Context on first interaction/mount
+  audioService.init() 
+  audioService.playWelcome()
+  
   try {
     await shopStore.fetchSettings()
   } catch (err) {

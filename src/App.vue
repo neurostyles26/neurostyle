@@ -18,8 +18,18 @@
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from 'vue'
 import AppPreloader from './components/AppPreloader.vue'
 import NotificationToast from './components/NotificationToast.vue'
+import { realtimeNotificationService } from './services/realtimeNotificationService'
+
+onMounted(() => {
+  realtimeNotificationService.init()
+})
+
+onUnmounted(() => {
+  realtimeNotificationService.stop()
+})
 </script>
 
 

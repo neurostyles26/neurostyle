@@ -37,43 +37,87 @@ DROP POLICY IF EXISTS "Allow authenticated update of shop_settings" ON public.sh
 CREATE POLICY "Allow authenticated update of shop_settings" ON public.shop_settings
 FOR UPDATE TO authenticated USING (true);
 
--- 5. Storage Buckets Initialization (SQL Alternative)
--- If your workspace allows it, you can run this to create the buckets:
+-- ==========================================
+-- 7. Create appointments table
+-- ==========================================
+CREATE TABLE IF NOT EXISTS public.appointments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    client_name TEXT NOT NULL,
+    date DATE NOT NULL,
+    time TEXT NOT NULL,
+    service TEXT DEFAULT 'Corte General',
+    status TEXT DEFAULT 'Pendiente', -- Pendiente, Confirmado, Cancelado, Completado
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS for appointments
+ALTER TABLE public.appointments ENABLE ROW LEVEL SECURITY;
+
+-- Policies for appointments
+DROP POLICY IF EXISTS "Allow public insert of appointments" ON public.appointments;
+CREATE POLICY "Allow public insert of appointments" ON public.appointments
+FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public read of own appointments" ON public.appointments;
+CREATE POLICY "Allow public read of own appointments" ON public.appointments
+FOR SELECT USING (true); -- Simplified for public PWA
+
+DROP POLICY IF EXISTS "Allow admin full access to appointments" ON public.appointments;
+CREATE POLICY "Allow admin full access to appointments" ON public.appointments
+FOR ALL TO authenticated USING (true);
+
+-- ==========================================
+-- 8. Create products table
+-- ==========================================
+CREATE TABLE IF NOT EXISTS public.products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2),
+    image_url TEXT,
+    category TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS for products
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+
+-- Policies for products
+DROP POLICY IF EXISTS "Allow public read of products" ON public.products;
+CREATE POLICY "Allow public read of products" ON public.products
+FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow admin full access to products" ON public.products;
+CREATE POLICY "Allow admin full access to products" ON public.products
+FOR ALL TO authenticated USING (true);
+
+-- ==========================================
+-- 9. ENABLE SUPABASE REALTIME
+-- ==========================================
+-- Add tables to the 'supabase_realtime' publication
+BEGIN;
+  DROP PUBLICATION IF EXISTS supabase_realtime;
+  CREATE PUBLICATION supabase_realtime FOR TABLE public.appointments, public.products;
+COMMIT;
+
+-- 10. Storage Buckets (Existing)
 INSERT INTO storage.buckets (id, name, public) 
-VALUES ('branding', 'branding', true)
+VALUES ('branding', 'branding', true), ('products', 'products', true), ('hairstyles', 'hairstyles', true)
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('products', 'products', true)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('hairstyles', 'hairstyles', true)
-ON CONFLICT (id) DO NOTHING;
-
--- 6. Storage Policies (Allow anyone to upload if authenticated)
--- Policy for 'branding'
+-- Policies (Existing)
 DROP POLICY IF EXISTS "Public Access Branding" ON storage.objects;
 CREATE POLICY "Public Access Branding" ON storage.objects FOR SELECT USING (bucket_id = 'branding');
-DROP POLICY IF EXISTS "Admin Upload Branding" ON storage.objects;
-CREATE POLICY "Admin Upload Branding" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'branding');
-
--- Policy for 'products'
 DROP POLICY IF EXISTS "Public Access Products" ON storage.objects;
 CREATE POLICY "Public Access Products" ON storage.objects FOR SELECT USING (bucket_id = 'products');
-DROP POLICY IF EXISTS "Admin Upload Products" ON storage.objects;
-CREATE POLICY "Admin Upload Products" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'products');
-
--- Policy for 'hairstyles'
 DROP POLICY IF EXISTS "Public Access Hairstyles" ON storage.objects;
 CREATE POLICY "Public Access Hairstyles" ON storage.objects FOR SELECT USING (bucket_id = 'hairstyles');
-DROP POLICY IF EXISTS "API Upload Hairstyles" ON storage.objects;
-CREATE POLICY "API Upload Hairstyles" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'hairstyles'); 
-
+DROP POLICY IF EXISTS "Public Upload Hairstyles" ON storage.objects;
+CREATE POLICY "Public Upload Hairstyles" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'hairstyles');
 
 -- ==========================================
 -- FINAL INSTRUCTIONS:
 -- 1. Go to Supabase Dashboard -> SQL Editor -> Paste & Run this script.
--- 2. If the buckets are still not visible, go to "Storage" in the left sidebar 
---    and manually create 'branding' and 'products' as PUBLIC buckets.
+-- 2. Verify in Database -> Replication -> supabase_realtime that 'appointments' and 'products' are active.
 -- ==========================================
+
