@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { haircutCatalog } from '../data/haircutCatalog'
 
 export const FACE_SHAPES = {
     OVAL: 'Ovalado',
@@ -10,26 +11,56 @@ export const FACE_SHAPES = {
     LONG: 'Alargado'
 }
 
-const HAIRSTYLE_RECOMMENDATIONS = {
-    [FACE_SHAPES.OVAL]: [
-        { name: 'Classic Fade', prompt: "classic fade haircut, clean sides, textured top" },
-        { name: 'Pompadour', prompt: "pompadour hairstyle, high volume top, tapered sides" },
-        { name: 'Buzz Cut', prompt: "military buzz cut, very short hair, uniform length" }
-    ],
-    [FACE_SHAPES.ROUND]: [
-        { name: 'High Skin Fade', prompt: "high skin fade haircut, sharp edges, voluminous top" },
-        { name: 'Undercut', prompt: "slicked back undercut, shaved sides, long top" },
-        { name: 'Faux Hawk', prompt: "faux hawk hairstyle, spiky center, short sides" }
-    ],
-    // Defaulting others for now
-    'default': [
-        { name: 'Crew Cut', prompt: "classic crew cut, short and neat" },
-        { name: 'Side Part', prompt: "gentleman side part haircut, polished look" }
-    ]
+/**
+ * Detect face shape based on MediaPipe landmarks
+ * @param {Array} landmarks - 478 MediaPipe face landmarks
+ */
+export const detectFaceShape = (landmarks) => {
+    if (!landmarks || landmarks.length === 0) return FACE_SHAPES.OVAL
+
+    // Key points indices:
+    // 10: Top of forehead
+    // 152: Bottom of chin
+    // 234: Leftmost cheek
+    // 454: Rightmost cheek
+    // 103: Left forehead
+    // 332: Right forehead
+    // 58: Left jaw
+    // 288: Right jaw
+
+    const getDistance = (p1, p2) => {
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
+    }
+
+    const faceHeight = getDistance(landmarks[10], landmarks[152])
+    const faceWidth = getDistance(landmarks[234], landmarks[454])
+    const foreheadWidth = getDistance(landmarks[103], landmarks[332])
+    const jawWidth = getDistance(landmarks[58], landmarks[288])
+
+    const ratio = faceHeight / faceWidth
+
+    console.log(`Face Analysis - Ratio: ${ratio.toFixed(2)}, H: ${faceHeight.toFixed(2)}, W: ${faceWidth.toFixed(2)}`)
+
+    // Simple heuristic detection logic
+    if (ratio > 1.45) return FACE_SHAPES.LONG
+    if (ratio > 1.25) {
+        if (foreheadWidth > jawWidth * 1.1) return FACE_SHAPES.HEART
+        return FACE_SHAPES.OVAL
+    }
+    if (ratio < 1.1) return FACE_SHAPES.ROUND
+
+    // Default to Square if width is similar to height but not round
+    if (jawWidth > foreheadWidth * 0.95) return FACE_SHAPES.SQUARE
+
+    return FACE_SHAPES.OVAL
 }
 
-export const getHairstyleRecommendations = (faceShape) => {
-    return HAIRSTYLE_RECOMMENDATIONS[faceShape] || HAIRSTYLE_RECOMMENDATIONS['default']
+export const getHairstyleRecommendations = (faceShape, gender = 'Caballero') => {
+    // Filter from catalog
+    return haircutCatalog.filter(style =>
+        style.faceShapes.includes(faceShape) &&
+        (style.gender === gender || !gender)
+    ).sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
 }
 
 /**
@@ -187,6 +218,8 @@ export const generateHairstyle = async (imageB64, maskB64, hairstylePrompt) => {
 
 export default {
     FACE_SHAPES,
+    detectFaceShape,
     getHairstyleRecommendations,
     generateHairstyle
 }
+
