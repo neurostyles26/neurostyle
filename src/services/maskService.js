@@ -19,23 +19,45 @@ export const createHairMask = (landmarks, width, height) => {
     // 234, 454: Left/Right cheekbones
     
     // Simple heuristic: Create a polygon covering the upper part of the face and above
-    const top = landmarks[10]
-    const leftForehead = landmarks[103]
-    const rightForehead = landmarks[332]
-    const leftCheek = landmarks[234]
-    const rightCheek = landmarks[454]
+    // 10: Top of forehead
+    // 103, 332: Forehead corners
+    // 234, 454: Near ears/cheekbones
+    // 151: Forehead center
+    // 10: Top center
+    // 67, 297: Forehead hairline
+    // 21, 251: Temples
 
     ctx.fillStyle = 'white'
     ctx.beginPath()
     
-    // Start from left cheek up to top and down to right cheek
-    ctx.moveTo(leftCheek.x * width, (leftCheek.y - 0.1) * height)
-    ctx.lineTo(leftForehead.x * width, (leftForehead.y - 0.2) * height)
-    ctx.lineTo(top.x * width, (top.y - 0.35) * height) // Go way above the head
-    ctx.lineTo(rightForehead.x * width, (rightForehead.y - 0.2) * height)
-    ctx.lineTo(rightCheek.x * width, (rightCheek.y - 0.1) * height)
+    // Start from left ear area
+    ctx.moveTo(landmarks[234].x * width, landmarks[234].y * height)
+    
+    // Up to left temple
+    ctx.lineTo(landmarks[21].x * width, landmarks[21].y * height)
+    
+    // Along hairline
+    ctx.lineTo(landmarks[67].x * width, landmarks[67].y * height)
+    ctx.lineTo(landmarks[10].x * width, (landmarks[10].y - 0.05) * height)
+    ctx.lineTo(landmarks[297].x * width, landmarks[297].y * height)
+    
+    // To right temple
+    ctx.lineTo(landmarks[251].x * width, landmarks[251].y * height)
+    
+    // Down to right ear area
+    ctx.lineTo(landmarks[454].x * width, landmarks[454].y * height)
+    
+    // Create the "top" of the hair volume (above the head)
+    ctx.lineTo(landmarks[454].x * width, (landmarks[454].y - 0.4) * height)
+    ctx.lineTo(landmarks[10].x * width, (landmarks[10].y - 0.5) * height)
+    ctx.lineTo(landmarks[234].x * width, (landmarks[234].y - 0.4) * height)
+    
     ctx.closePath()
     ctx.fill()
+
+    // Add some blur to the mask for smoother blending
+    ctx.filter = 'blur(15px)'
+    ctx.drawImage(canvas, 0, 0)
 
     return canvas.toDataURL('image/png')
 }

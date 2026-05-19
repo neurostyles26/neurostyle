@@ -413,10 +413,13 @@ const generateAIVirtual = async () => {
     processingStatus.value = 'IA Generando Estilo'
 
     try {
+        // Enviar un prompt más descriptivo combinando nombre y descripción para mayor realismo
+        const aiPrompt = `${selectedStyle.value.name}: ${selectedStyle.value.desc}`
+        
         const resultUrl = await generateHairstyle(
             capturedImage.value, 
             hairMask.value, 
-            selectedStyle.value.name // Using name for the prompt
+            aiPrompt
         )
 
         resultImage.value = resultUrl

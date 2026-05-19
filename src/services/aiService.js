@@ -99,6 +99,58 @@ export const uploadImage = async (imageB64) => {
 }
 
 /**
+ * AI Hairstyle Generation using Replicate (SDXL Inpainting)
+ * This is our highest quality method.
+ */
+export const generateHairstyleReplicate = async (imageB64, maskB64, hairstylePrompt) => {
+    const PROXY_URL = "/api/replicate"
+    
+    try {
+        // SDXL Inpainting on Replicate
+        const response = await fetch(PROXY_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                version: "31e3518299946891047648312e51921f00843236e78fc79a4561ec908e586c07", // lucataco/stable-diffusion-xl-inpainting
+                input: {
+                    image: imageB64,
+                    mask: maskB64,
+                    prompt: `professional studio portrait, same person with a ${hairstylePrompt}, high precision barber cut, sharp fade, highly detailed hair texture, 8k resolution, photorealistic, cinematic lighting`,
+                    negative_prompt: "deformed, distorted, unnatural hair, bad anatomy, cartoon, drawing, painting, blurry, extra fingers",
+                    num_inference_steps: 30,
+                    guidance_scale: 7.5,
+                    strength: 0.9
+                }
+            })
+        })
+
+        const data = await response.json()
+        if (!response.ok) throw new Error(data.error || "Replicate failed to start")
+
+        const predictionId = data.id
+        
+        // Polling for results
+        let attempts = 0
+        while (attempts < 60) {
+            attempts++
+            await new Promise(r => setTimeout(r, 2000))
+            
+            const pollResponse = await fetch(`${PROXY_URL}?action=poll&id=${predictionId}`)
+            const pollData = await pollResponse.json()
+            
+            if (pollData.status === "succeeded") {
+                return Array.isArray(pollData.output) ? pollData.output[0] : pollData.output
+            }
+            if (pollData.status === "failed") throw new Error("Replicate generation failed")
+        }
+        throw new Error("Replicate timeout")
+    } catch (error) {
+        console.error("Replicate Service Error:", error)
+        throw error
+    }
+}
+
+/**
  * AI Hairstyle Generation using HuggingFace Inference API
  * Model: stabilityai/stable-diffusion-2-inpainting
  */
@@ -165,7 +217,14 @@ const blobToBase64 = (blob) => {
  * Main AI Hairstyle Generation Entry Point
  */
 export const generateHairstyle = async (imageB64, maskB64, hairstylePrompt) => {
-    // 1. Try Hugging Face first (as requested in latest prompt)
+    // 1. Try Replicate first (Superior quality)
+    try {
+        return await generateHairstyleReplicate(imageB64, maskB64, hairstylePrompt)
+    } catch (e) {
+        console.warn("Replicate falló, intentando Hugging Face...", e)
+    }
+
+    // 2. Try Hugging Face
     try {
         const hfResult = await generateHairstyleHF(imageB64, maskB64, hairstylePrompt)
         if (hfResult) return hfResult
