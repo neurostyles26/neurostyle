@@ -166,14 +166,12 @@ export const generateHairstyleHF = async (imageB64, maskB64, hairstylePrompt) =>
         const imageBlob = await fetch(imageB64).then(r => r.blob())
         const maskBlob = await fetch(maskB64).then(r => r.blob())
 
-        // Combine prompts according to user template
-        const fullPrompt = `portrait photo of the same person with a ${hairstylePrompt}, professional barber haircut, ultra realistic, photorealistic, preserve facial identity, replace hair only`
-        const negativePrompt = "distorted face, blurry, unrealistic skin, extra eyes, bad anatomy"
+        // Enhanced prompt for SDXL Inpainting to ensure realism
+        const fullPrompt = `high-end professional barber photo of the same person with a ${hairstylePrompt}, photorealistic, 8k uhd, highly detailed hair texture, sharp focus, cinematic lighting, masterpiece, perfectly blended with skin, natural hairline, realistic shadows`
+        const negativePrompt = "cartoon, anime, 3d render, illustration, painting, blurry, low quality, distorted face, extra limbs, unrealistic hair, plastic texture"
 
-        // For HF Inpainting, we often send a combined payload or specific headers
-        // This implementation follows the standard HF Inference API pattern
         const response = await fetch(
-            "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-inpainting",
+            "https://api-inference.huggingface.co/models/diffusers/stable-diffusion-xl-1.0-inpainting-0.1",
             {
                 method: "POST",
                 headers: {
@@ -186,6 +184,11 @@ export const generateHairstyleHF = async (imageB64, maskB64, hairstylePrompt) =>
                         mask: await blobToBase64(maskBlob),
                         prompt: fullPrompt,
                         negative_prompt: negativePrompt
+                    },
+                    parameters: {
+                        num_inference_steps: 40,
+                        guidance_scale: 8.5,
+                        strength: 0.95
                     }
                 })
             }

@@ -95,9 +95,10 @@ const initCamera = async () => {
             videoRef.value.setAttribute('muted', '')
             videoRef.value.setAttribute('playsinline', '')
 
-            // Force play after a short delay to ensure stream is loaded
-            setTimeout(async () => {
+            // Set up events to ensure the video is actually streaming
+            const onVideoReady = async () => {
                 try {
+                    console.log("Cámara: Video listo (metadata cargada). Intentando reproducir...");
                     await videoRef.value.play()
                     console.log("Cámara: Reproducción iniciada correctamente.");
                     loading.value = false
@@ -105,11 +106,38 @@ const initCamera = async () => {
                     emit('started')
                 } catch (playErr) {
                     console.error("Error al iniciar reproducción de video:", playErr);
-                    errorMessage.value = "Error al iniciar el video. Toca 'Reintentar'."
-                    error.value = true
-                    loading.value = false
+                    // Fallback: simple delay if event doesn't trigger perfectly
+                    handlePlayFallback()
                 }
-            }, 300)
+                // Clean up listeners
+                videoRef.value.removeEventListener('loadedmetadata', onVideoReady)
+            }
+
+            const handlePlayFallback = () => {
+                setTimeout(async () => {
+                    if (active.value) return // already started
+                    try {
+                        await videoRef.value.play()
+                        loading.value = false
+                        active.value = true
+                        emit('started')
+                    } catch (e) {
+                        errorMessage.value = "No se pudo iniciar el video. Por favor, refresca la página."
+                        error.value = true
+                        loading.value = false
+                    }
+                }, 1000)
+            }
+
+            videoRef.value.addEventListener('loadedmetadata', onVideoReady)
+            
+            // Safety timeout in case events never fire
+            setTimeout(() => {
+                if (loading.value && !error.value) {
+                    console.warn("Cámara: Timeout de carga, intentando fallback...");
+                    onVideoReady()
+                }
+            }, 3000)
         }
     } catch (err) {
         console.error("Error crítico de cámara:", err)
