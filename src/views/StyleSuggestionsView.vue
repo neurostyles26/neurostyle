@@ -1,200 +1,224 @@
 <template>
-  <div class="min-h-screen bg-[#020202] flex flex-col p-6 font-inter relative overflow-hidden">
-    <!-- Background Aura -->
-    <div class="absolute top-0 left-0 w-full h-[40vh] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+  <div class="min-h-screen bg-[#050505] flex flex-col p-4 sm:p-8 font-inter relative overflow-hidden">
+    <!-- Sophisticated Background Aura -->
+    <div class="absolute top-0 left-0 w-full h-[50vh] bg-primary/5 blur-[140px] rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-[40vw] h-[40vh] bg-primary/2 blur-[100px] rounded-full pointer-events-none"></div>
 
     <!-- Header -->
-    <header class="flex items-center justify-between mb-10 z-10">
-      <router-link to="/dashboard" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 transition-colors">
-        <LucideChevronLeft class="text-primary" />
+    <header class="flex items-center justify-between mb-12 z-10">
+      <router-link to="/dashboard" class="w-12 h-12 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 hover:border-primary/30 transition-all shadow-lg group">
+        <LucideChevronLeft class="text-primary group-hover:-translate-x-1 transition-transform" />
       </router-link>
       <div class="text-center">
-          <h2 class="text-white font-outfit font-bold text-xl tracking-tight">Tu Perfil Estético</h2>
-          <p class="text-primary text-[8px] font-black uppercase tracking-[0.3em]">Recomendaciones IA</p>
+          <h2 class="text-white font-outfit font-black text-2xl tracking-tighter uppercase">Tu Perfil <span class="text-primary">Estético</span></h2>
+          <div class="flex items-center justify-center gap-2 mt-1">
+              <span class="w-1 h-1 rounded-full bg-primary animate-pulse"></span>
+              <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em] opacity-70 italic">Análisis Inteligente</p>
+          </div>
       </div>
       <div class="w-12"></div>
     </header>
 
-    <main class="flex-1 z-10 overflow-y-auto pr-1">
+    <main class="flex-1 z-10 max-w-5xl mx-auto w-full overflow-y-auto pr-1 custom-scrollbar">
       <!-- Analysis Summary Card -->
-      <div class="glass-panel p-6 md:p-8 rounded-3xl mb-10 relative group overflow-hidden border-primary/20">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-700"></div>
+      <div class="glass-card p-8 rounded-[48px] mb-12 relative overflow-hidden border-white/5 shadow-2xl">
+        <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 blur-[80px] rounded-full"></div>
         
-        <div class="flex items-center space-x-6 relative z-10 text-left">
-          <div class="w-24 h-24 rounded-[32px] overflow-hidden border border-primary/30 relative bg-black/40">
-              <img v-if="scanStore.capturedImage" :src="scanStore.capturedImage" class="w-full h-full object-cover opacity-80" />
-              <LucideScanFace v-else class="text-primary absolute inset-0 m-auto" :size="40" />
-              <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-10 relative z-10">
+          <div class="w-32 h-32 rounded-[40px] overflow-hidden border border-primary/20 relative bg-black/40 shadow-inner group">
+              <img v-if="scanStore.capturedImage" :src="scanStore.capturedImage" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              <LucideScanFace v-else class="text-primary absolute inset-0 m-auto" :size="48" />
+              <div class="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full border-2 border-black shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse"></div>
           </div>
-          <div>
-            <p class="text-primary text-[10px] font-black uppercase tracking-[0.3em] mb-2 font-outfit">Resultado Biométrico</p>
-            <h3 class="text-white text-3xl font-outfit font-black tracking-tight uppercase">Rostro <span class="text-primary gold-glow">{{ faceShape }}</span></h3>
-            <div class="flex items-center space-x-3 mt-1 mb-2">
-                <span class="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded-lg font-black tracking-widest">CONF: {{ (confidence * 100).toFixed(0) }}%</span>
-                <span class="text-[10px] bg-white/5 text-gray-400 px-2 py-0.5 rounded-lg font-black tracking-widest">R_IDX: {{ ratio }}</span>
+          
+          <div class="flex-1 text-center md:text-left">
+            <span class="text-primary text-[9px] font-black uppercase tracking-[0.5em] mb-3 block opacity-80">Diagnóstico Biométrico</span>
+            <h3 class="text-white text-4xl font-outfit font-black tracking-tighter uppercase mb-4">Rostro <span class="text-primary gold-glow">{{ faceShape }}</span></h3>
+            
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-6">
+                <span class="text-[9px] glass-panel bg-primary/10 text-primary px-4 py-1.5 rounded-xl font-black tracking-widest border-primary/20">PREPRECISIÓN: {{ (confidence * 100).toFixed(1) }}%</span>
+                <span class="text-[9px] glass-panel bg-white/5 text-gray-400 px-4 py-1.5 rounded-xl font-black tracking-widest border-white/5">RATIO: {{ ratio }}</span>
             </div>
-            <p class="text-gray-500 text-sm mt-1 max-w-[200px] leading-relaxed">
-              Basado en tu estructura física, recomendamos estilos que <span class="text-gray-300 font-bold italic">{{ recommendationText }}</span>
+            
+            <p class="text-gray-400 text-sm font-medium leading-relaxed max-w-lg uppercase tracking-wide opacity-80">
+              Basado en tu estructura física única, recomendamos estilos que <span class="text-white font-black italic">{{ recommendationText }}</span>
             </p>
           </div>
         </div>
       </div>
 
-      <!-- Recommendations Section -->
-      <div class="mb-8 flex items-baseline justify-between px-2">
-  <h4 class="text-white text-xl font-outfit font-bold tracking-tight">Cortes Sugeridos</h4>
-  <div class="h-[1px] flex-1 bg-white/5 mx-4"></div>
-  <span class="text-primary text-[10px] font-bold uppercase tracking-widest">{{ filteredStyles.length }} Opciones</span>
-</div>
-<!-- Fallback when no styles available -->
-<div v-if="filteredStyles.length === 0" class="text-center text-gray-400 py-8">
-  No hay estilos disponibles para la forma de rostro detectada. Ajusta la posición o prueba con otra forma.
-</div>
+      <!-- Recommendations Section Header -->
+      <div class="mb-10 flex items-center justify-between px-4">
+        <h4 class="text-white text-2xl font-outfit font-black tracking-tighter uppercase">Cortes <span class="text-primary">Sugeridos</span></h4>
+        <div class="flex items-center gap-3">
+          <div class="h-[1px] w-12 bg-white/10"></div>
+          <span class="text-gray-600 text-[10px] font-black uppercase tracking-widest">{{ filteredStyles.length }} Opciones</span>
+        </div>
+      </div>
 
-      <div class="space-y-6 mb-32">
+      <!-- Fallback when no styles available -->
+      <div v-if="filteredStyles.length === 0" class="text-center glass-panel rounded-3xl py-20 px-10">
+        <LucideX class="text-gray-700 mx-auto mb-6" :size="48" />
+        <p class="text-gray-500 font-bold uppercase tracking-widest text-sm">No hay estilos disponibles para esta morfología.</p>
+        <button @click="router.push('/scan')" class="btn-primary mt-8">Intentar nuevo escaneo</button>
+      </div>
+
+      <div class="responsive-grid mb-40">
         <div 
           v-for="(style, index) in filteredStyles" 
           :key="style.id"
           @click="selectedStyle = style"
           :class="[
-            'p-8 glass-panel rounded-3xl transition-all duration-500 cursor-pointer group relative overflow-hidden',
-            selectedStyle?.id === style.id ? 'border-primary/50 bg-primary/5 shadow-[0_15px_30px_rgba(218,165,32,0.1)]' : 'border-white/5 opacity-70 hover:opacity-100'
+            'glass-card rounded-[40px] p-8 overflow-hidden cursor-pointer group relative',
+            selectedStyle?.id === style.id ? 'border-primary shadow-2xl bg-primary/5' : 'border-white/5 opacity-80 hover:opacity-100'
           ]"
         >
-          <div v-if="index === 0" class="absolute -top-1 -right-1 bg-primary text-black text-[8px] font-black px-4 py-1.5 rounded-bl-3xl shadow-lg z-20 uppercase tracking-[0.2em]">
-            Elección Elite
+          <!-- Elite Selection Badge -->
+          <div v-if="index === 0" class="absolute top-0 right-0 bg-primary text-black text-[9px] font-black px-6 py-2 rounded-bl-3xl shadow-lg z-20 uppercase tracking-[0.2em]">
+            Recomendación Master
           </div>
 
-          <div class="flex items-center space-x-6 relative z-10 text-left">
-            <div :class="[
-                'w-20 h-20 rounded-2xl flex items-center justify-center font-outfit font-black text-2xl transition-all duration-700',
-                selectedStyle?.id === style.id ? 'bg-primary text-black scale-110 shadow-lg shadow-primary/20' : 'bg-white/5 text-primary/50 border border-white/10'
-            ]">
-              {{ style.matchScore }}%
+          <div class="flex flex-col h-full relative z-10">
+            <div class="flex items-start justify-between mb-8">
+              <div :class="[
+                  'w-16 h-16 rounded-2xl flex items-center justify-center font-outfit font-black text-2xl transition-all duration-700',
+                  selectedStyle?.id === style.id ? 'bg-primary text-black scale-110 shadow-xl' : 'bg-white/5 text-primary/40 border border-white/5'
+              ]">
+                {{ style.matchScore }}<span class="text-[10px]">%</span>
+              </div>
+              
+              <button 
+                  v-if="selectedStyle?.id === style.id"
+                  @click.stop="handleTryOn(style)"
+                  :disabled="isGeneratingAI"
+                  class="btn-primary py-3 px-6 text-[9px] shadow-sm"
+              >
+                  {{ isGeneratingAI && tryingOnId === style.id ? 'IA...' : 'PROBAR IA' }}
+              </button>
             </div>
             
             <div class="flex-1">
-              <h5 :class="['font-outfit font-bold text-2xl mb-1 tracking-tight transition-colors duration-500', selectedStyle?.id === style.id ? 'text-primary' : 'text-white group-hover:text-primary']">
+              <h5 :class="['font-outfit font-black text-2xl mb-3 tracking-tighter uppercase transition-colors duration-500', selectedStyle?.id === style.id ? 'text-primary' : 'text-white group-hover:text-primary']">
                 {{ style.name }}
               </h5>
-              <div class="flex items-center space-x-3">
-                  <span class="flex items-center text-[9px] text-gray-500 uppercase font-black tracking-widest">
-                    <div :class="['w-1.5 h-1.5 rounded-full mr-2', maintenanceColor(style.maintenance)]"></div>
+              <div class="flex items-center space-x-3 mb-6">
+                  <span class="flex items-center text-[8px] text-gray-500 uppercase font-black tracking-widest">
+                    <div :class="['w-1.5 h-1.5 rounded-full mr-2 shadow-[0_0_8px_rgba(255,255,255,0.2)]', maintenanceColor(style.maintenance)]"></div>
                     Mantenimiento {{ style.maintenance }}
                   </span>
               </div>
+              <p class="text-gray-500 text-xs font-bold leading-relaxed uppercase tracking-wider line-clamp-3">
+                {{ style.desc }}
+              </p>
             </div>
-            
-            <button 
-                v-if="selectedStyle?.id === style.id"
-                @click.stop="handleTryOn(style)"
-                :disabled="isGeneratingAI"
-                class="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-primary uppercase tracking-wider hover:bg-primary hover:text-black transition-all"
-            >
-                {{ isGeneratingAI && tryingOnId === style.id ? 'GENERANDO...' : 'PROBAR' }}
-            </button>
           </div>
           
-          <p v-if="selectedStyle?.id === style.id" class="mt-8 pt-8 border-t border-white/10 text-gray-400 text-sm leading-relaxed animate-fade-in text-left">
-            {{ style.desc }}
-          </p>
+          <!-- Background Decoration -->
+          <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-primary/2 blur-2xl rounded-full group-hover:bg-primary/5 transition-colors"></div>
         </div>
       </div>
     </main>
 
     <!-- Try-On Result Modal -->
     <transition
-        enter-active-class="transition duration-500 ease-out"
-        enter-from-class="opacity-0 scale-95"
-        leave-active-class="transition duration-300 ease-in"
-        leave-to-class="opacity-0 scale-95"
+        enter-active-class="transition duration-700 cubic-bezier(0.16, 1, 0.3, 1)"
+        enter-from-class="opacity-0 scale-95 translate-y-10"
+        leave-active-class="transition duration-500 ease-in"
+        leave-to-class="opacity-0 scale-95 translate-y-10"
     >
-        <div v-if="showResultModal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4 md:p-6">
-            <div class="w-full max-w-lg glass-panel border-white/10 rounded-[32px] md:rounded-[56px] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)] flex flex-col h-[85vh] md:h-[80vh]">
-                <!-- Header -->
-                <div class="p-6 md:p-8 pb-4 flex items-center justify-between">
+        <div v-if="showResultModal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4 md:p-8">
+            <div class="w-full max-w-2xl glass-card rounded-[60px] overflow-hidden shadow-2xl flex flex-col h-[90vh] md:h-[85vh] border-white/10">
+                <!-- Modal Header -->
+                <div class="p-8 md:p-12 pb-4 flex items-center justify-between">
                     <div>
-                        <h3 class="text-white text-2xl md:text-3xl font-outfit font-black tracking-tighter uppercase mb-1">Previsualización {{ isUsingOverlay ? 'Instantánea' : 'IA' }}</h3>
-                        <p class="text-primary text-[8px] font-black uppercase tracking-[0.4em]">Experiencia {{ tryingOnStyleName }}</p>
+                        <span class="text-primary text-[9px] font-black uppercase tracking-[0.5em] mb-2 block">Simulación Neural</span>
+                        <h3 class="text-white text-3xl md:text-4xl font-outfit font-black tracking-tighter uppercase">{{ tryingOnStyleName }}</h3>
                     </div>
-                    <button @click="showResultModal = false" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-gray-500 hover:text-primary transition-all rounded-2xl bg-white/5">
-                        <LucideX :size="20" />
+                    <button @click="showResultModal = false" class="w-12 h-12 flex items-center justify-center text-gray-500 hover:text-white transition-all rounded-2xl glass-panel hover:border-primary/40 group">
+                        <LucideX :size="24" class="group-hover:rotate-90 transition-transform" />
                     </button>
                 </div>
 
                 <!-- Comparison Area -->
-                <div class="flex-1 relative bg-black/20 m-4 md:m-6 rounded-3xl overflow-hidden border border-white/5">
+                <div class="flex-1 relative bg-[#0a0a0a] m-6 md:m-10 rounded-[48px] overflow-hidden border border-white/5 shadow-inner">
                     <div class="absolute inset-0 flex">
                         <!-- Before -->
-                        <div class="relative flex-1 group" :class="{ 'flex-none w-1/2': showComparison }">
-                            <img :src="scanStore.capturedImage" class="w-full h-full object-cover" />
-                            <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-black text-white uppercase">Original</div>
+                        <div class="relative flex-1" :class="{ 'flex-none w-1/2': showComparison }">
+                            <img :src="scanStore.capturedImage" class="w-full h-full object-cover grayscale opacity-40" />
+                            <div class="absolute bottom-6 left-6 glass-panel px-4 py-2 rounded-xl text-[10px] font-black text-white uppercase tracking-widest border-white/10">Base Original</div>
                         </div>
                         
-                        <!-- Splitter -->
-                        <div v-if="showComparison" class="w-1 bg-primary relative z-10 shadow-[0_0_15px_#DAA520]"></div>
+                        <!-- Divider Line -->
+                        <div v-if="showComparison" class="w-[1px] bg-white/20 relative z-10 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                          <div class="absolute inset-y-0 -left-4 -right-4 flex items-center justify-center">
+                            <div class="w-8 h-8 rounded-xl glass-panel flex items-center justify-center">
+                              <LucideArrowRight :size="14" class="text-primary rotate-45" />
+                            </div>
+                          </div>
+                        </div>
 
                         <!-- After -->
-                        <div v-if="showComparison" class="relative flex-1">
+                        <div v-if="showComparison" class="relative flex-1 animate-reveal-ai">
                             <img :src="generatedImage" class="w-full h-full object-cover" />
-                            <div class="absolute bottom-4 right-4 bg-primary px-3 py-1 rounded-lg text-[10px] font-black text-black uppercase shadow-lg">NeuroStyle IA</div>
+                            <div class="absolute bottom-6 right-6 bg-primary px-5 py-2 rounded-xl text-[10px] font-black text-black uppercase tracking-widest shadow-xl">Resultado IA</div>
                         </div>
                     </div>
 
-                    <!-- Loader while generating -->
-                    <div v-if="isGeneratingAI" class="absolute inset-0 bg-black/60 backdrop-blur-lg flex flex-col items-center justify-center">
-                        <div class="w-16 h-16 relative mb-6">
-                            <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                    <!-- Loader -->
+                    <div v-if="isGeneratingAI" class="absolute inset-0 bg-black/80 backdrop-blur-xl flex flex-col items-center justify-center">
+                        <div class="relative w-24 h-24 mb-10">
+                            <div class="absolute inset-0 border-2 border-primary/20 rounded-full animate-ping"></div>
                             <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                            <div class="absolute inset-0 m-auto w-12 h-12 glass-panel rounded-full flex items-center justify-center">
+                              <LucideSparkles class="text-primary animate-pulse" :size="24" />
+                            </div>
                         </div>
-                        <p class="text-primary text-[10px] font-black uppercase tracking-[0.4em] animate-pulse text-center px-10">
-                            {{ isUsingOverlay ? 'Renderizando superposición instantánea...' : 'Moldeando tu nuevo estilo con inteligencia neural...' }}
+                        <p class="text-primary text-[10px] font-black uppercase tracking-[0.5em] animate-pulse text-center px-12 leading-loose">
+                            {{ isUsingOverlay ? 'PROCESANDO SUPERPOSICIÓN...' : 'GENERANDO ESTRUCTURA CAPILAR MEDIANTE IA...' }}
                         </p>
                     </div>
                 </div>
 
                 <!-- Actions -->
-                <div class="p-8 pt-2 grid grid-cols-2 gap-4">
+                <div class="p-10 pt-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <button 
                         @click="showComparison = !showComparison"
                         :disabled="!generatedImage"
-                        class="glass-panel py-6 rounded-3xl text-white font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all disabled:opacity-20"
+                        class="btn-secondary py-6 disabled:opacity-20"
                     >
-                        {{ showComparison ? 'VER SOLO IA' : 'COMPARAR' }}
+                        {{ showComparison ? 'MODO INDIVIDUAL' : 'MODO COMPARATIVA' }}
                     </button>
                     <button 
                         @click="handleBooking"
-                        class="bg-primary py-6 rounded-3xl text-black font-black text-xs uppercase tracking-wider hover:scale-105 transition-all shadow-xl shadow-primary/20"
+                        class="btn-primary py-6 text-base"
                     >
                         RESERVAR ESTE LOOK
+                        <LucideScissors :size="18" />
                     </button>
                 </div>
             </div>
         </div>
     </transition>
 
-    <!-- Booking CTA (Animated Footer) -->
+    <!-- Booking CTA (Floating) -->
     <transition
-        enter-active-class="transition transform duration-500 ease-out"
+        enter-active-class="transition transform duration-700 cubic-bezier(0.16, 1, 0.3, 1)"
         enter-from-class="translate-y-full opacity-0"
         enter-to-class="translate-y-0 opacity-100"
     >
-        <div v-if="selectedStyle && !showResultModal" class="fixed bottom-0 left-0 right-0 p-8 glass-panel border-t border-white/10 rounded-t-[48px] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] z-50">
-            <div class="max-w-md mx-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <p class="text-[10px] text-primary font-black uppercase tracking-[0.3em] mb-1">Membresía Elite</p>
-                        <h6 class="text-white font-outfit font-bold text-2xl tracking-tight">{{ selectedStyle.name }}</h6>
-                    </div>
+        <div v-if="selectedStyle && !showResultModal" class="fixed bottom-0 left-0 right-0 p-6 sm:p-10 z-50">
+            <div class="max-w-xl mx-auto glass-card p-6 md:p-8 rounded-[40px] border-primary/30 shadow-[0_-20px_50px_rgba(0,0,0,0.4)] flex flex-col sm:flex-row items-center justify-between gap-6 bg-black/60 backdrop-blur-3xl">
+                <div class="text-center sm:text-left">
+                    <p class="text-[9px] text-primary font-black uppercase tracking-[0.5em] mb-2">Selección Actual</p>
+                    <h6 class="text-white font-outfit font-black text-3xl tracking-tighter uppercase leading-none">{{ selectedStyle.name }}</h6>
                 </div>
                 
                 <button 
                     @click="handleBooking"
-                    class="w-full bg-primary text-black font-black py-6 rounded-3xl flex items-center justify-center text-xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/30 group relative overflow-hidden"
+                    class="btn-primary w-full sm:w-auto px-12 py-5 group relative"
                 >
-                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    <span class="font-outfit uppercase tracking-wider">AGENDAR AHORA</span>
-                    <LucideScissors class="ml-3 group-hover:rotate-45 transition-transform" />
+                    AGENDAR CITA
+                    <LucideArrowRight class="group-hover:translate-x-1 transition-transform" :size="18" />
                 </button>
             </div>
         </div>
@@ -207,7 +231,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { 
   LucideChevronLeft, LucideScanFace, LucideScissors, 
-  LucideArrowRight, LucideX 
+  LucideArrowRight, LucideX, LucideSparkles, LucideCheck
 } from 'lucide-vue-next'
 import { useScanStore } from '../stores/scanStore'
 import aiService from '../services/aiService'
@@ -233,8 +257,6 @@ const isUsingOverlay = ref(false)
 const showResultModal = ref(false)
 const showComparison = ref(true)
 
-// stylesDb removed, using imported haircutCatalog
-
 const filteredStyles = computed(() => {
     return haircutCatalog
         .filter(s => s.gender === gender.value && s.faceShapes.includes(faceShape.value))
@@ -251,9 +273,9 @@ const recommendationText = computed(() => {
 })
 
 const maintenanceColor = (level) => {
-    if (level === 'Bajo') return 'bg-green-500'
-    if (level === 'Medio') return 'bg-yellow-500'
-    return 'bg-red-500'
+    if (level === 'Bajo') return 'bg-green-500 shadow-green-500/20'
+    if (level === 'Medio') return 'bg-yellow-500 shadow-yellow-500/20'
+    return 'bg-red-500 shadow-red-500/20'
 }
 
 const handleTryOn = async (style) => {
@@ -268,11 +290,10 @@ const handleTryOn = async (style) => {
     showResultModal.value = true
     generatedImage.value = null
     showComparison.value = false
-    isUsingOverlay.value = true // We prioritize the free overlay
+    isUsingOverlay.value = true 
 
     try {
         if (style.overlayImage) {
-            // Use FREE instant overlay
             console.log("Using Free Overlay for:", style.name)
             const resultUrl = await overlayService.applyHairstyleOverlay(
                 scanStore.capturedImage,
@@ -283,7 +304,6 @@ const handleTryOn = async (style) => {
             showComparison.value = true
             isGeneratingAI.value = false
         } else {
-            // Fallback to AI (or show message)
             isUsingOverlay.value = false
             console.log("No overlay asset. Using AI for:", style.name)
             
@@ -319,13 +339,30 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes reveal-ai {
+  from { opacity: 0; clip-path: inset(0 0 0 100%); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-reveal-ai {
+  animation: reveal-ai 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.1);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 165, 32, 0.3);
 }
 </style>
 

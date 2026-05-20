@@ -9,184 +9,221 @@
     </div>
 
     <!-- Top Elite Header (Fixed) -->
-    <header class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 py-4 md:px-12 glass-panel border-b border-white/5 backdrop-blur-xl">
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 p-1.5 shrink-0">
-          <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_#DAA520]" alt="NS" />
+    <header class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 py-4 md:px-12 glass-panel border-b border-white/5 backdrop-blur-xl transition-all duration-500">
+      <div class="flex items-center space-x-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary/20 to-white/5 flex items-center justify-center border border-primary/20 p-2 shrink-0 shadow-lg shadow-primary/5">
+          <img :src="logoImg" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(218,165,32,0.4)]" alt="Logo" />
         </div>
-        <div class="min-w-0">
-          <span class="text-white text-[10px] font-black uppercase tracking-[0.4em] block truncate">NeuroStyle IA</span>
-          <span class="text-primary text-[6px] font-black uppercase tracking-[0.2em] block truncate">Powered by Neural Tech</span>
+        <div class="hidden sm:block">
+          <span class="text-white text-xs font-black uppercase tracking-[0.4em] block">{{ shopStore.shopName }}</span>
+          <span class="text-primary text-[7px] font-black uppercase tracking-[0.2em] block opacity-70 italic">Powered by Neural Tech</span>
         </div>
       </div>
       
-      <!-- Hamburger Menu Button -->
-      <button 
-        @click="isMenuOpen = !isMenuOpen" 
-        class="w-10 h-10 flex items-center justify-center glass-panel rounded-xl hover:bg-white/10 transition-colors pointer-events-auto"
-      >
-        <component :is="isMenuOpen ? LucideX : LucideMenu" class="text-primary" :size="20" />
-      </button>
+      <div class="flex items-center gap-4">
+        <!-- Quick Booking Link (Desktop) -->
+        <router-link to="/book" class="hidden md:flex text-[10px] font-black text-white/40 hover:text-primary uppercase tracking-[0.3em] transition-all py-2 px-4 rounded-full border border-white/5 hover:border-primary/20 bg-white/5">
+          Reserva Directa
+        </router-link>
+
+        <!-- Hamburger Menu Button -->
+        <button 
+          @click="isMenuOpen = !isMenuOpen" 
+          class="w-11 h-11 flex items-center justify-center glass-panel rounded-2xl hover:bg-white/10 hover:border-primary/30 transition-all pointer-events-auto shadow-lg"
+        >
+          <component :is="isMenuOpen ? LucideX : LucideMenu" class="text-primary" :size="22" />
+        </button>
+      </div>
     </header>
 
     <!-- Slide-over Mobile Menu -->
     <transition
-      enter-active-class="transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)"
+      enter-active-class="transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1)"
       enter-from-class="translate-x-full opacity-0"
-      leave-active-class="transition-all duration-300 ease-in"
+      leave-active-class="transition-all duration-500 ease-in"
       leave-to-class="translate-x-full opacity-0"
     >
-      <div v-if="isMenuOpen" class="fixed inset-0 z-[95] flex justify-end">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="isMenuOpen = false"></div>
-        <div class="relative w-80 h-full glass-panel border-l border-white/5 p-12 flex flex-col pt-32 bg-black/95">
-          <router-link 
-            to="/about" 
-            class="group mb-10"
-            @click="isMenuOpen = false"
-          >
-            <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-1">Sobre el Creador</span>
-            <span class="text-[8px] text-gray-600 uppercase tracking-[0.2em]">Visión & Portafolio de Edisson Pinza</span>
-          </router-link>
-          
-          <router-link 
-            to="/support" 
-            class="group mb-12"
-            @click="isMenuOpen = false"
-          >
-            <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-1">Soporte Maestro</span>
-            <span class="text-[8px] text-gray-600 uppercase tracking-[0.2em]">Conserjería Técnica</span>
-          </router-link>
+      <div v-if="isMenuOpen" class="fixed inset-0 z-[120] flex justify-end">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="isMenuOpen = false"></div>
+        <div class="relative w-80 h-full glass-panel border-l border-white/5 p-12 flex flex-col pt-32 bg-[#050505]/95">
+          <div class="space-y-12">
+            <router-link to="/scan" class="group block" @click="isMenuOpen = false">
+              <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-2">Simulador IA</span>
+              <span class="text-[9px] text-gray-600 uppercase tracking-[0.2em]">Escaneo Biométrico 3D</span>
+            </router-link>
+            
+            <router-link to="/book" class="group block" @click="isMenuOpen = false">
+              <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-2">Citas Master</span>
+              <span class="text-[9px] text-gray-600 uppercase tracking-[0.2em]">Reserva tu Experiencia</span>
+            </router-link>
 
-          <div class="mt-auto">
-             <a 
-              href="https://devedisof-mi-cv.netlify.app/" 
-              target="_blank" 
-              class="flex flex-col space-y-3 opacity-40 hover:opacity-100 transition-opacity"
-            >
-              <span class="text-[8px] font-black tracking-[0.6em] text-primary uppercase">BY DEVEDISOF</span>
-              <div class="w-12 h-[1px] bg-primary/20"></div>
-            </a>
+            <router-link to="/store" class="group block" @click="isMenuOpen = false">
+              <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-2">Exclusive Store</span>
+              <span class="text-[9px] text-gray-600 uppercase tracking-[0.2em]">Productos de Alta Gama</span>
+            </router-link>
+            
+            <div class="h-[1px] w-full bg-white/5"></div>
+
+            <router-link to="/about" class="group block" @click="isMenuOpen = false">
+              <span class="text-white/40 group-hover:text-primary transition-colors text-xs font-black uppercase tracking-[0.3em] block mb-2">Sobre Nosotros</span>
+              <span class="text-[9px] text-gray-600 uppercase tracking-[0.2em]">Nuestra Historia & Visión</span>
+            </router-link>
+          </div>
+
+          <div class="mt-auto pt-20 border-t border-white/5">
+             <div class="flex flex-col space-y-4 opacity-40 hover:opacity-100 transition-opacity">
+              <span class="text-[8px] font-black tracking-[0.6em] text-primary uppercase">DEVELOPED BY DEVEDISOF</span>
+              <p class="text-[7px] text-gray-500 leading-relaxed uppercase tracking-widest">Tecnología Neural para el Arte del Grooming</p>
+            </div>
           </div>
         </div>
       </div>
     </transition>
 
     <!-- Main Hero Landing -->
-    <main class="z-10 w-full max-w-6xl flex flex-col items-center pt-32 pb-20 px-6">
+    <main class="z-10 w-full max-w-7xl flex flex-col items-center pt-40 pb-20 px-6">
       <div class="flex flex-col items-center animate-fade-in-up w-full text-center">
         <!-- Sculptural Logo Lens -->
-        <div class="relative w-40 h-40 sm:w-56 sm:h-56 mb-12 group">
-          <div class="absolute inset-[-20px] bg-primary/20 blur-[60px] rounded-full animate-pulse-glow"></div>
-          <div class="relative w-full h-full rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-white/10 to-primary/40 shadow-[0_0_50px_rgba(218,165,32,0.2)]">
-            <div class="w-full h-full rounded-full bg-[#050505] flex items-center justify-center overflow-hidden p-8 border border-white/5 relative">
+        <div class="relative w-44 h-44 sm:w-64 sm:h-64 mb-16 group">
+          <div class="absolute inset-[-30px] bg-primary/20 blur-[80px] rounded-full animate-pulse-glow"></div>
+          <div class="relative w-full h-full rounded-[48px] p-[2px] bg-gradient-to-tr from-primary/40 via-white/10 to-primary/40 shadow-2xl rotate-3 group-hover:rotate-0 transition-all duration-1000">
+            <div class="w-full h-full rounded-[46px] bg-[#050505] flex items-center justify-center overflow-hidden p-10 border border-white/5 relative">
               <img 
                 v-if="shopStore.logoUrl"
                 :src="shopStore.logoUrl" 
-                class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(218,165,32,0.4)] transition-all duration-1000 group-hover:scale-110 group-hover:rotate-3" 
+                class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.4)] transition-all duration-1000 group-hover:scale-110" 
                 :alt="shopStore.shopName" 
               />
               <img 
                 v-else
                 :src="logoImg" 
-                class="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(218,165,32,0.4)] opacity-20" 
+                class="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(218,165,32,0.4)] opacity-20 grayscale" 
                 alt="Placeholder" 
               />
               <!-- Shimmer effect -->
-              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1500"></div>
             </div>
           </div>
-          <!-- Decorative Rings -->
-          <div class="absolute inset-[-10px] border border-primary/10 rounded-full animate-spin-extremely-slow"></div>
-          <div class="absolute inset-[-30px] border border-white/5 rounded-full animate-spin-extremely-slow" style="animation-direction: reverse; animation-duration: 120s"></div>
+          <!-- Decorative UI Elements -->
+          <div class="absolute -top-4 -right-4 w-12 h-12 glass-panel rounded-2xl flex items-center justify-center animate-float">
+            <LucideSparkles class="text-primary" :size="16" />
+          </div>
+          <div class="absolute -bottom-6 -left-6 w-16 h-16 glass-panel rounded-full flex items-center justify-center animate-float" style="animation-delay: 2s">
+            <LucideScissors class="text-white/20" :size="20" />
+          </div>
         </div>
 
         <!-- Innovative Typography -->
-        <div class="relative mb-6">
-          <h1 class="text-white text-6xl sm:text-8xl md:text-9xl font-outfit font-black tracking-tighter uppercase leading-[0.85] text-glow overflow-visible px-4">
+        <div class="relative mb-8 px-4">
+          <h1 class="text-white text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-outfit font-black tracking-tighter uppercase leading-[0.85] text-glow">
             {{ shopStore.shopName }}
           </h1>
-          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-48 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+          <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-64 h-[1px] bg-gradient-to-r from-transparent via-primary/60 to-transparent"></div>
         </div>
         
-        <p class="text-gray-500 text-xs sm:text-sm md:text-lg font-medium max-w-xl mb-20 leading-relaxed tracking-[0.3em] uppercase opacity-60">
-          {{ shopStore.shopDescription || 'Precision Neural & Master Barbering' }}
+        <p class="text-gray-400 text-[10px] sm:text-xs md:text-sm font-bold max-w-2xl mb-24 leading-relaxed tracking-[0.4em] uppercase opacity-80">
+          {{ shopStore.shopDescription || 'Innovación, Estilo & Maestría en cada detalle' }}
         </p>
       </div>
 
       <!-- Innovative Role Selection -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl animate-reveal-actions">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full max-w-6xl animate-reveal-actions">
         
         <!-- CLIENT CARD -->
         <div class="group relative">
-          <div class="absolute inset-0 bg-primary/5 blur-2xl rounded-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-          <div class="relative glass-panel rounded-[40px] p-8 border-white/5 flex flex-col h-full hover:border-primary/30 transition-all duration-500 overflow-hidden">
-            <div class="flex items-center justify-between mb-10">
-              <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
-                <LucideSparkles class="text-primary" :size="28" />
+          <div class="absolute inset-0 bg-primary/10 blur-[100px] rounded-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+          <div class="relative glass-card rounded-[48px] p-10 md:p-14 flex flex-col h-full overflow-hidden min-h-[500px]">
+            <div class="flex items-center justify-between mb-16">
+              <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-inner">
+                <LucideSparkles class="text-primary" :size="32" />
               </div>
-              <span class="text-[8px] font-black tracking-[0.4em] text-primary/40 uppercase">Experiencia Cliente</span>
+              <div class="flex flex-col items-end text-right">
+                <span class="text-[9px] font-black tracking-[0.4em] text-primary uppercase mb-1">Experiencia Premium</span>
+                <span class="text-[7px] text-gray-500 font-bold uppercase tracking-widest">Uso para clientes</span>
+              </div>
             </div>
 
-            <h3 class="text-white text-3xl font-outfit font-black mb-4 tracking-tight uppercase">Tu Mejor Versión</h3>
-            <p class="text-gray-500 text-xs font-medium uppercase tracking-widest leading-relaxed mb-10">
-              Usa nuestra IA para encontrar el corte perfecto basado en tu biometría facial.
+            <h3 class="text-white text-4xl md:text-5xl font-outfit font-black mb-6 tracking-tight uppercase leading-none">Tu Perfil <br/><span class="text-primary">Perfecto</span></h3>
+            <p class="text-gray-400 text-xs md:text-sm font-medium uppercase tracking-widest leading-relaxed mb-12 max-w-sm">
+              Descubre el estilo que mejor se adapta a tus facciones mediante análisis de biometría facial por IA.
             </p>
 
-            <router-link 
-              to="/scan" 
-              class="mt-auto w-full bg-primary text-black font-black py-5 rounded-2xl flex items-center justify-center text-sm tracking-[0.15em] uppercase hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20"
-            >
-              Iniciar Escaneo IA
-            </router-link>
+            <div class="mt-auto space-y-4">
+              <router-link 
+                to="/scan" 
+                class="btn-primary w-full group/btn"
+              >
+                Iniciar Escaneo 3D
+                <LucideSparkles class="group-hover/btn:rotate-12 transition-transform" :size="18" />
+              </router-link>
 
-            <div class="flex gap-3 mt-4">
-              <router-link to="/book" class="flex-1 py-4 glass-panel border-white/5 rounded-xl text-[9px] font-black text-white/40 hover:text-white text-center uppercase tracking-widest transition-colors hover:bg-white/5">Citas</router-link>
-              <router-link to="/store" class="flex-1 py-4 glass-panel border-white/5 rounded-xl text-[9px] font-black text-white/40 hover:text-white text-center uppercase tracking-widest transition-colors hover:bg-white/5">Catálogo</router-link>
+              <div class="grid grid-cols-2 gap-4">
+                <router-link to="/book" class="btn-secondary py-5 px-4 text-[10px]">Agendar Cita</router-link>
+                <router-link to="/store" class="btn-secondary py-5 px-4 text-[10px]">Ver Catálogo</router-link>
+              </div>
             </div>
             
-            <!-- Background Decoration -->
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/5 blur-3xl rounded-full"></div>
+            <!-- Abstract Background Pattern -->
+            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-primary/5 rounded-full blur-[100px] group-hover:bg-primary/10 transition-colors"></div>
           </div>
         </div>
 
         <!-- BARBER CARD -->
         <div class="group relative">
-          <div class="absolute inset-0 bg-white/5 blur-2xl rounded-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-          <div class="relative glass-panel rounded-[40px] p-8 border-white/5 flex flex-col h-full hover:border-white/20 transition-all duration-500 overflow-hidden">
-            <div class="flex items-center justify-between mb-10">
-              <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/40 transition-colors">
-                <LucideScissors class="text-white/40 group-hover:text-primary transition-colors" :size="28" />
+          <div class="absolute inset-0 bg-white/5 blur-[100px] rounded-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+          <div class="relative glass-card rounded-[48px] p-10 md:p-14 flex flex-col h-full overflow-hidden min-h-[500px]">
+            <div class="flex items-center justify-between mb-16">
+              <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-primary/40 transition-colors shadow-inner">
+                <LucideScissors class="text-white/40 group-hover:text-primary transition-colors" :size="32" />
               </div>
-              <span class="text-[8px] font-black tracking-[0.4em] text-white/20 uppercase">Portal Maestro</span>
+              <div class="flex flex-col items-end text-right">
+                <span class="text-[9px] font-black tracking-[0.4em] text-white/40 uppercase mb-1 group-hover:text-primary/60 transition-colors">Gestión Maestro</span>
+                <span class="text-[7px] text-gray-500 font-bold uppercase tracking-widest">Portal Administrativo</span>
+              </div>
             </div>
 
-            <h3 class="text-white text-3xl font-outfit font-black mb-4 tracking-tight uppercase">Gestión Elite</h3>
-            <p class="text-gray-500 text-xs font-medium uppercase tracking-widest leading-relaxed mb-10">
-              Panel de control avanzado para barberos y administración de tienda.
+            <h3 class="text-white text-4xl md:text-5xl font-outfit font-black mb-6 tracking-tight uppercase leading-none">Control <br/>Administrativo</h3>
+            <p class="text-gray-400 text-xs md:text-sm font-medium uppercase tracking-widest leading-relaxed mb-12 max-w-sm">
+              Plataforma avanzada para la gestión de citas, servicios y productos de tu negocio.
             </p>
 
-            <router-link 
-              to="/login" 
-              class="mt-auto w-full bg-white/5 text-white/60 font-black py-5 rounded-2xl border border-white/10 flex items-center justify-center text-sm tracking-[0.15em] uppercase hover:bg-white/10 hover:text-white transition-all group-hover:border-primary/20"
-            >
-              Acceso Profesional
-            </router-link>
+            <div class="mt-auto">
+              <router-link 
+                to="/login" 
+                class="btn-secondary w-full py-6 border-white/10 hover:border-primary/40 text-white/60 hover:text-white"
+              >
+                Acceder al Panel
+              </router-link>
+            </div>
             
-            <!-- Animated Barber Pole Accent -->
-            <div class="absolute right-6 top-1/2 -translate-y-1/2 w-1 h-32 opacity-10 group-hover:opacity-30 transition-opacity">
-                <div class="w-full h-full bg-gradient-to-b from-primary via-blue-500 to-red-500 animate-pulse-slow"></div>
+            <!-- Barber Pole Decorative Element -->
+            <div class="absolute right-0 top-0 w-2 h-full opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+              <div class="w-full h-full bg-gradient-to-b from-primary via-white to-primary animate-pulse"></div>
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Innovative Feature Badges -->
-      <div class="mt-32 flex flex-wrap justify-center gap-4 opacity-30 hover:opacity-100 transition-all duration-1000 px-6">
-          <div v-for="tag in ['Neural Mapping', 'AI Generative', 'Master Style', 'Real-time Overlay']" :key="tag" class="px-5 py-2 glass-panel border-white/5 rounded-full flex items-center space-x-2">
-            <div class="w-1 h-1 bg-primary rounded-full animate-pulse"></div>
-            <span class="text-[7px] font-black tracking-[0.3em] uppercase text-white/60">{{ tag }}</span>
+      <!-- Sophisticated Feature Grid -->
+      <div class="mt-40 w-full max-w-5xl">
+        <div class="flex flex-col items-center mb-16">
+          <span class="text-primary text-[8px] font-black uppercase tracking-[0.5em] mb-4">Nuestra Tecnología</span>
+          <h4 class="text-white text-2xl font-outfit font-black uppercase tracking-widest">Ecosistema Digital Elite</h4>
+          <div class="w-12 h-[2px] bg-primary mt-4"></div>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
+          <div v-for="(feat, idx) in [
+            {t: 'Mapeo Neural', d: 'Análisis Biométrico'}, 
+            {t: 'Gen IA', d: 'Simulación Realista'}, 
+            {t: 'Cloud Sync', d: 'Reserva Inmediata'}, 
+            {t: 'Master Tech', d: 'Grooming de Elite'}
+          ]" :key="idx" class="glass-panel p-6 rounded-3xl flex flex-col items-center text-center hover:bg-white/5 transition-colors border-white/5">
+            <span class="text-white font-black text-[10px] uppercase tracking-widest mb-2">{{ feat.t }}</span>
+            <span class="text-gray-600 text-[8px] uppercase font-bold tracking-wider">{{ feat.d }}</span>
           </div>
+        </div>
       </div>
       <!-- PWA Install Prompt (Floating) -->
       <transition
