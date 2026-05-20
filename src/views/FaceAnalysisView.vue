@@ -362,8 +362,11 @@ import {
 } from '../services/aiService'
 import { createHairMask } from '../services/maskService'
 
+import { useShopStore } from '../stores/shopStore'
+
 const router = useRouter()
 const cameraRef = ref(null)
+const shopStore = useShopStore()
 
 const step = ref('capture') // capture, processing, catalog, result
 const gender = ref('Caballero')
@@ -453,6 +456,13 @@ const handleCapture = async () => {
         faceShape.value = detectFaceShape(landmarks)
         console.log("Face Shape Detected:", faceShape.value);
         
+        // Registrar evento de escaneo (Analytics)
+        if (shopStore.tenantId) {
+            import('../services/aiService').then(m => {
+                m.trackAnalyticsEvent(shopStore.tenantId, 'scan_completed', null, { faceShape: faceShape.value })
+            })
+        }
+
         // 2. Get Recommendations from Catalog
         recommendations.value = await getHairstyleRecommendations(faceShape.value, gender.value)
         console.log("Recommendations found:", recommendations.value.length);
@@ -483,18 +493,17 @@ const generateAIVirtual = async () => {
     processingStatus.value = 'IA Generando Estilo'
 
     try {
-        const aiPrompt = `${selectedStyle.value.name}: ${selectedStyle.value.desc}`
-        
         const resultUrl = await generateHairstyle(
             capturedImage.value, 
             hairMask.value, 
-            aiPrompt
+            selectedStyle.value,
+            shopStore.tenantId
         )
 
         resultImage.value = resultUrl
         step.value = 'result'
     } catch (e) {
-        alert("La IA está saturada. Intenta de nuevo en unos momentos o elige otro corte.")
+        alert(e.message || "La IA está saturada. Intenta de nuevo.")
         step.value = 'catalog'
     }
 }

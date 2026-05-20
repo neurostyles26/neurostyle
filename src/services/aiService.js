@@ -88,9 +88,77 @@ export const getHairstyleRecommendations = async (faceShape, gender = 'Caballero
 }
 
 /**
+ * Registra un evento de analítica para el Tenant actual.
+ */
+export const trackAnalyticsEvent = async (tenantId, eventType, styleId = null, metadata = {}) => {
+    if (!tenantId) return
+    try {
+        await supabase.from('analytics_events').insert([{
+            tenant_id: tenantId,
+            event_type: eventType,
+            style_id: styleId,
+            metadata: metadata
+        }])
+    } catch (e) {
+        console.error("Error tracking analytics:", e)
+    }
+}
+
+/**
+ * Registra una imagen para borrado automático (Privacy TTL).
+ */
+export const registerTemporaryAsset = async (tenantId, storagePath, type = 'raw_photo') => {
+    if (!tenantId) return
+    try {
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString() // 10 minutos
+        await supabase.from('temporary_assets').insert([{
+            tenant_id: tenantId,
+            storage_path: storagePath,
+            expires_at: expiresAt,
+            asset_type: type
+        }])
+    } catch (e) {
+        console.error("Error registering temporary asset:", e)
+    }
+}
+
+/**
+ * Verifica y descuenta créditos de IA para el Tenant.
+ */
+export const checkAndDeductCredits = async (tenantId) => {
+    if (!tenantId) return { allowed: true } // Para usuarios libres sin tenant (vía Landing)
+
+    try {
+        // 1. Obtener créditos usados vs límite del plan
+        const { data: tenant, error } = await supabase
+            .from('tenants')
+            .select('ai_credits_used, plans(ai_credits_limit)')
+            .eq('id', tenantId)
+            .single()
+
+        if (error) throw error
+
+        const used = tenant.ai_credits_used || 0
+        const limit = tenant.plans?.ai_credits_limit || 0
+
+        if (used >= limit) {
+            return { allowed: false, message: "Límite de créditos IA alcanzado. Por favor, sube de nivel tu plan." }
+        }
+
+        // 2. Descontar 1 crédito (Incremental)
+        await supabase.rpc('increment_ai_credits', { tenant_uuid: tenantId })
+        
+        return { allowed: true }
+    } catch (e) {
+        console.error("Error checking credits:", e)
+        return { allowed: true } // Fallback permissive
+    }
+}
+
+/**
  * Upload image to Supabase to get a public URL for LightX
  */
-export const uploadImage = async (imageB64) => {
+export const uploadImage = async (imageB64, tenantId = null) => {
     try {
         console.log("Iniciando carga a Supabase...");
         const response = await fetch(imageB64)
@@ -107,14 +175,18 @@ export const uploadImage = async (imageB64) => {
 
         if (error) {
             console.error("Error detallado de Supabase Storage:", error);
-            throw new Error(`Supabase Error: ${error.message}. ¿Creaste el bucket 'hairstyles' y lo pusiste público?`);
+            throw new Error(`Supabase Error: ${error.message}`);
+        }
+
+        // Registrar para auto-limpieza (Privacidad)
+        if (tenantId) {
+            await registerTemporaryAsset(tenantId, filePath)
         }
 
         const { data: { publicUrl } } = supabase.storage
             .from('hairstyles')
             .getPublicUrl(filePath)
 
-        console.log("Imagen subida con éxito. URL pública:", publicUrl);
         return publicUrl
     } catch (error) {
         console.error("Excepción en uploadImage:", error)
@@ -243,27 +315,41 @@ const blobToBase64 = (blob) => {
 /**
  * Main AI Hairstyle Generation Entry Point
  */
-export const generateHairstyle = async (imageB64, maskB64, hairstylePrompt) => {
-    // 1. Try Replicate first (Superior quality)
+export const generateHairstyle = async (imageB64, maskB64, selectedStyle, tenantId = null) => {
+    // 1. Verificar Créditos SaaS
+    const creditCheck = await checkAndDeductCredits(tenantId)
+    if (!creditCheck.allowed) {
+        throw new Error(creditCheck.message)
+    }
+
+    const hairstylePrompt = `${selectedStyle.name}: ${selectedStyle.desc}`
+
+    // 2. Try Replicate first (Superior quality)
     try {
-        return await generateHairstyleReplicate(imageB64, maskB64, hairstylePrompt)
+        const result = await generateHairstyleReplicate(imageB64, maskB64, hairstylePrompt)
+        if (result) {
+            await trackAnalyticsEvent(tenantId, 'ai_render_success', selectedStyle.id, { provider: 'replicate' })
+            return result
+        }
     } catch (e) {
         console.warn("Replicate falló, intentando Hugging Face...", e)
     }
 
-    // 2. Try Hugging Face
+    // 3. Try Hugging Face
     try {
         const hfResult = await generateHairstyleHF(imageB64, maskB64, hairstylePrompt)
-        if (hfResult) return hfResult
+        if (hfResult) {
+            await trackAnalyticsEvent(tenantId, 'ai_render_success', selectedStyle.id, { provider: 'huggingface' })
+            return hfResult
+        }
     } catch (e) {
         console.warn("Hugging Face falló, intentando LightX...", e)
     }
 
-    // 2. Fallback to LightX proxy (which we have working with the provided key)
+    // 4. Fallback to LightX proxy
     const PROXY_URL = "/api/lightx"
     try {
-        // ... (existing LightX logic)
-        const publicUrl = await uploadImage(imageB64)
+        const publicUrl = await uploadImage(imageB64, tenantId)
         console.log("Solicitando peinado (via Proxy)...");
         const hairResponse = await fetch(`${PROXY_URL}?action=hairstyle`, {
             method: "POST",
@@ -292,12 +378,16 @@ export const generateHairstyle = async (imageB64, maskB64, hairstylePrompt) => {
             const statusData = await statusResponse.json()
             if (!statusResponse.ok) continue
             const { status, resUrl } = statusData.body || {}
-            if (status === "completed" && resUrl) return resUrl
+            if (status === "completed" && resUrl) {
+                await trackAnalyticsEvent(tenantId, 'ai_render_success', selectedStyle.id, { provider: 'lightx' })
+                return resUrl
+            }
             if (status === "failed") throw new Error("La IA de LightX falló.")
         }
         throw new Error("Tiempo de espera agotado.")
     } catch (error) {
         console.error("AI Service Error:", error)
+        await trackAnalyticsEvent(tenantId, 'ai_render_failed', selectedStyle.id, { error: error.message })
         throw error
     }
 }
