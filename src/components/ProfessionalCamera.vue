@@ -78,14 +78,21 @@ const initCamera = async () => {
 
         let mediaStream
         try {
-            console.log("Tentativa 1: MediaDevices con constraints...");
+            console.log("Cámara: Intentando Tentativa 1 (Constraints user)...");
             mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
+            console.log("Cámara: Tentativa 1 exitosa.");
         } catch (e) {
-            console.warn("Tentativa 2: Fallo constraints, usando genéricos...", e);
+            console.warn("Cámara: Fallo Tentativa 1, probando Tentativa 2 (Video true)...", e);
             mediaStream = await navigator.mediaDevices.getUserMedia({ video: true })
+            console.log("Cámara: Tentativa 2 exitosa.");
         }
         
+        if (!mediaStream) {
+            throw new Error("No se pudo obtener el flujo de video (mediaStream is null).")
+        }
+
         stream.value = mediaStream
+        console.log("Cámara: Stream obtenido correctamente:", mediaStream.id);
 
         if (videoRef.value) {
             console.log("Cámara: Configurando elemento video...");
@@ -106,9 +113,10 @@ const initCamera = async () => {
             video.setAttribute('autoplay', '')
             video.muted = true
             
-            const onStreamStarted = () => {
-                if (video.readyState >= 2) { // HAVE_CURRENT_DATA
-                    console.log("Cámara: Video reproduciendo con datos suficientes.");
+            const onStreamStarted = (force = false) => {
+                console.log(`Cámara: Verificando stream. readyState: ${video.readyState}, force: ${force}`);
+                if (video.readyState >= 2 || force) {
+                    console.log("Cámara: Activando visualización de video.");
                     loading.value = false
                     active.value = true
                     emit('started')
@@ -117,30 +125,29 @@ const initCamera = async () => {
             }
 
             const cleanup = () => {
-                video.removeEventListener('playing', onStreamStarted)
-                video.removeEventListener('canplay', onStreamStarted)
-                video.removeEventListener('loadeddata', onStreamStarted)
+                video.removeEventListener('playing', () => onStreamStarted())
+                video.removeEventListener('canplay', () => onStreamStarted())
+                video.removeEventListener('loadeddata', () => onStreamStarted())
             }
 
-            video.addEventListener('playing', onStreamStarted)
-            video.addEventListener('canplay', onStreamStarted)
-            video.addEventListener('loadeddata', onStreamStarted)
+            video.addEventListener('playing', () => onStreamStarted())
+            video.addEventListener('canplay', () => onStreamStarted())
+            video.addEventListener('loadeddata', () => onStreamStarted())
 
             // Intentar reproducir con varios intentos
             const tryPlay = async (attempt = 1) => {
                 try {
+                    console.log(`Cámara: Intento ${attempt} de play()...`);
                     await video.play()
                     console.log(`Cámara: Play exitoso en intento ${attempt}`);
-                    // En algunos navegadores play() resuelve pero el video no se ve de inmediato
-                    if (video.readyState >= 2) onStreamStarted()
+                    onStreamStarted()
                 } catch (err) {
                     console.warn(`Cámara: Intento ${attempt} de play() falló:`, err);
                     if (attempt < 3) {
                         setTimeout(() => tryPlay(attempt + 1), 500)
                     } else {
-                        // Último recurso: si el usuario interactúa, suele desbloquear el video
                         console.error("Cámara: Todos los intentos de play() fallaron.");
-                        errorMessage.value = "Toca aquí para activar la cámara manualmente si no te ves."
+                        errorMessage.value = "Error al iniciar el video. Por favor, asegúrate de permitir el acceso."
                         error.value = true
                         loading.value = false
                     }
@@ -149,13 +156,13 @@ const initCamera = async () => {
 
             tryPlay()
             
-            // Safety timeout
+            // Safety timeout: Forzar visibilidad después de 3 segundos si el stream está asignado
             setTimeout(() => {
-                if (loading.value && !error.value) {
-                    console.log("Cámara: Timeout alcanzado, forzando visibilidad.");
-                    onStreamStarted()
+                if (loading.value && !error.value && video.srcObject) {
+                    console.log("Cámara: Forzando visibilidad por timeout de seguridad.");
+                    onStreamStarted(true)
                 }
-            }, 5000)
+            }, 3000)
         }
     } catch (err) {
         console.error("Error crítico de cámara:", err)

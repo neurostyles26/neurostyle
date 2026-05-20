@@ -48,6 +48,27 @@
             <canvas ref="processCanvas" class="hidden"></canvas>
         </div>
 
+        <!-- Camera Fail Info -->
+        <div v-if="!isCameraActive && step === 'capture'" class="mb-8 p-4 glass-panel border-primary/20 rounded-2xl text-center">
+            <p class="text-primary text-[10px] font-black uppercase tracking-widest animate-pulse">Esperando señal de video...</p>
+            <p class="text-gray-600 text-[8px] mt-1">Si la pantalla sigue negra, asegúrate de haber dado permisos de cámara.</p>
+        </div>
+
+        <!-- Gender Selector -->
+        <div class="flex justify-center gap-4 mb-8">
+            <button 
+                v-for="g in ['Caballero', 'Dama']" 
+                :key="g"
+                @click="gender = g"
+                :class="[
+                    'px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-500',
+                    gender === g ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-105' : 'bg-white/5 text-gray-500 border border-white/5'
+                ]"
+            >
+                {{ g }}
+            </button>
+        </div>
+
         <div class="flex flex-col items-center gap-8 pb-10">
             <button 
                 @click="handleCapture" 
@@ -119,6 +140,13 @@
           </div>
 
           <div class="flex-1 overflow-y-auto pr-2 space-y-6 pb-20 custom-scrollbar">
+              <div v-if="recommendations.length === 0" class="flex flex-col items-center justify-center py-20 text-center glass-panel rounded-[40px] border-white/5">
+                  <LucideScissors class="text-white/10 mb-6" :size="64" />
+                  <h4 class="text-white font-bold text-xl mb-2">No se encontraron estilos</h4>
+                  <p class="text-gray-500 text-sm max-w-xs">No tenemos cortes registrados para rostro {{ faceShape }} en esta categoría. Intenta de nuevo o contacta soporte.</p>
+                  <button @click="resetScan" class="mt-8 btn-secondary">Reiniciar Escaneo</button>
+              </div>
+              
               <div 
                 v-for="item in recommendations" 
                 :key="item.id"
@@ -246,8 +274,68 @@
               </div>
           </div>
       </div>
-
     </main>
+
+    <!-- Privacy Consent Overlay -->
+    <transition enter-active-class="transition duration-700 cubic-bezier(0.16, 1, 0.3, 1)" enter-from-class="opacity-0 translate-y-20" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-500 ease-in" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-20">
+        <div v-if="step === 'capture' && !isCameraActive" class="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
+            <div class="bg-[#050505] w-full max-w-xl rounded-[60px] border border-white/5 p-10 md:p-14 shadow-2xl relative overflow-hidden">
+                <!-- Background Accent -->
+                <div class="absolute -top-32 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-[100px]"></div>
+                
+                <div class="relative z-10 text-center flex flex-col items-center">
+                    <div class="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center mb-10 border border-primary/20 shadow-inner">
+                        <LucideShieldCheck class="text-primary" :size="48" />
+                    </div>
+                    
+                    <h2 class="text-white font-outfit font-black text-4xl uppercase tracking-tighter mb-4">Análisis Biométrico</h2>
+                    <p class="text-primary/70 text-[10px] uppercase font-black tracking-[0.5em] mb-12 italic">Seguridad & Privacidad de Elite</p>
+                    
+                    <div class="space-y-6 text-gray-500 text-xs font-bold uppercase tracking-widest leading-loose mb-14 text-pretty px-4">
+                        <p class="opacity-80">Procesamos una representación matemática de tus facciones para garantizar un ajuste perfecto del estilo.</p>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="flex items-center gap-5 glass-panel p-5 rounded-3xl border-white/5">
+                                <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                                </div>
+                                <span class="text-left text-[9px] text-white/60">Los datos biométricos **nunca se guardan** tras el análisis.</span>
+                            </div>
+                            <div class="flex items-center gap-5 glass-panel p-5 rounded-3xl border-white/5">
+                                <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-2 h-2 rounded-full bg-primary animate-pulse" style="animation-delay: 1s"></div>
+                                </div>
+                                <span class="text-left text-[9px] text-white/60">Procesamiento local con encriptación neural.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-6 w-full">
+                        <button 
+                            @click="startCamera" 
+                            :disabled="isModelLoading"
+                            class="btn-primary w-full py-6 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <template v-if="isModelLoading">
+                                <span class="flex items-center justify-center gap-3">
+                                    <div class="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                                    Cargando IA...
+                                </span>
+                            </template>
+                            <template v-else>
+                                Comenzar Diagnóstico
+                            </template>
+                        </button>
+                        <button 
+                            @click="router.push('/')" 
+                            class="text-gray-600 font-black uppercase tracking-[0.3em] text-[10px] hover:text-white transition-colors py-2"
+                        >
+                            Cancelar & Volver
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </transition>
   </div>
 </template>
 
@@ -261,7 +349,8 @@ import {
   LucideScissors,
   LucideCheck,
   LucideArrowLeftRight,
-  LucideStar
+  LucideStar,
+  LucideScanFace
 } from 'lucide-vue-next'
 import { FilesetResolver, FaceLandmarker } from '@mediapipe/tasks-vision'
 import ProfessionalCamera from '../components/ProfessionalCamera.vue'
@@ -275,9 +364,9 @@ import { createHairMask } from '../services/maskService'
 
 const router = useRouter()
 const cameraRef = ref(null)
-const processCanvas = ref(null)
 
 const step = ref('capture') // capture, processing, catalog, result
+const gender = ref('Caballero')
 const isCameraActive = ref(false)
 const capturedImage = ref(null)
 const resultImage = ref(null)
@@ -286,13 +375,17 @@ const faceShape = ref('')
 const recommendations = ref([])
 const selectedStyle = ref(null)
 const hairMask = ref(null)
+const isModelLoading = ref(true)
 
 let faceLandmarker = null
 
-// Initialize FaceMesh
+// Initialize FaceAI
 const initFaceAI = async () => {
+    isModelLoading.value = true
     try {
+        console.log("IA: Iniciando FilesetResolver...");
         const filesetResolver = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm")
+        console.log("IA: FilesetResolver listo. Cargando FaceLandmarker...");
         faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
             baseOptions: {
                 modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
@@ -301,8 +394,12 @@ const initFaceAI = async () => {
             runningMode: "IMAGE",
             numFaces: 1
         })
+        console.log("IA: FaceLandmarker cargado exitosamente.");
+        isModelLoading.value = false
     } catch (e) {
         console.error("Face AI failure:", e)
+        isModelLoading.value = false
+        alert("Error al cargar el motor de IA. Por favor, revisa tu conexión a internet.")
     }
 }
 
@@ -330,6 +427,12 @@ const handleCapture = async () => {
     if (!img) return
 
     capturedImage.value = img
+    
+    if (!faceLandmarker) {
+        alert("El motor de IA aún se está cargando. Por favor, espera un momento.")
+        return
+    }
+
     step.value = 'processing'
     processingStatus.value = 'Analizando Rostro'
 
@@ -348,13 +451,16 @@ const handleCapture = async () => {
         // 1. Detect Face Shape
         processingStatus.value = 'Definiendo Estructura'
         faceShape.value = detectFaceShape(landmarks)
+        console.log("Face Shape Detected:", faceShape.value);
         
         // 2. Get Recommendations from Catalog
-        recommendations.value = getHairstyleRecommendations(faceShape.value)
+        recommendations.value = getHairstyleRecommendations(faceShape.value, gender.value)
+        console.log("Recommendations found:", recommendations.value.length);
         
         // 3. Create Mask (save for later AI gen)
         processingStatus.value = 'Creando Mapa Digital'
         hairMask.value = createHairMask(landmarks, htmlImg.width, htmlImg.height)
+        console.log("Hair Mask created");
 
         // Show Catalog immediately
         setTimeout(() => {
@@ -394,11 +500,11 @@ const generateAIVirtual = async () => {
 }
 
 const resetScan = () => {
-    step.value = 'capture'
-    capturedImage.value = null
-    resultImage.value = null
-    selectedStyle.value = null
-    isCameraActive.value = false
+  step.value = 'capture'
+  capturedImage.value = null
+  resultImage.value = null
+  selectedStyle.value = null
+  isCameraActive.value = false
 }
 
 onMounted(() => {
@@ -452,5 +558,18 @@ onMounted(() => {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.gold-glow {
+  text-shadow: 0 0 20px rgba(218, 165, 32, 0.5);
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 4s ease-in-out infinite;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
 }
 </style>
