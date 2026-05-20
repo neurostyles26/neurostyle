@@ -103,17 +103,19 @@ const products = ref([])
 const loading = ref(true)
 
 const fetchProducts = async () => {
+  if (!shopStore.tenantId) return
   loading.value = true
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*')
+      .eq('is_active', true)
       .order('created_at', { ascending: false })
     
     if (error) throw error
     products.value = data || []
   } catch (err) {
-    console.error(err)
+    console.error("Error al cargar productos:", err)
   } finally {
     loading.value = false
   }

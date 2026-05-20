@@ -178,9 +178,11 @@ import {
 } from 'lucide-vue-next'
 import { supabase } from '../services/supabase'
 import { useNotificationStore } from '../stores/notificationStore'
+import { useShopStore } from '../stores/shopStore'
 
 const router = useRouter()
 const notificationStore = useNotificationStore()
+const shopStore = useShopStore()
 
 const products = ref([])
 const loading = ref(true)
@@ -251,6 +253,7 @@ const saveProduct = async () => {
         const { data, error } = await supabase
             .from('products')
             .insert([{
+                tenant_id: shopStore.tenantId,
                 name: form.value.name,
                 price: parseFloat(form.value.price),
                 stock: parseInt(form.value.stock),

@@ -1,59 +1,72 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { supabase } from '../services/supabase'
+import { supabase, resolveTenantId, getTenantBranding } from '../services/supabase'
 
 export const useShopStore = defineStore('shop', () => {
+    const tenantId = ref(null)
     const shopName = ref('Cargando...')
     const shopDescription = ref('')
     const logoUrl = ref(null)
     const bgUrl = ref(null)
     const whatsappNumber = ref('573000000000')
+    const colors = ref({
+        primary: '#DAA520',
+        secondary: '#050505'
+    })
     const loading = ref(false)
 
-    async function fetchSettings() {
+    async function initializeTenant() {
         loading.value = true
         try {
-            const { data, error } = await supabase
-                .from('shop_settings')
-                .select('*')
-                .single()
+            // 1. Resolver el Tenant ID (por Auth o Subdominio)
+            const id = await resolveTenantId()
+            tenantId.value = id
 
-            if (!error && data) {
-                shopName.value = data.shop_name
-                shopDescription.value = data.description || ''
-                logoUrl.value = data.logo_url
-                bgUrl.value = data.bg_url
-                whatsappNumber.value = data.whatsapp_number || '573000000000'
-            } else if (error && error.code === 'PGRST116') {
-                console.warn('No settings found. Using defaults.')
-                shopName.value = 'Nueva Barbería'
-                shopDescription.value = 'Tu descripción aquí.'
+            if (id) {
+                // 2. Cargar Branding del Tenant
+                const brandingData = await getTenantBranding(id)
+                if (brandingData) {
+                    shopName.value = brandingData.name
+                    const b = brandingData.branding || {}
+                    logoUrl.value = b.logo_url
+                    colors.value.primary = b.primary_color || '#DAA520'
+                    colors.value.secondary = b.secondary_color || '#050505'
+                    
+                    // Inyectar variables CSS para Tailwind 4
+                    document.documentElement.style.setProperty('--color-primary', colors.value.primary)
+                }
             } else {
-                console.error('Fetch settings error:', error.message)
                 shopName.value = 'NeuroStyle Barber'
-                shopDescription.value = 'Elite Barbering & Neural Tech'
             }
         } catch (err) {
-            console.error('Shop fetch error:', err)
+            console.error('Error inicializando Tenant:', err)
+            shopName.value = 'NeuroStyle Barber'
         } finally {
             loading.value = false
         }
     }
 
+    // Mantener para compatibilidad con el panel de administración
+    async function fetchSettings() {
+        await initializeTenant()
+    }
+
     async function updateSettings(updates) {
+        if (!tenantId.value) return { success: false, error: 'No tenant identified' }
         try {
             const { error } = await supabase
-                .from('shop_settings')
-                .upsert({ id: '00000000-0000-0000-0000-000000000001', ...updates })
+                .from('tenants')
+                .update({ 
+                    name: updates.shop_name,
+                    branding: {
+                        primary_color: updates.primary_color || colors.value.primary,
+                        logo_url: updates.logo_url || logoUrl.value
+                    }
+                })
+                .eq('id', tenantId.value)
 
             if (error) throw error
-
-            if (updates.shop_name) shopName.value = updates.shop_name
-            if (updates.description !== undefined) shopDescription.value = updates.description
-            if (updates.logo_url) logoUrl.value = updates.logo_url
-            if (updates.bg_url) bgUrl.value = updates.bg_url
-            if (updates.whatsapp_number) whatsappNumber.value = updates.whatsapp_number
-
+            await initializeTenant() // Recargar
             return { success: true }
         } catch (err) {
             console.error('Update settings error:', err.message)
@@ -62,12 +75,15 @@ export const useShopStore = defineStore('shop', () => {
     }
 
     return {
+        tenantId,
         shopName,
         shopDescription,
         logoUrl,
         bgUrl,
         whatsappNumber,
+        colors,
         loading,
+        initializeTenant,
         fetchSettings,
         updateSettings
     }

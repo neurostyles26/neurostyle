@@ -454,7 +454,7 @@ const handleCapture = async () => {
         console.log("Face Shape Detected:", faceShape.value);
         
         // 2. Get Recommendations from Catalog
-        recommendations.value = getHairstyleRecommendations(faceShape.value, gender.value)
+        recommendations.value = await getHairstyleRecommendations(faceShape.value, gender.value)
         console.log("Recommendations found:", recommendations.value.length);
         
         // 3. Create Mask (save for later AI gen)

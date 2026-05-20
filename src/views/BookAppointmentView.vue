@@ -146,9 +146,11 @@ import {
 } from 'lucide-vue-next'
 import { supabase } from '../services/supabase'
 import { audioService } from '../services/audioService'
+import { useShopStore } from '../stores/shopStore'
 
 const route = useRoute()
 const router = useRouter()
+const shopStore = useShopStore()
 
 const selectedService = ref(route.query.style || 'Corte General')
 const selectedDate = ref(null)
@@ -188,18 +190,26 @@ const generateTimeSlots = () => {
 }
 
 const fetchBookedSlots = async (date) => {
+    if (!shopStore.tenantId) return
     loadingSlots.value = true
     try {
+        // Consultar usando el nuevo esquema tenant-aware
         const { data, error } = await supabase
             .from('appointments')
-            .select('time')
-            .eq('date', date)
-            .neq('status', 'Cancelado')
+            .select('scheduled_at')
+            .gte('scheduled_at', `${date}T00:00:00Z`)
+            .lte('scheduled_at', `${date}T23:59:59Z`)
+            .neq('status', 'cancelled')
         
         if (error) throw error
-        bookedSlots.value = data.map(i => i.time)
+        
+        // Extraer solo la hora para comparar
+        bookedSlots.value = data.map(i => {
+            const d = new Date(i.scheduled_at)
+            return `${d.getHours()}:${d.getMinutes() === 0 ? '00' : '30'}`
+        })
     } catch (err) {
-        console.error(err)
+        console.error("Error al cargar cupos:", err)
     } finally {
         loadingSlots.value = false
     }
@@ -208,25 +218,28 @@ const fetchBookedSlots = async (date) => {
 const isBooked = (time) => bookedSlots.value.includes(time)
 
 const confirmBooking = async () => {
-    if (!clientName.value) return
+    if (!clientName.value || !shopStore.tenantId) return
     
     submitting.value = true
     try {
+        // Combinar fecha y hora para scheduled_at
+        const scheduledDateTime = new Date(`${selectedDate.value}T${selectedTime.value}:00`).toISOString()
+
         const { error } = await supabase
             .from('appointments')
             .insert([{
+                tenant_id: shopStore.tenantId,
                 client_name: clientName.value,
-                date: selectedDate.value,
-                time: selectedTime.value,
+                scheduled_at: scheduledDateTime,
                 service: selectedService.value,
-                status: 'Pendiente'
+                status: 'pending'
             }])
         
         if (error) throw error
         
         audioService.playSuccess()
         alert("¡Cita Agendada con éxito!")
-        router.push('/dashboard')
+        router.push('/')
     } catch (err) {
         alert("Error al agendar: " + err.message)
     } finally {

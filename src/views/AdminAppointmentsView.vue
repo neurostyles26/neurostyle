@@ -41,7 +41,9 @@
           <!-- Status Indicator Stripe -->
           <div :class="[
               'absolute top-0 bottom-0 left-0 w-1.5 transition-colors duration-500',
-              appt.status === 'Pendiente' ? 'bg-yellow-500/50' : 'bg-green-500/50'
+              appt.status === 'pending' ? 'bg-yellow-500/50' : 
+              appt.status === 'confirmed' ? 'bg-green-500/50' : 
+              appt.status === 'completed' ? 'bg-blue-500/50' : 'bg-red-500/50'
           ]"></div>
 
           <div class="flex items-start justify-between mb-8 relative z-10">
@@ -53,15 +55,15 @@
                     <h4 class="text-white font-outfit font-bold text-lg sm:text-xl mb-1 sm:mb-2 tracking-tight truncate">{{ appt.client_name }}</h4>
                     <span :class="[
                         'text-[9px] font-black uppercase px-3 py-1 rounded-full border tracking-widest',
-                        appt.status === 'Pendiente' ? 'text-yellow-500 border-yellow-500/20 bg-yellow-500/5' : 'text-green-500 border-green-500/20 bg-green-500/5'
+                        getStatusClass(appt.status)
                     ]">
-                        {{ appt.status }}
+                        {{ getStatusLabel(appt.status) }}
                     </span>
                 </div>
             </div>
             <div class="text-right shrink-0">
-                <p class="text-primary font-outfit font-black text-xl sm:text-2xl gold-glow mb-1">{{ appt.time }}</p>
-                <p class="text-gray-500 text-[8px] sm:text-[10px] uppercase font-black tracking-[0.2em] font-outfit">{{ formatDate(appt.date) }}</p>
+                <p class="text-primary font-outfit font-black text-xl sm:text-2xl gold-glow mb-1">{{ formatDateTime(appt.scheduled_at).time }}</p>
+                <p class="text-gray-500 text-[8px] sm:text-[10px] uppercase font-black tracking-[0.2em] font-outfit">{{ formatDateTime(appt.scheduled_at).date }}</p>
             </div>
           </div>
 
@@ -103,36 +105,44 @@ const fetchAppointments = async () => {
         const { data, error } = await supabase
             .from('appointments')
             .select('*')
-            .order('date', { ascending: false })
-            .order('time', { ascending: true })
+            .order('scheduled_at', { ascending: false })
         
         if (error) throw error
         appointments.value = data || []
     } catch (err) {
-        console.error(err)
+        console.error("Error al cargar citas:", err)
     } finally {
         loading.value = false
     }
 }
 
-const deleteAppointment = async (appt) => {
-    if (!confirm(`¿Eliminar cita de ${appt.client_name}?`)) return
-    try {
-        const { error } = await supabase
-            .from('appointments')
-            .delete()
-            .eq('id', appt.id)
-        if (error) throw error
-        
-        audioService.playAlert()
-        appointments.value = appointments.value.filter(a => a.id !== appt.id)
-    } catch (err) {
-        alert(err.message)
+const formatDateTime = (isoDate) => {
+    const d = new Date(isoDate)
+    return {
+        date: d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }),
+        time: `${d.getHours()}:${d.getMinutes() === 0 ? '00' : '30'}`
     }
 }
 
-const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
+const getStatusClass = (status) => {
+    switch (status) {
+        case 'pending': return 'text-yellow-500 border-yellow-500/20 bg-yellow-500/5'
+        case 'confirmed': return 'text-green-500 border-green-500/20 bg-green-500/5'
+        case 'completed': return 'text-blue-500 border-blue-500/20 bg-blue-500/5'
+        case 'cancelled': return 'text-red-500 border-red-500/20 bg-red-500/5'
+        default: return 'text-gray-500 border-gray-500/20 bg-gray-500/5'
+    }
+}
+
+const getStatusLabel = (status) => {
+    const labels = {
+        pending: 'Pendiente',
+        confirmed: 'Confirmado',
+        completed: 'Completado',
+        cancelled: 'Cancelado',
+        no_show: 'No asistió'
+    }
+    return labels[status] || status
 }
 
 onMounted(fetchAppointments)

@@ -20,10 +20,17 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue'
 import NotificationToast from './components/NotificationToast.vue'
+import AppPreloader from './components/AppPreloader.vue'
 import { realtimeNotificationService } from './services/realtimeNotificationService'
 import { audioService } from './services/audioService'
+import { useShopStore } from './stores/shopStore'
 
-onMounted(() => {
+const shopStore = useShopStore()
+
+onMounted(async () => {
+  // Inicializar Tenant y Branding
+  await shopStore.initializeTenant()
+  
   realtimeNotificationService.init()
   
   // Unlock audio on first user interaction

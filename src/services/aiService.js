@@ -1,5 +1,4 @@
 import { supabase } from './supabase'
-import { haircutCatalog } from '../data/haircutCatalog'
 
 export const FACE_SHAPES = {
     OVAL: 'Ovalado',
@@ -55,12 +54,37 @@ export const detectFaceShape = (landmarks) => {
     return FACE_SHAPES.OVAL
 }
 
-export const getHairstyleRecommendations = (faceShape, gender = 'Caballero') => {
-    // Filter from catalog
-    return haircutCatalog.filter(style =>
-        style.faceShapes.includes(faceShape) &&
-        (style.gender === gender || !gender)
-    ).sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
+/**
+ * Obtiene recomendaciones de peinado desde la base de datos de Supabase.
+ * Filtra por forma de rostro, género y tenant actual.
+ */
+export const getHairstyleRecommendations = async (faceShape, gender = 'Caballero') => {
+    try {
+        const { data, error } = await supabase
+            .from('catalog')
+            .select('*')
+            .eq('gender', gender)
+            .eq('is_active', true)
+            .contains('face_shapes', [faceShape])
+            .order('match_score', { ascending: false })
+
+        if (error) throw error
+        
+        // Mapear para mantener compatibilidad con el frontend
+        return data.map(item => ({
+            id: item.id,
+            name: item.name,
+            desc: item.description,
+            gender: item.gender,
+            faceShapes: item.face_shapes,
+            maintenance: item.maintenance_level,
+            matchScore: item.match_score,
+            overlayImage: item.overlay_image_url
+        }))
+    } catch (e) {
+        console.error("Error al obtener recomendaciones de DB:", e)
+        return []
+    }
 }
 
 /**

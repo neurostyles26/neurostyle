@@ -123,33 +123,53 @@ const shopStore = useShopStore()
 
 const notificationStore = useNotificationStore()
 
-onMounted(() => {
-  shopStore.fetchSettings()
+const stats = ref([
+  { label: 'Citas Hoy', value: '0', icon: LucideCalendar },
+  { label: 'Visitas Nuevas', value: '0', icon: LucideUsers },
+  { label: 'Ingresos Estimados', value: '$0', icon: LucideTrendingUp },
+  { label: 'Unidades Stock', value: '0', icon: LucideShoppingBag }
+])
+
+const fetchStats = async () => {
+    try {
+        const today = new Date().toISOString().split('T')[0]
+        
+        // 1. Citas Hoy
+        const { count: apptCount } = await supabase
+            .from('appointments')
+            .select('*', { count: 'exact', head: true })
+            .gte('scheduled_at', `${today}T00:00:00Z`)
+            .lte('scheduled_at', `${today}T23:59:59Z`)
+        
+        // 2. Stock Total
+        const { data: products } = await supabase
+            .from('products')
+            .select('stock')
+        
+        const totalStock = products?.reduce((acc, p) => acc + (p.stock || 0), 0) || 0
+
+        // Actualizar array de stats
+        stats.value[0].value = apptCount?.toString() || '0'
+        stats.value[3].value = totalStock.toString()
+        stats.value[1].value = (Math.floor(Math.random() * 20) + 5).toString() // Simulado por ahora
+        stats.value[2].value = `$${(Math.floor(Math.random() * 500) + 100)}k` // Simulado por ahora
+
+    } catch (e) {
+        console.error("Error al cargar estadísticas:", e)
+    }
+}
+
+onMounted(async () => {
+  await shopStore.initializeTenant()
+  await fetchStats()
   
   // Welcome Notification
   notificationStore.notify({
     title: 'SISTEMA NEURAL ACTIVO',
-    message: 'Bienvenido a la matriz de control, Comandante.',
+    message: `Bienvenido al panel de ${shopStore.shopName}.`,
     type: 'info'
   })
-
-  // Simulate user attention alert
-  setTimeout(() => {
-    notificationStore.notify({
-        title: 'ATENCIÓN REQUERIDA',
-        message: 'Hay 3 nuevos clientes esperando análisis biométrico.',
-        type: 'warning',
-        duration: 8000
-    })
-  }, 3000)
 })
-
-const stats = [
-  { label: 'Citas Hoy', value: '12', icon: LucideCalendar },
-  { label: 'Visitas Nuevas', value: '48', icon: LucideUsers },
-  { label: 'Egresos Mes', value: '$4.2k', icon: LucideTrendingUp },
-  { label: 'Unidades Stock', value: '85', icon: LucideShoppingBag }
-]
 
 const handleLogout = async () => {
   await supabase.auth.signOut()
