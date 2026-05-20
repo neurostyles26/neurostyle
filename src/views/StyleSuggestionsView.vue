@@ -234,19 +234,25 @@ import {
   LucideArrowRight, LucideX, LucideSparkles, LucideCheck
 } from 'lucide-vue-next'
 import { useScanStore } from '../stores/scanStore'
-import aiService from '../services/aiService'
+import { useShopStore } from '../stores/shopStore'
+import { 
+  generateHairstyle, 
+  getHairstyleRecommendations, 
+  trackAnalyticsEvent 
+} from '../services/aiService'
 import overlayService from '../services/overlayService'
-import { haircutCatalog } from '../data/haircutCatalog'
 
 const route = useRoute()
 const router = useRouter()
 const scanStore = useScanStore()
+const shopStore = useShopStore()
 
-const faceShape = ref(route.query.shape || 'Ovalado')
-const gender = ref(route.query.gen || 'Caballero')
+const faceShape = ref(route.query.shape || scanStore.faceShape || 'Ovalado')
+const gender = ref(route.query.gen || scanStore.gender || 'Caballero')
 const confidence = ref(parseFloat(route.query.conf) || 0.95)
 const ratio = ref(route.query.ratio || '1.35')
 const selectedStyle = ref(null)
+const dynamicRecommendations = ref([])
 
 // AI Try-On States
 const isGeneratingAI = ref(false)
@@ -258,9 +264,9 @@ const showResultModal = ref(false)
 const showComparison = ref(true)
 
 const filteredStyles = computed(() => {
-    return haircutCatalog
-        .filter(s => s.gender === gender.value && s.faceShapes.includes(faceShape.value))
-        .sort((a, b) => b.matchScore - a.matchScore)
+    // Preferir recomendaciones del store si existen, si no usar las dinámicas
+    const base = scanStore.recommendations.length > 0 ? scanStore.recommendations : dynamicRecommendations.value
+    return base.sort((a, b) => b.matchScore - a.matchScore)
 })
 
 const recommendationText = computed(() => {
@@ -305,18 +311,21 @@ const handleTryOn = async (style) => {
             isGeneratingAI.value = false
         } else {
             isUsingOverlay.value = false
-            console.log("No overlay asset. Using AI for:", style.name)
+            console.log("Using AI for:", style.name)
             
-            const res = await fetch(scanStore.capturedImage)
-            const blob = await res.blob()
-            
-            const resultUrl = await aiService.generateHairstyle(blob, style.name)
+            // Pasar el objeto completo de estilo y el tenant_id
+            const resultUrl = await generateHairstyle(
+                scanStore.capturedImage, 
+                scanStore.hairMask, 
+                style,
+                shopStore.tenantId
+            )
             generatedImage.value = resultUrl
             showComparison.value = true
         }
     } catch (error) {
         console.error("Try-On Error:", error)
-        alert(`ERROR TÉCNICO: ${error.message}`)
+        alert(error.message || "Error al generar estilo.")
         showResultModal.value = false
     } finally {
         isGeneratingAI.value = false
@@ -331,7 +340,12 @@ const handleBooking = () => {
     })
 }
 
-onMounted(() => {
+onMounted(async () => {
+    // Si no hay recomendaciones en el store (acceso directo a la URL), las buscamos
+    if (scanStore.recommendations.length === 0) {
+        dynamicRecommendations.value = await getHairstyleRecommendations(faceShape.value, gender.value)
+    }
+    
     if (filteredStyles.value.length > 0) {
         selectedStyle.value = filteredStyles.value[0]
     }

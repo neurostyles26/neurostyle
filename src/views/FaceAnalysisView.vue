@@ -465,11 +465,13 @@ const handleCapture = async () => {
 
         // 2. Get Recommendations from Catalog
         recommendations.value = await getHairstyleRecommendations(faceShape.value, gender.value)
+        scanStore.setRecommendations(recommendations.value)
         console.log("Recommendations found:", recommendations.value.length);
         
         // 3. Create Mask (save for later AI gen)
         processingStatus.value = 'Creando Mapa Digital'
         hairMask.value = createHairMask(landmarks, htmlImg.width, htmlImg.height)
+        scanStore.setHairMask(hairMask.value)
         console.log("Hair Mask created");
 
         // Show Catalog immediately

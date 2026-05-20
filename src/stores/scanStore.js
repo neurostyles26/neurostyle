@@ -6,7 +6,9 @@ export const useScanStore = defineStore('scan', {
         faceShape: null,
         gender: 'Caballero',
         analysisComplete: false,
-        landmarks: null
+        landmarks: null,
+        hairMask: null,
+        recommendations: []
     }),
     actions: {
         setCapturedImage(image) {
@@ -14,6 +16,12 @@ export const useScanStore = defineStore('scan', {
         },
         setLandmarks(landmarks) {
             this.landmarks = landmarks
+        },
+        setHairMask(mask) {
+            this.hairMask = mask
+        },
+        setRecommendations(recommendations) {
+            this.recommendations = recommendations
         },
         setScanResult(shape, gender) {
             this.faceShape = shape
@@ -24,6 +32,8 @@ export const useScanStore = defineStore('scan', {
             this.capturedImage = null
             this.faceShape = null
             this.landmarks = null
+            this.hairMask = null
+            this.recommendations = []
             this.analysisComplete = false
         }
     }
