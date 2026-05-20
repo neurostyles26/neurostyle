@@ -6,8 +6,8 @@
       autoplay
       playsinline
       muted
-      class="absolute inset-0 w-full h-full object-cover pointer-events-none"
-      style="transform: scaleX(-1);"
+      class="absolute inset-0 w-full h-full object-cover z-0"
+      style="transform: scaleX(-1); background-color: transparent;"
     ></video>
 
     <!-- UI Overlay / Face Guide -->
@@ -88,56 +88,74 @@ const initCamera = async () => {
         stream.value = mediaStream
 
         if (videoRef.value) {
-            videoRef.value.srcObject = mediaStream
-            
-            // Critical: Ensure video is ready and playing
-            videoRef.value.setAttribute('autoplay', '')
-            videoRef.value.setAttribute('muted', '')
-            videoRef.value.setAttribute('playsinline', '')
+            console.log("Cámara: Configurando elemento video...");
+            const video = videoRef.value
 
-            // Set up events to ensure the video is actually streaming
-            const onVideoReady = async () => {
-                try {
-                    console.log("Cámara: Video listo (metadata cargada). Intentando reproducir...");
-                    await videoRef.value.play()
-                    console.log("Cámara: Reproducción iniciada correctamente.");
+            // Asegurar que el stream tiene tracks activos
+            const videoTracks = mediaStream.getVideoTracks()
+            if (videoTracks.length > 0) {
+                console.log(`Cámara: Track encontrado - ${videoTracks[0].label}`);
+                videoTracks[0].enabled = true
+            }
+
+            video.srcObject = mediaStream
+            
+            // Forzar atributos para máxima compatibilidad
+            video.setAttribute('muted', '')
+            video.setAttribute('playsinline', '')
+            video.setAttribute('autoplay', '')
+            video.muted = true
+            
+            const onStreamStarted = () => {
+                if (video.readyState >= 2) { // HAVE_CURRENT_DATA
+                    console.log("Cámara: Video reproduciendo con datos suficientes.");
                     loading.value = false
                     active.value = true
                     emit('started')
-                } catch (playErr) {
-                    console.error("Error al iniciar reproducción de video:", playErr);
-                    // Fallback: simple delay if event doesn't trigger perfectly
-                    handlePlayFallback()
+                    cleanup()
                 }
-                // Clean up listeners
-                videoRef.value.removeEventListener('loadedmetadata', onVideoReady)
             }
 
-            const handlePlayFallback = () => {
-                setTimeout(async () => {
-                    if (active.value) return // already started
-                    try {
-                        await videoRef.value.play()
-                        loading.value = false
-                        active.value = true
-                        emit('started')
-                    } catch (e) {
-                        errorMessage.value = "No se pudo iniciar el video. Por favor, refresca la página."
+            const cleanup = () => {
+                video.removeEventListener('playing', onStreamStarted)
+                video.removeEventListener('canplay', onStreamStarted)
+                video.removeEventListener('loadeddata', onStreamStarted)
+            }
+
+            video.addEventListener('playing', onStreamStarted)
+            video.addEventListener('canplay', onStreamStarted)
+            video.addEventListener('loadeddata', onStreamStarted)
+
+            // Intentar reproducir con varios intentos
+            const tryPlay = async (attempt = 1) => {
+                try {
+                    await video.play()
+                    console.log(`Cámara: Play exitoso en intento ${attempt}`);
+                    // En algunos navegadores play() resuelve pero el video no se ve de inmediato
+                    if (video.readyState >= 2) onStreamStarted()
+                } catch (err) {
+                    console.warn(`Cámara: Intento ${attempt} de play() falló:`, err);
+                    if (attempt < 3) {
+                        setTimeout(() => tryPlay(attempt + 1), 500)
+                    } else {
+                        // Último recurso: si el usuario interactúa, suele desbloquear el video
+                        console.error("Cámara: Todos los intentos de play() fallaron.");
+                        errorMessage.value = "Toca aquí para activar la cámara manualmente si no te ves."
                         error.value = true
                         loading.value = false
                     }
-                }, 1000)
+                }
             }
 
-            videoRef.value.addEventListener('loadedmetadata', onVideoReady)
+            tryPlay()
             
-            // Safety timeout in case events never fire
+            // Safety timeout
             setTimeout(() => {
                 if (loading.value && !error.value) {
-                    console.warn("Cámara: Timeout de carga, intentando fallback...");
-                    onVideoReady()
+                    console.log("Cámara: Timeout alcanzado, forzando visibilidad.");
+                    onStreamStarted()
                 }
-            }, 3000)
+            }, 5000)
         }
     } catch (err) {
         console.error("Error crítico de cámara:", err)

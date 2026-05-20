@@ -22,8 +22,8 @@
     <main class="flex-1 flex flex-col relative z-10">
       
       <!-- 1. Camera / Capture Preview -->
-      <div v-if="step === 'capture'" class="flex-1 flex flex-col">
-        <div class="relative flex-1 rounded-[40px] overflow-hidden border border-white/10 bg-white/5 shadow-2xl mb-8 group">
+      <div v-if="step === 'capture'" class="flex-1 flex flex-col min-h-[400px]">
+        <div class="relative flex-1 rounded-[40px] overflow-hidden border border-white/10 bg-white/5 shadow-2xl mb-8 group min-h-[300px]">
             <ProfessionalCamera 
               ref="cameraRef" 
               @started="onCameraStarted"
